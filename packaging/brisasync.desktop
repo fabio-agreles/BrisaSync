@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=BrisaSync
+GenericName=Sincronizador de Arquivos
+Comment=Sincronize arquivos nas duas direções entre Google Drive e pastas locais para uso offline
+Exec=brisasync
+Icon=brisasync
+Terminal=false
+Categories=Network;FileTransfer;Utility;Qt;
+Keywords=sync;drive;cloud;backup;offline;rclone;brisasync;
+StartupNotify=true
+StartupWMClass=brisasync
+

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BrisaSync — Sincronização Google Drive para Linux Desktop</title>
+  <meta name="description" content="BrisaSync é um aplicativo desktop open source para Linux que realiza sincronização bidirecional nativa, simples e segura entre o Google Drive e pastas locais.">
+  <link rel="canonical" href="https://brisasync.com.br/">
+
+  <!-- Metatags Open Graph / Compartilhamento -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://brisasync.com.br/">
+  <meta property="og:title" content="BrisaSync — Sincronização Google Drive para Linux Desktop">
+  <meta property="og:description" content="Sincronizador bidirecional nativo, simples e seguro entre o Google Drive e pastas locais no Linux Desktop. Operação em segundo plano, salvaguardas contra exclusões e total privacidade.">
+  <meta property="og:image" content="https://brisasync.com.br/assets/icons/brisasync.png">
+
+  <!-- Favicons Oficiais -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+
+  <!-- Estilos Próprios (Sem CDNs externos) -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Link de Acessibilidade -->
+  <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+
+  <!-- Cabeçalho Institucional -->
+  <header class="site-header">
+    <div class="container">
+      <div class="nav-wrapper">
+        <a href="/" class="brand" aria-label="Página Inicial do BrisaSync">
+          <img src="/assets/icons/brisasync.png" alt="Logotipo do BrisaSync" class="brand-logo" width="40" height="40">
+          <span class="brand-text">BrisaSync</span>
+          <span class="brand-badge">v0.1.26</span>
+        </a>
+
+        <!-- Menu Desktop -->
+        <nav aria-label="Navegação Principal">
+          <ul class="nav-menu">
+            <li><a href="#recursos">Recursos</a></li>
+            <li><a href="#telas">Telas</a></li>
+            <li><a href="#compatibilidade">Compatibilidade</a></li>
+            <li><a href="#instalacao">Instalação</a></li>
+            <li><a href="#apoie">Apoie</a></li>
+            <li><a href="/privacy/">Privacidade</a></li>
+            <li><a href="#download" class="nav-btn">Download</a></li>
+          </ul>
+        </nav>
+
+        <!-- Botão Mobile -->
+        <button class="mobile-toggle" aria-label="Abrir menu de navegação" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- Seção Hero -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div class="hero-content">
+            <div class="hero-badge-wrapper">
+              <span class="status-pill">
+                <span class="status-dot" aria-hidden="true"></span>
+                Versão 0.1.26 — Multiplataforma (Linux &amp; Windows)
+              </span>
+            </div>
+            <h1 class="hero-title">
+              Sincronização bidirecional nativa, simples e segura para <span class="highlight">Linux e Windows</span>
+            </h1>
+            <p class="hero-description">
+              Mantenha pastas locais em sincronia contínua com o <strong>Google Drive</strong> para trabalho offline. Com operação em segundo plano, salvaguardas contra exclusões acidentais, integração ao cofre do sistema e soberania absoluta dos seus arquivos.
+            </p>
+            <div class="hero-actions">
+              <a href="#download" class="btn btn-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Baixar BrisaSync v0.1.26
+              </a>
+              <a href="#instalacao" class="btn btn-secondary">
+                Guia de Instalação e Pacotes
+              </a>
+            </div>
+            <p class="hero-note">
+              ✓ Open Source (GPLv3) &nbsp;•&nbsp; ✓ Zero Telemetria &nbsp;•&nbsp; ✓ Conexão Direta HTTPS
+            </p>
+          </div>
+          <div class="hero-visual">
+            <div class="hero-card-preview">
+              <img src="/assets/images/visao-geral-claro.png" alt="Interface Principal do BrisaSync exibindo visão geral das pastas" width="1055" height="790" loading="eager">
+            </div>
+          </div>
+        </div>
+
+        <!-- Banner de Transparência do OAuth -->
+        <aside class="alert-banner alert-warning" role="note" aria-label="Status do OAuth Google">
+          <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <div>
+            <p>
+              <strong>Aviso de Transparência — Verificação do Google OAuth em Preparação:</strong> O BrisaSync adota a especificação oficial Google OAuth 2.0 PKCE para comunicação estritamente direta entre o seu desktop e os servidores do Google. O projeto encontra-se atualmente em fase de homologação técnica com status de teste (*Testing mode*) no Google Cloud Console, acessível a contas autorizadas de teste. A liberação pública geral sem aviso prévio de desenvolvimento está em preparação regulatória junto ao Google Trust &amp; Safety.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Recursos Principais -->
+    <section id="recursos" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Recursos e Arquitetura</span>
+          <h2>Desenvolvido para confiabilidade e respeito à sua privacidade</h2>
+          <p>Tudo o que você precisa para manter arquivos sincronizados com segurança sem abrir mão do controle da sua máquina.</p>
+        </div>
+
+        <div class="features-grid">
+          <!-- Card 1 -->
+          <article class="feature-card">
+            <div class="feature-icon-wrapper" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            </div>
+            <h3>Sincronização Bidirecional Confiável</h3>
+            <p>Baseada no motor <code>rclone bisync</code> integrado, com conferência rigorosa de integridade por hash SHA-256, horário de modificação e tamanho de arquivo.</p>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="feature-card">
+            <div class="feature-icon-wrapper" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+            <h3>Proteção Contra Exclusão em Massa</h3>
+            <p>Salvaguardas automáticas que abortam o ciclo se mais de 50% ou 25 arquivos forem apagados localmente, evitando que exclusões acidentais se propaguem para a nuvem.</p>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="feature-card">
+            <div class="feature-icon-wrapper" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+            </div>
+            <h3>Operação em Segundo Plano e Bandeja</h3>
+            <p>Fechar a janela apenas oculta a interface gráfica. O serviço de usuário gerencia as sincronizações periódicas de 5 em 5 minutos e integra-se à bandeja do desktop.</p>
+          </article>
+
+          <!-- Card 4 -->
+          <article class="feature-card">
+            <div class="feature-icon-wrapper" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <h3>Cofre do Sistema e Memória Segura</h3>
+            <p>Tokens de acesso armazenados de forma criptografada no GNOME Keyring ou KWallet. As configurações do motor rodam em <code>/dev/shm</code> efêmero e são destruídas pós-uso.</p>
+          </article>
+
+          <!-- Card 5 -->
+          <article class="feature-card">
+            <div class="feature-icon-wrapper" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </div>
+            <h3>Temas Claro e Escuro (WCAG AAA)</h3>
+            <p>Aparência adaptativa acompanhando o sistema operacional ou selecionável manualmente, com seletores vetoriais nítidos e contraste independente para a bandeja.</p>
+          </article>
+
+          <!-- Card 6 -->
+          <article class="feature-card">
+            <div class="feature-icon-wrapper" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <h3>Zero Telemetria e Soberania Total</h3>
+            <p>Sem anúncios, sem analytics e sem servidores intermediários. Toda a comunicação ocorre exclusivamente entre seu computador e as APIs oficiais da Google via HTTPS.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Galeria de Capturas Reais -->
+    <section id="telas" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Interface Gráfica</span>
+          <h2>Capturas reais da versão homologada</h2>
+          <p>Interface moderna em Qt6/PySide6, responsiva para janelas de 820×620 px até monitores ultrawide.</p>
+        </div>
+
+        <div class="gallery-container">
+          <!-- Abas da Galeria -->
+          <div class="gallery-nav" role="tablist" aria-label="Telas do BrisaSync">
+            <button class="tab-btn active" role="tab" aria-selected="true" data-img="/assets/images/visao-geral-claro.png" data-alt="Visão geral no tema Claro" data-caption="Visão Geral (Tema Claro): status de conexão, resumo das pastas ativas e ações rápidas.">
+              Visão Geral (Claro)
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-img="/assets/images/visao-geral-escuro.png" data-alt="Visão geral no tema Escuro" data-caption="Visão Geral (Tema Escuro): alto contraste e legibilidade harmonizados com o desktop.">
+              Visão Geral (Escuro)
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-img="/assets/images/pastas-claro.png" data-alt="Configuração de pastas locais e remotas" data-caption="Painel de Pastas: seleção de diretório local vazio para baseline segura e pasta no Google Drive.">
+              Pastas
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-img="/assets/images/ajustes-claro.png" data-alt="Painel de Ajustes e Preferências do Sistema" data-caption="Ajustes do Sistema: seletor de tema, intervalo de verificação e controle de bandeja.">
+              Ajustes
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-img="/assets/images/dialog-sobre-pix.png" data-alt="Diálogo Sobre com apoio voluntário via Pix" data-caption="Diálogo Sobre: informações do projeto, licença GPLv3 e seção de apoio voluntário Pix.">
+              Diálogo Sobre (Pix)
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-img="/assets/images/bandeja-estados.png" data-alt="Matriz de estados semânticos do ícone da bandeja" data-caption="Estados da Bandeja: ícones com contraste dinâmico para barras claras e escuras (KDE e GNOME).">
+              Bandeja
+            </button>
+          </div>
+
+          <!-- Palco de Exibição -->
+          <div class="gallery-stage">
+            <img id="gallery-screenshot" src="/assets/images/visao-geral-claro.png" alt="Visão geral no tema Claro" width="1055" height="790">
+            <div id="gallery-caption" class="gallery-caption">
+              Visão Geral (Tema Claro): status de conexão, resumo das pastas ativas e ações rápidas.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compatibilidade e Requisitos -->
+    <section id="compatibilidade" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Compatibilidade</span>
+          <h2>Ambientes validados e requisitos técnicos</h2>
+          <p>O BrisaSync foi rigorosamente testado em ambiente isolado e em máquinas virtuais de referência.</p>
+        </div>
+
+        <div class="table-responsive">
+          <table class="compat-table" aria-label="Tabela de Requisitos e Compatibilidade">
+            <thead>
+              <tr>
+                <th scope="col">Componente</th>
+                <th scope="col">Ambiente Homologado</th>
+                <th scope="col">Status</th>
+                <th scope="col">Observações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Distribuições Linux</th>
+                <td>Manjaro Linux, Arch Linux, BigLinux</td>
+                <td><span class="badge-ok">✓ Homologado</span></td>
+                <td>Família ALPM / Pacman em arquitetura x86_64.</td>
+              </tr>
+              <tr>
+                <th scope="row">Ambientes Desktop</th>
+                <td>GNOME Shell 47+, KDE Plasma 6+, XFCE</td>
+                <td><span class="badge-ok">✓ Homologado</span></td>
+                <td>Suporte nativo a sessões <strong>Wayland</strong> e <strong>X11</strong>.</td>
+              </tr>
+              <tr>
+                <th scope="row">Runtime Python</th>
+                <td>Python 3.14 (ambiente testado; pacote &gt;= 3.11)</td>
+                <td><span class="badge-ok">✓ Validado</span></td>
+                <td>Compatível com as versões mais recentes das distribuições rolling-release.</td>
+              </tr>
+              <tr>
+                <th scope="row">Toolkit Gráfico</th>
+                <td>PySide6 / Qt6 (v6.11.2)</td>
+                <td><span class="badge-ok">✓ Integrado</span></td>
+                <td>Interface gráfica fluída com aceleração por hardware e fontes do sistema.</td>
+              </tr>
+              <tr>
+                <th scope="row">Cofre de Credenciais</th>
+                <td>GNOME Keyring Daemon ou KWallet Daemon</td>
+                <td><span class="badge-ok">✓ Suportado</span></td>
+                <td>Requer ferramentas clientes como <code>libsecret</code> ou <code>kwallet-query</code>.</td>
+              </tr>
+              <tr>
+                <th scope="row">Motor de Sincronização</th>
+                <td>rclone v1.73.0</td>
+                <td><span class="badge-ok">✓ Embutido</span></td>
+                <td>Incluso e verificado em <code>/usr/lib/brisasync/bin/rclone</code> no pacote oficial.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Guia de Instalação e Downloads -->
+    <section id="instalacao" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Distribuição e Pacotes</span>
+          <h2>Instalação simples no Arch Linux, Manjaro e BigLinux</h2>
+          <p>O pacote oficial <code>.pkg.tar.zst</code> inclui o binário integrado do motor e registra todos os arquivos de sistema.</p>
+        </div>
+
+        <div id="download" class="alert-banner alert-info" style="margin-top: 0; margin-bottom: 2rem;">
+          <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="12"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <div>
+            <p>
+              <strong>Downloads Oficiais do BrisaSync v0.1.26:</strong> Escolha o formato ideal para o seu sistema:
+            </p>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.75rem;">
+              <a href="https://github.com/fabio-agreles/BrisaSync/releases/download/v0.1.26/brisasync-0.1.26-1-x86_64.pkg.tar.zst" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">Arch / Manjaro (.pkg.tar.zst)</a>
+              <a href="https://github.com/fabio-agreles/BrisaSync/releases/download/v0.1.26/brisasync_0.1.26-1_amd64.deb" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">Debian / Ubuntu (.deb)</a>
+              <a href="https://github.com/fabio-agreles/BrisaSync/releases/download/v0.1.26/BrisaSync-0.1.26-x86_64.AppImage" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">Universal Linux (.AppImage)</a>
+              <a href="https://github.com/fabio-agreles/BrisaSync/releases/download/v0.1.26/BrisaSync-0.1.26-Setup-x64.exe" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">Windows x64 (.exe)</a>
+              <a href="https://github.com/fabio-agreles/BrisaSync/releases/tag/v0.1.26" class="btn btn-primary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">Todas as Releases no GitHub →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terminal de Instalação -->
+        <div class="terminal-card">
+          <div class="terminal-header">
+            <span class="terminal-circle red" aria-hidden="true"></span>
+            <span class="terminal-circle yellow" aria-hidden="true"></span>
+            <span class="terminal-circle green" aria-hidden="true"></span>
+            <span class="terminal-title">Terminal — Instalação e Execução</span>
+          </div>
+          <div class="terminal-body">
+            <pre><code><span class="comment"># Arch Linux / Manjaro / BigLinux</span>
+<span class="command">sudo pacman -U brisasync-0.1.26-1-x86_64.pkg.tar.zst</span>
+
+<span class="comment"># Debian / Ubuntu / Linux Mint</span>
+<span class="command">sudo apt-get install ./brisasync_0.1.26-1_amd64.deb</span>
+
+<span class="comment"># AppImage Universal</span>
+<span class="command">chmod +x BrisaSync-0.1.26-x86_64.AppImage &amp;&amp; ./BrisaSync-0.1.26-x86_64.AppImage</span>
+
+<span class="comment"># Gerenciar serviço de sincronização do usuário (Linux)</span>
+<span class="command">systemctl --user start brisasync.service</span>
+<span class="command">systemctl --user status brisasync.service</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Apoio Voluntário via Pix -->
+    <section id="apoie" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Apoie o Projeto</span>
+          <h2>Apoio voluntário via Pix</h2>
+          <p>O BrisaSync é gratuito e de código aberto. Toda contribuição é voluntária e todos os recursos continuam 100% disponíveis.</p>
+        </div>
+
+        <div class="pix-card">
+          <div class="pix-qr-frame">
+            <img src="/assets/images/pix_qr.png" alt="QR Code Pix do BrisaSync" class="pix-qr-img" width="180" height="180">
+            <span class="pix-qr-label">Aponte a câmera do seu banco</span>
+          </div>
+          <div class="pix-details">
+            <h3>Contribua com a manutenção e evolução</h3>
+            <p>
+              Se o BrisaSync é útil no seu dia a dia, considere contribuir com qualquer valor para apoiar os custos de infraestrutura e o tempo dedicado ao desenvolvimento.
+            </p>
+            <ul class="pix-info-list">
+              <li><strong>Beneficiário:</strong> Fábio Agreles Bezerra</li>
+              <li><strong>Chave Pix (Aleatória EVP):</strong> <code>e4bf0532-8016-42bf-bf2a-fd81326b6621</code></li>
+            </ul>
+
+            <div class="pix-copy-group">
+              <button id="btn-copy-pix-key" class="btn-copy" type="button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copiar chave Pix
+              </button>
+              <button id="btn-copy-pix-payload" class="btn-copy" type="button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                Copiar Pix Copia e Cola
+              </button>
+            </div>
+            <div id="pix-feedback" class="copy-feedback" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Rodapé Institucional -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>BrisaSync</h4>
+          <p>
+            Aplicativo desktop de código aberto para sincronização bidirecional entre o Google Drive e diretórios locais no Linux Desktop. Desenvolvido com foco em soberania, estabilidade e simplicidade.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h5>Navegação</h5>
+          <ul>
+            <li><a href="#recursos">Recursos</a></li>
+            <li><a href="#telas">Capturas de Tela</a></li>
+            <li><a href="#compatibilidade">Compatibilidade</a></li>
+            <li><a href="#instalacao">Guia de Instalação</a></li>
+            <li><a href="#apoie">Apoio via Pix</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Legal e Suporte</h5>
+          <ul>
+            <li><a href="/privacy/">Política de Privacidade</a></li>
+            <li><a href="https://github.com/fabio-agreles/BrisaSync" rel="noopener noreferrer">Repositório no GitHub</a></li>
+            <li><a href="mailto:fabioagreles@gmail.com">Suporte: fabioagreles@gmail.com</a></li>
+            <li><a href="https://www.gnu.org/licenses/gpl-3.0.html" rel="noopener noreferrer">Licença GNU GPLv3</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-disclaimer">
+          <strong>Aviso de Independência:</strong> O BrisaSync é um projeto independente de software livre desenvolvido pela comunidade e <strong>não</strong> possui vínculo, endosso ou afiliação oficial com a Google LLC. "Google", "Google Drive" e marcas afins são marcas comerciais registradas de propriedade da Google LLC.
+        </p>
+        <p>
+          © 2026 Fábio Agreles Bezerra e colaboradores do BrisaSync. Licenciado sob a GNU General Public License v3.0 or later.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts Mínimos Locais (Sem CDNs) -->
+  <script src="/js/main.js"></script>
+</body>
+</html>
+

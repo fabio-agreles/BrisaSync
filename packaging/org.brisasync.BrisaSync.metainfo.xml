@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.brisasync.BrisaSync</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>BrisaSync</name>
+  <summary>Sincronizador Google Drive moderno, nativo e eficiente</summary>
+  <summary xml:lang="en">Modern, native, and efficient Google Drive synchronizer</summary>
+  <description>
+    <p>
+      O BrisaSync é um cliente gráfico moderno e nativo para sincronização bidirecional com o Google Drive,
+      combinando uma interface intuitiva em Qt6 (PySide6) com o consagrado motor rclone.
+    </p>
+    <p xml:lang="en">
+      BrisaSync is a modern native graphical client for bidirectional synchronization with Google Drive,
+      combining an intuitive Qt6 (PySide6) interface with the proven rclone engine.
+    </p>
+  </description>
+  <launchable type="desktop-id">brisasync.desktop</launchable>
+  <url type="homepage">https://brisasync.com.br/</url>
+  <url type="bugtracker">https://brisasync.com.br/privacy/</url>
+  <url type="faq">https://brisasync.com.br/privacy/</url>
+  <url type="donation">https://brisasync.com.br/</url>
+  <developer id="fabio-agreles">
+    <name>Fábio Agreles</name>
+  </developer>
+  <provides>
+    <binary>brisasync</binary>
+  </provides>
+  <releases>
+    <release version="0.1.26" date="2026-11-10">
+      <description>
+        <p>Distribuição pública multiplataforma (Linux e Windows), suporte bilíngue PT-BR/EN, auditoria de cofre de credenciais e resolução de inconsistências de desconexão e bandeja.</p>
+        <p xml:lang="en">Multiplatform public distribution (Linux and Windows), bilingual PT-BR/EN support, credential vault audit, and disconnection/tray flow fixes.</p>
+      </description>
+    </release>
+  </releases>
+  <content_rating type="oars-1.1"/>
+</component>

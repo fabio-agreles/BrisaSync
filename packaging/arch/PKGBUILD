@@ -1,0 +1,111 @@
+# Maintainer: BrisaSync Contributors <https://github.com/brisasync/brisasync>
+pkgname=brisasync
+pkgver=0.1.26
+pkgrel=1
+pkgdesc="Sincronizador bidirecional Open Source para Linux Desktop (Google Drive <-> Pastas Locais)"
+arch=('x86_64')
+url="https://github.com/brisasync/brisasync"
+license=('GPL-3.0-or-later')
+depends=(
+    'python>=3.14'
+    'pyside6>=6.11'
+    'libsecret'
+    'libnotify'
+    'hicolor-icon-theme'
+)
+makedepends=(
+    'python-setuptools'
+    'python-wheel'
+)
+options=('!strip')
+source=(
+    "${pkgname}-${pkgver}.tar.gz"
+    "rclone-v1.75.2-linux-amd64.bin"
+    "google_oauth_client.json"
+    "LICENSE-rclone.txt"
+    "LICENSE"
+    "THIRD_PARTY_NOTICES.md"
+)
+sha256sums=('61cb3d66b8e8d09cf70a5c233b82b85c4e6a82d647a214ca9e5a9071d7974ab9'
+            'ed7ab1f17876bb006c3df3949a3044959671afd9112362dacaa5dd1647735bc1'
+            '13ac3bd8cf95ce7616d836958bc74e0e34e7e14b14d74b5f43dc963a334efd98'
+            'bb7796a5af0df485a5303ce95d85a3b6ca88d612977c22ae725028e91ad2a22a'
+            '6ec796be9ced07e9ffdd21c05cde4f235175bf43ebbbdaaa6cd696d0476b746a'
+            '11e5d8a0be827f623e54b8e7496424bf5df1e2e915f6c5b80a500d94e7fddc0b')
+
+prepare() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    chmod +x "${srcdir}/rclone-v1.75.2-linux-amd64.bin"
+    local rclone_ver="$("${srcdir}/rclone-v1.75.2-linux-amd64.bin" version | head -n 1)"
+    if [[ "$rclone_ver" != *"v1.75.2"* ]]; then
+        echo "ERRO: Versão do rclone não confere com v1.75.2: $rclone_ver" >&2
+        return 1
+    fi
+}
+
+build() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    python -m setuptools.build_meta
+}
+
+package() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+
+    local pyver="$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+    local sitedir="${pkgdir}/usr/lib/python${pyver}/site-packages"
+    mkdir -p "${sitedir}" "${pkgdir}/usr/bin"
+
+    # Copiar pacote python para site-packages
+    cp -a src/brisasync "${sitedir}/"
+    if [ -d src/brisasync.egg-info ]; then
+        cp -a src/brisasync.egg-info "${sitedir}/brisasync-${pkgver}-py${pyver}.egg-info"
+    fi
+
+    # Criar wrapper executável /usr/bin/brisasync
+    cat > "${pkgdir}/usr/bin/brisasync" << 'EOF'
+#!/usr/bin/python3
+import sys
+from brisasync.main import main
+if __name__ == "__main__":
+    sys.exit(main())
+EOF
+    chmod 755 "${pkgdir}/usr/bin/brisasync"
+
+    # Instalar binário verificado do rclone em /usr/lib/brisasync/bin/rclone
+    install -Dm755 "${srcdir}/rclone-v1.75.2-linux-amd64.bin" "${pkgdir}/usr/lib/brisasync/bin/rclone"
+
+    # Instalar lançador .desktop
+    install -Dm644 src/brisasync/resources/brisasync.desktop "${pkgdir}/usr/share/applications/brisasync.desktop"
+
+    # Instalar cliente OAuth Desktop oficial em /usr/share/brisasync/google_oauth_client.json
+    if [ -f "${srcdir}/google_oauth_client.json" ]; then
+        install -Dm644 "${srcdir}/google_oauth_client.json" "${pkgdir}/usr/share/brisasync/google_oauth_client.json"
+    elif [ -f "src/brisasync/resources/oauth/google_oauth_client.json" ]; then
+        install -Dm644 "src/brisasync/resources/oauth/google_oauth_client.json" "${pkgdir}/usr/share/brisasync/google_oauth_client.json"
+    fi
+
+    # Instalar ícones hicolor
+    local icon_root="src/brisasync/resources/icons"
+    for sz in 16 22 24 32 48 64 96 128 256 512 1024; do
+        if [ -f "${icon_root}/hicolor/${sz}x${sz}/apps/brisasync.png" ]; then
+            install -Dm644 "${icon_root}/hicolor/${sz}x${sz}/apps/brisasync.png" \
+                "${pkgdir}/usr/share/icons/hicolor/${sz}x${sz}/apps/brisasync.png"
+        fi
+    done
+    if [ -f "${icon_root}/hicolor/scalable/status/brisasync-symbolic.svg" ]; then
+        install -Dm644 "${icon_root}/hicolor/scalable/status/brisasync-symbolic.svg" \
+            "${pkgdir}/usr/share/icons/hicolor/scalable/apps/brisasync.svg"
+    fi
+
+    # Instalar unit systemd --user de referência
+    install -Dm644 src/brisasync/resources/systemd/brisasync.service \
+        "${pkgdir}/usr/lib/systemd/user/brisasync.service"
+
+    # Instalar licenças e avisos de terceiros
+    install -Dm644 "${srcdir}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    install -Dm644 "${srcdir}/LICENSE-rclone.txt" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE-rclone.txt"
+    install -Dm644 "${srcdir}/THIRD_PARTY_NOTICES.md" "${pkgdir}/usr/share/licenses/${pkgname}/THIRD_PARTY_NOTICES.md"
+
+    # Instalar documentação
+    install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+}

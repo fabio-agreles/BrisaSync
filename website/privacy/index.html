@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Política de Privacidade — BrisaSync</title>
+  <meta name="description" content="Política de Privacidade oficial do BrisaSync. Transparência sobre armazenamento estritamente local, ausência de telemetria e compromisso de Limited Use da Google.">
+  <link rel="canonical" href="https://brisasync.com.br/privacy/">
+
+  <!-- Metatags Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://brisasync.com.br/privacy/">
+  <meta property="og:title" content="Política de Privacidade — BrisaSync">
+  <meta property="og:description" content="Saiba como o BrisaSync preserva sua soberania digital: aplicativo cliente puro, sem servidores intermediários, sem telemetria e com compromisso formal de Limited Use.">
+  <meta property="og:image" content="https://brisasync.com.br/assets/icons/brisasync.png">
+
+  <!-- Favicons Oficiais -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+
+  <!-- Estilos Próprios -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Link de Acessibilidade -->
+  <a href="#main-content" class="skip-link">Pular para o conteúdo da política</a>
+
+  <!-- Cabeçalho -->
+  <header class="site-header">
+    <div class="container">
+      <div class="nav-wrapper">
+        <a href="/" class="brand" aria-label="Voltar para a Página Inicial do BrisaSync">
+          <img src="/assets/icons/brisasync.png" alt="Logotipo do BrisaSync" class="brand-logo" width="40" height="40">
+          <span class="brand-text">BrisaSync</span>
+        </a>
+        <nav aria-label="Navegação Superior">
+          <ul class="nav-menu">
+            <li><a href="/" class="policy-back-link">← Voltar para o Início</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- Cabeçalho da Política -->
+    <header class="policy-header">
+      <div class="container container-reading">
+        <a href="/" class="policy-back-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          Voltar para a página inicial
+        </a>
+        <h1>Política de Privacidade — BrisaSync</h1>
+        <div class="policy-meta">
+          <span><strong>Versão de Referência:</strong> BrisaSync v0.1.26</span>
+          <span><strong>Última atualização:</strong> 10 de novembro de 2026</span>
+          <span><strong>Mantenedor:</strong> Fábio Agreles Bezerra</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Corpo da Política -->
+    <article class="policy-body">
+      <div class="container container-reading">
+        <section>
+          <h2>1. Visão Geral e Princípios Fundamentais</h2>
+          <p>
+            O <strong>BrisaSync</strong> é um aplicativo desktop de código aberto (<em>open-source</em>) para distribuições Linux projetado para permitir a sincronização bidirecional e backup local entre pastas do computador pessoal do usuário e o <strong>Google Drive</strong>.
+          </p>
+          <p>A privacidade e a soberania dos dados do usuário são princípios centrais do BrisaSync:</p>
+          <ul>
+            <li>O BrisaSync opera como uma <strong>aplicação cliente pura</strong> (<em>client-side native application</em>).</li>
+            <li><strong>Não operamos servidores intermediários, nuvens de terceiros ou serviços de backend próprios</strong>.</li>
+            <li>Toda transferência de dados e autenticação ocorre diretamente entre a estação de trabalho do usuário e os serviços oficiais da Google LLC.</li>
+            <li>O aplicativo não inclui qualquer ferramenta de telemetria, rastreamento analítico, publicidade ou coleta oculta de informações.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>2. Comunicações de Rede e Arquitetura de Conexões</h2>
+          <p>O BrisaSync realiza exclusivamente as seguintes interações de rede:</p>
+
+          <h3>2.1 Comunicações Externas via HTTPS</h3>
+          <p>
+            Todas as comunicações com a internet são direcionadas exclusivamente aos endpoints oficiais de API da Google, utilizando conexões seguras criptografadas por TLS (<strong>HTTPS</strong>):
+          </p>
+          <ul>
+            <li>
+              <strong>Autenticação e Consentimento:</strong> <code>https://accounts.google.com/o/oauth2/v2/auth</code> — Carregado no navegador web padrão do usuário para permitir o login direto na conta Google e a aprovação das permissões de acesso.
+            </li>
+            <li>
+              <strong>Obtenção e Atualização de Tokens:</strong> <code>https://oauth2.googleapis.com/token</code> — Requisições diretas de troca e renovação de credenciais OAuth 2.0 (código de autorização e <em>refresh token</em>).
+            </li>
+            <li>
+              <strong>Revogação Voluntária:</strong> <code>https://oauth2.googleapis.com/revoke</code> — Revogação pontual de tokens ao desconectar a conta pelo aplicativo.
+            </li>
+            <li>
+              <strong>Identificação do Perfil Básico:</strong> <code>https://www.googleapis.com/oauth2/v3/userinfo</code> — Requisição para obtenção do e-mail e nome público associados à conta para exibição na interface local.
+            </li>
+            <li>
+              <strong>Operações de Arquivos e Metadados do Google Drive:</strong> Endpoints da Google Drive API v3 (executados pelo motor de sincronização integrado <code>rclone</code> sob canal HTTPS) para verificação de alterações, upload, download e reconciliação bidirecional das pastas e arquivos configurados pelo usuário.
+            </li>
+          </ul>
+
+          <h3>2.2 Callback Local HTTP em Loopback</h3>
+          <p>
+            Em estrita conformidade com a norma <a href="https://tools.ietf.org/html/rfc8252" target="_blank" rel="noopener noreferrer">RFC 8252 (OAuth 2.0 for Native Apps)</a>, durante o momento em que o usuário inicia a conexão com sua conta Google, o BrisaSync abre um ouvinte HTTP temporário e efêmero na interface de loopback:
+          </p>
+          <ul>
+            <li><strong>Endereço:</strong> <code>http://127.0.0.1:&lt;porta&gt;/callback</code> (com porta atribuída dinamicamente pelo sistema operacional).</li>
+            <li><strong>Função:</strong> Receber de forma pontual o código de autorização redirecionado pelo navegador web após a autorização do usuário na página da Google.</li>
+            <li><strong>Isolamento:</strong> O servidor local vincula-se exclusivamente à interface <code>127.0.0.1</code> (não acessível pela rede local ou externa) e é imediatamente destruído e encerrado assim que o callback é processado ou quando ocorre tempo limite (<em>timeout</em>).</li>
+          </ul>
+
+          <h3>2.3 Ausência de Telemetria e Subprocessos</h3>
+          <p>A verificação estrita do código-fonte, subprocessos locais e dependências do BrisaSync confirma:</p>
+          <ul>
+            <li><strong>Zero Telemetria:</strong> Nenhum dado analítico, métrica de uso, registro de falhas (<em>crash reports</em>) ou identificador de dispositivo é enviado a desenvolvedores ou terceiros.</li>
+            <li>
+              <strong>Subprocessos Restritos ao Ambiente Local:</strong> Os subprocessos invocados pelo BrisaSync restringem-se a ferramentas do sistema operacional hospedeiro:
+              <ul>
+                <li>O motor <code>rclone</code> local (<code>/usr/lib/brisasync/bin/rclone</code>) para transferência de arquivos via HTTPS diretamente com o Google Drive;</li>
+                <li>Ferramentas de cofre da sessão (<code>libsecret</code>, <code>secret-tool</code>, <code>kwallet-query</code> ou chamadas D-Bus do sistema);</li>
+                <li>Gerenciador <code>systemd --user</code> para automação do serviço em segundo plano;</li>
+                <li>Utilitários de notificação (<code>notify-send</code> / FreeDesktop Notifications) e abertura de navegador padrão (<code>xdg-open</code>).</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>3. Armazenamento de Dados na Estação do Usuário</h2>
+          <p>O BrisaSync armazena informações estritamente locais no computador do usuário, necessárias para o funcionamento da aplicação:</p>
+          <ol>
+            <li>
+              <strong>Chaveiro Criptografado da Sessão (<em>System Keyring</em>):</strong>
+              Os tokens de acesso (<em>access token</em>), tokens de renovação (<em>refresh token</em>) e a chave de ofuscação/cifragem da ponte rclone (<code>RCLONE_ENCRYPT_V0:</code>) são gravados com segurança no serviço de cofre ativo do usuário (<strong>GNOME Keyring</strong> ou <strong>KWallet</strong>). O BrisaSync não salva tokens de autenticação em texto puro no disco rígido.
+            </li>
+            <li>
+              <strong>Memória Temporária Cifrada (<code>/dev/shm</code>):</strong>
+              A configuração transitória necessária para a execução pontual dos ciclos do motor rclone é montada em arquivo efêmero em memória volátil (<code>/dev/shm</code>), protegido com permissões restritas de leitura/escrita exclusivas do usuário (<code>0600</code>) e cifrado com a chave da sessão. O arquivo em <code>/dev/shm</code> é sumariamente excluído ao término de cada ciclo de sincronização ou encerramento do processo.
+            </li>
+            <li>
+              <strong>Banco de Dados Local SQLite:</strong>
+              Localizado em <code>~/.local/share/brisasync/brisasync.db</code>. Armazena metadados de configuração dos pares de sincronização (caminho local, caminho no Google Drive, frequência de sincronização), histórico de execuções anteriores, registro de conflitos e lista recente de eventos de sincronização.
+            </li>
+            <li>
+              <strong>Backups e Versões Locais:</strong>
+              Caso o usuário utilize as opções de retenção de versões anteriores para proteger-se de sobreescritas acidentais, os arquivos modificados ou deletados são preservados na pasta de backup local (por padrão em <code>~/.local/share/brisasync/backups/</code> ou local personalizado).
+            </li>
+            <li>
+              <strong>Preferências da Interface:</strong>
+              Localizadas em <code>~/.config/brisasync/settings.json</code>. Armazena opções de interface (tema visual, modo de contraste da bandeja, inicialização minimizada, etc.).
+            </li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>4. Compromisso de Uso Limitado do Google (Limited Use Disclosure)</h2>
+          <p>
+            O BrisaSync cumpre integralmente a Política de Dados do Usuário dos Serviços de API do Google (<em>Google API Services User Data Policy</em>), assumindo o compromisso formal abaixo:
+          </p>
+          <blockquote>
+            <p>
+              O uso e a transferência pelo BrisaSync para qualquer outro aplicativo de informações recebidas das APIs do Google obedecerão à <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer">Política de Dados do Usuário dos Serviços de API do Google</a>, incluindo os requisitos de Uso Limitado (<em>Limited Use</em>).
+            </p>
+          </blockquote>
+          <p>Em consonância com as exigências de Uso Limitado para escopos restritos:</p>
+          <ul>
+            <li><strong>Finalidade Estrita:</strong> O acesso aos dados do Google Drive é utilizado exclusivamente para fornecer a funcionalidade explícita de backup e sincronização de arquivos para a máquina local do usuário.</li>
+            <li><strong>Não Transferência de Dados:</strong> Os dados obtidos das APIs do Google <strong>nunca</strong> são transmitidos a servidores externos, desenvolvedores, empresas parceiras ou serviços terceiros.</li>
+            <li><strong>Não Utilização para Publicidade:</strong> Dados de arquivos e e-mail do usuário <strong>nunca</strong> são usados para veiculação de anúncios, marketing direcionado, rastreamento de perfil ou venda para corretores de dados (<em>data brokers</em>).</li>
+            <li><strong>Não Utilização para Treinamento de Inteligência Artificial:</strong> Os dados de arquivos do usuário <strong>não</strong> são utilizados para treinar modelos de inteligência artificial ou aprendizagem de máquina (<em>machine learning</em>).</li>
+            <li><strong>Sem Acesso Humano aos Dados:</strong> Nenhum ser humano tem acesso aos arquivos do usuário, às credenciais ou aos dados de sincronização. Toda a leitura, gravação e cálculo de diferenças ocorre de forma automatizada e confidencial dentro do dispositivo do próprio usuário.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>5. Controle do Usuário e Exclusão de Dados</h2>
+          <p>O usuário detém controle total sobre suas informações e pode interromper o acesso a qualquer instante:</p>
+          <ul>
+            <li>
+              <strong>Desconectar a Conta pelo Aplicativo:</strong> Ao acessar o menu de opções do BrisaSync e clicar em "Desconectar conta", o aplicativo solicita a revogação do token diretamente aos servidores da Google (<code>https://oauth2.googleapis.com/revoke</code>), apaga os tokens gravados no chaveiro do sistema e destrói quaisquer credenciais ativas em memória.
+            </li>
+            <li>
+              <strong>Revogação pelo Painel de Segurança do Google:</strong> O usuário pode revogar as permissões de acesso do BrisaSync a qualquer momento através do painel de segurança de sua conta Google: <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">https://myaccount.google.com/permissions</a>.
+            </li>
+            <li>
+              <strong>Remoção de Arquivos e Históricos Locais:</strong> Para remover todos os rastros de metadados e bancos de dados locais mantidos na máquina, basta excluir os diretórios:
+              <br><br>
+              <code>rm -rf ~/.local/share/brisasync ~/.config/brisasync</code>
+              <br><br>
+              Os arquivos pessoais mantidos na pasta local sincronizada e no Google Drive continuam íntegros e sob controle total do usuário.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>6. Alterações nesta Política</h2>
+          <p>
+            Por ser um projeto de código aberto, quaisquer alterações futuras nesta Política de Privacidade serão documentadas no histórico do repositório público do projeto e disponibilizadas nas notas de lançamento oficiais.
+          </p>
+        </section>
+
+        <section>
+          <h2>7. Contato e Responsabilidade</h2>
+          <p>Em caso de dúvidas sobre esta Política de Privacidade, solicitações de suporte, questões de segurança ou auditoria do código-fonte:</p>
+          <ul>
+            <li><strong>Desenvolvedor e Mantenedor:</strong> Fábio Agreles Bezerra</li>
+            <li><strong>E-mail de Suporte ao Usuário:</strong> <a href="mailto:fabioagreles@gmail.com">fabioagreles@gmail.com</a></li>
+            <li><strong>Página Oficial:</strong> <a href="https://brisasync.com.br/">https://brisasync.com.br/</a></li>
+            <li><strong>Repositório do Código-Fonte:</strong> <a href="https://github.com/fabio-agreles/BrisaSync" target="_blank" rel="noopener noreferrer">https://github.com/fabio-agreles/BrisaSync</a></li>
+            <li><strong>Licença do Software:</strong> GNU General Public License v3.0 or later (GPL-3.0-or-later)</li>
+          </ul>
+        </section>
+      </div>
+    </article>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+        <p>
+          <a href="/">← Voltar para a página inicial</a> &nbsp;•&nbsp; 
+          <a href="mailto:fabioagreles@gmail.com">Contato: fabioagreles@gmail.com</a>
+        </p>
+        <p class="footer-disclaimer">
+          <strong>Aviso de Independência:</strong> O BrisaSync é um projeto independente de código aberto e não possui vínculo institucional com a Google LLC.
+        </p>
+        <p>
+          © 2026 Fábio Agreles Bezerra. Licenciado sob GPLv3 or later.
+        </p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+

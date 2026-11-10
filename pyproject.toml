@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "brisasync"
+version = "0.1.26"
+description = "BrisaSync — Sincronizador bidirecional Open Source para Linux Desktop (Google Drive <-> Pastas Locais)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "GPL-3.0-or-later"
+authors = [
+    { name = "BrisaSync Contributors" }
+]
+keywords = ["linux", "sync", "google-drive", "rclone", "qt6", "pyside6", "wayland"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: X11 Applications :: Qt",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "PySide6>=6.5",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+brisasync = "brisasync.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"brisasync" = [
+    "resources/*.json",
+    "resources/*.desktop",
+    "resources/systemd/*.service",
+    "resources/oauth/*.json",
+    "resources/icons/*.png",
+    "resources/icons/*.md",
+    "resources/icons/*.txt",
+    "resources/icons/master/*.png",
+    "resources/icons/hicolor/*/*/*.png",
+    "resources/icons/hicolor/*/*/*.svg",
+    "resources/icons/tray/*.png",
+    "resources/icons/tray/*.svg",
+    "resources/icons/arrows/*.svg",
+    "resources/icons/checkbox/*.svg",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+

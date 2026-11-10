@@ -1,0 +1,46 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches and virtual environments
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+.cache/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+packaging/appimage/AppDir/
+packaging/appimage/.tools/
+packaging/windows/dist_win/
+packaging/windows/bin/
+packaging/arch/pkg/
+packaging/arch/src/
+packaging/arch/*.pkg.tar.zst
+packaging/arch/*.tar.gz
+packaging/arch/*.bin
+
+# Databases, state, and locks
+*.db
+*.db-shm
+*.db-wal
+*.lock
+*.lck
+*.lst
+*.lst-new
+*.lst-old
+*.conf
+*.conf.tmp
+*.tmp
+*.token
+
+# Private secrets and dev credentials
+*client_secret*.json
+google_oauth_client.json
+.env
+.env.*

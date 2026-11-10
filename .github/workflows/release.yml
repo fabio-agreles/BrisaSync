@@ -1,0 +1,138 @@
+name: Release Multiplataforma
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-linux:
+    name: Build Pacotes Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar ferramentas do sistema
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rclone libsecret-tools curl
+
+      - name: Instalar UV e compilar Python Wheel & SDist
+        run: |
+          pip install uv
+          mkdir -p dist
+          uv build --no-build-isolation -o dist/
+
+      - name: Construir Pacote Debian amd64 (.deb)
+        run: |
+          chmod +x packaging/deb/build_deb.sh packaging/deb/build_deb.py
+          ./packaging/deb/build_deb.sh
+
+      - name: Construir Pacote AppImage x86_64 (.AppImage)
+        run: |
+          chmod +x packaging/appimage/build_appimage.sh
+          ./packaging/appimage/build_appimage.sh
+
+      - name: Upload dos artefatos Linux
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-artifacts
+          path: |
+            dist/*.deb
+            dist/*.AppImage
+            dist/*.whl
+            dist/*.tar.gz
+
+  build-windows:
+    name: Build Pacotes Windows x64
+    runs-on: windows-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar NSIS via Chocolatey
+        run: |
+          choco install nsis -y
+
+      - name: Instalar dependências de build no Windows
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller PySide6 platformdirs
+
+      - name: Compilar artefatos do Windows
+        run: |
+          python packaging/windows/build_windows.py
+
+      - name: Upload dos artefatos Windows
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-artifacts
+          path: |
+            dist/*-windows-x64.zip
+            dist/*-Setup-x64.exe
+
+  publish:
+    name: Publicar Release no GitHub
+    needs: [build-linux, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Baixar artefatos Linux
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-artifacts
+          path: dist/
+
+      - name: Baixar artefatos Windows
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-artifacts
+          path: dist/
+
+      - name: Gerar SHA256SUMS.txt
+        run: |
+          cd dist
+          rm -f SHA256SUMS.txt
+          sha256sum * > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Publicar Release no GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: true
+          files: dist/*
+          generate_release_notes: true
+          name: BrisaSync ${{ github.ref_name }} (Pre-release)
+          body: |
+            ## BrisaSync ${{ github.ref_name }}
+
+            Sincronizador Google Drive moderno, nativo e eficiente para Linux e Windows.
+
+            > [!IMPORTANT]
+            > **Status de Verificação OAuth do Google**: O processo formal de homologação pública das telas de consentimento do Google está em andamento. Durante a fase de validação, novas contas podem exibir a tela "O Google não verificou este app". O acesso de teste continua disponível normalmente através das opções de desenvolvedor ou chave de cliente própria.
+
+            ### Artefatos Disponíveis:
+            - **Arch Linux / Manjaro**: `.pkg.tar.zst`
+            - **AppImage (Universal Linux)**: `BrisaSync-${{ github.ref_name }}-x86_64.AppImage`
+            - **Debian / Ubuntu / Mint**: `brisasync_${{ github.ref_name }}-1_amd64.deb`
+            - **Windows x64**: `BrisaSync-${{ github.ref_name }}-Setup-x64.exe` (Instalador) e `.zip` (Portátil)
+            - **Python**: `.whl` e `.tar.gz`
+
+            Confira as somas de verificação em `SHA256SUMS.txt`.
