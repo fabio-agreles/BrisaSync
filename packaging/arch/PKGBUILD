@@ -1,10 +1,10 @@
-# Maintainer: BrisaSync Contributors <https://github.com/brisasync/brisasync>
+# Maintainer: Fábio Agreles <fabioagreles@gmail.com>
 pkgname=brisasync
-pkgver=0.1.26
+pkgver=0.1.27
 pkgrel=1
 pkgdesc="Sincronizador bidirecional Open Source para Linux Desktop (Google Drive <-> Pastas Locais)"
 arch=('x86_64')
-url="https://github.com/brisasync/brisasync"
+url="https://github.com/fabio-agreles/BrisaSync"
 license=('GPL-3.0-or-later')
 depends=(
     'python>=3.14'
@@ -26,7 +26,7 @@ source=(
     "LICENSE"
     "THIRD_PARTY_NOTICES.md"
 )
-sha256sums=('d1c74de34f0af5bb0ccd0d6a20f18b03cabae9536d7d8728f0458f080bdee3ca'
+sha256sums=('20b046e3c14177eb2d5048348d709805f9e401caddad63416b411d4c128f5204'
             'ed7ab1f17876bb006c3df3949a3044959671afd9112362dacaa5dd1647735bc1'
             '13ac3bd8cf95ce7616d836958bc74e0e34e7e14b14d74b5f43dc963a334efd98'
             'bb7796a5af0df485a5303ce95d85a3b6ca88d612977c22ae725028e91ad2a22a'

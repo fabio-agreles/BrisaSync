@@ -32,16 +32,15 @@ jobs:
       - name: Instalar dependências Python
         run: |
           python -m pip install --upgrade pip
-          pip install uv
-          uv pip install --system -e .[test] || pip install -e . pytest pytest-qt platformdirs PySide6
+          python -m pip install -e ".[dev]" platformdirs PySide6
 
       - name: Executar testes de compatibilidade multiplataforma
         run: |
-          pytest tests/test_platform_compat.py
+          python -m pytest tests/test_platform_compat.py
 
       - name: Executar suíte de testes de internacionalização e correções
         run: |
-          pytest tests/test_i18n_support.py tests/test_attention_diagnostics_and_precheck.py
+          python -m pytest tests/test_i18n_support.py tests/test_attention_diagnostics_and_precheck.py
 
   test-windows:
     name: Testes Windows
@@ -62,8 +61,9 @@ jobs:
       - name: Instalar dependências Python
         run: |
           python -m pip install --upgrade pip
-          pip install -e . pytest platformdirs PySide6
+          python -m pip install -e ".[dev]" platformdirs PySide6
 
       - name: Executar testes de plataforma no Windows
         run: |
-          pytest tests/test_platform_compat.py tests/test_i18n_support.py
+          python -m pytest tests/test_platform_compat.py tests/test_i18n_support.py
+

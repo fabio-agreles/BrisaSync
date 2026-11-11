@@ -5,20 +5,87 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 DIST_DIR="${REPO_ROOT}/dist"
 APPDIR="${SCRIPT_DIR}/AppDir"
-VERSION="0.1.26"
+BUILD_TMP="${SCRIPT_DIR}/.build_tmp"
+VERSION="0.1.27"
 OUTPUT_APPIMAGE="${DIST_DIR}/BrisaSync-${VERSION}-x86_64.AppImage"
 
-echo "=== 1. Preparando estrutura do AppDir para BrisaSync v${VERSION} ==="
+echo "=== 1. Localizando ambiente de compilação PyInstaller ==="
+PYINSTALLER=""
+if [ -x "${REPO_ROOT}/.venv/bin/pyinstaller" ]; then
+    PYINSTALLER="${REPO_ROOT}/.venv/bin/pyinstaller"
+elif which pyinstaller >/dev/null 2>&1; then
+    PYINSTALLER="$(which pyinstaller)"
+elif python3 -m PyInstaller --version >/dev/null 2>&1; then
+    PYINSTALLER="python3 -m PyInstaller"
+else
+    echo "ERRO: PyInstaller não encontrado. Instale com 'pip install pyinstaller'." >&2
+    exit 1
+fi
+
+echo "Usando PyInstaller: ${PYINSTALLER}"
+
+echo "=== 2. Compilando runtime Python + PySide6/Qt6 standalone para AppImage ==="
+rm -rf "${BUILD_TMP}"
+mkdir -p "${BUILD_TMP}"
+
+${PYINSTALLER} --noconfirm --onedir --name brisasync \
+    --paths "${REPO_ROOT}/src" \
+    --add-data "${REPO_ROOT}/src/brisasync/resources:brisasync/resources" \
+    --add-data "${REPO_ROOT}/src/brisasync/i18n:brisasync/i18n" \
+    --hidden-import "brisasync" \
+    --hidden-import "brisasync.platform_compat" \
+    --hidden-import "brisasync.credentials.oauth_google" \
+    --hidden-import "brisasync.credentials.rclone_bridge" \
+    --hidden-import "brisasync.credentials.store" \
+    --hidden-import "brisasync.service.daemon" \
+    --hidden-import "brisasync.service.ipc_client" \
+    --hidden-import "brisasync.service.autostart" \
+    --hidden-import "brisasync.orchestrator.sync_coordinator" \
+    --hidden-import "brisasync.orchestrator.diagnostics" \
+    --hidden-import "brisasync.backend.rclone_engine" \
+    --hidden-import "brisasync.storage.database" \
+    --hidden-import "brisasync.ui.main_window" \
+    --hidden-import "brisasync.ui.tray" \
+    --hidden-import "brisasync.ui.single_instance" \
+    --hidden-import "PySide6.QtCore" \
+    --hidden-import "PySide6.QtGui" \
+    --hidden-import "PySide6.QtWidgets" \
+    --hidden-import "PySide6.QtSvg" \
+    --hidden-import "PySide6.QtDBus" \
+    --hidden-import "PySide6.QtNetwork" \
+    --exclude-module "PySide6.QtWebEngine" \
+    --exclude-module "PySide6.QtWebEngineCore" \
+    --exclude-module "PySide6.QtWebEngineWidgets" \
+    --exclude-module "PySide6.QtQuick3D" \
+    --exclude-module "PySide6.Qt3DCore" \
+    --exclude-module "PySide6.Qt3DAnimation" \
+    --exclude-module "PySide6.Qt3DRender" \
+    --exclude-module "PySide6.QtSensors" \
+    --exclude-module "PySide6.QtMultimedia" \
+    --exclude-module "PySide6.QtMultimediaWidgets" \
+    --exclude-module "PySide6.QtPositioning" \
+    --exclude-module "PySide6.QtLocation" \
+    --exclude-module "PySide6.QtCharts" \
+    --exclude-module "PySide6.QtBluetooth" \
+    --exclude-module "PySide6.QtNfc" \
+    --exclude-module "PySide6.QtSpatialAudio" \
+    --exclude-module "PySide6.QtSerialPort" \
+    --exclude-module "PySide6.QtSerialBus" \
+    --exclude-module "PySide6.QtTest" \
+    --distpath "${BUILD_TMP}/dist" \
+    --workpath "${BUILD_TMP}/build" \
+    "${REPO_ROOT}/src/brisasync/main.py"
+
+echo "=== 3. Preparando estrutura do AppDir para BrisaSync v${VERSION} ==="
 rm -rf "${APPDIR}"
 mkdir -p "${APPDIR}/usr/bin"
 mkdir -p "${APPDIR}/usr/lib/brisasync/bin"
-mkdir -p "${APPDIR}/usr/lib/brisasync/src"
 mkdir -p "${APPDIR}/usr/share/applications"
 mkdir -p "${APPDIR}/usr/share/icons/hicolor/scalable/apps"
 mkdir -p "${APPDIR}/usr/share/icons/hicolor/512x512/apps"
 
-# 1. Copiar código-fonte da aplicação
-cp -a "${REPO_ROOT}/src/brisasync" "${APPDIR}/usr/lib/brisasync/src/"
+# 1. Copiar a pasta standalone gerada pelo PyInstaller
+cp -a "${BUILD_TMP}/dist/brisasync/." "${APPDIR}/usr/lib/brisasync/"
 
 # 2. Copiar binário rclone
 RCLONE_SRC="${HOME}/.local/bin/rclone"
@@ -30,15 +97,19 @@ if [ -z "${RCLONE_SRC}" ] || [ ! -x "${RCLONE_SRC}" ]; then
     exit 1
 fi
 cp -f "${RCLONE_SRC}" "${APPDIR}/usr/lib/brisasync/bin/rclone"
-chmod +x "${APPDIR}/usr/lib/brisasync/bin/rclone"
+cp -f "${RCLONE_SRC}" "${APPDIR}/usr/bin/rclone"
+chmod +x "${APPDIR}/usr/lib/brisasync/bin/rclone" "${APPDIR}/usr/bin/rclone"
 
-# 3. Criar lançador interno /usr/bin/brisasync
+# 3. Criar executável no PATH padrão do AppDir
 cat > "${APPDIR}/usr/bin/brisasync" << 'EOF'
 #!/usr/bin/env sh
 HERE="$(dirname "$(readlink -f "${0}")")/.."
-export PYTHONPATH="${HERE}/lib/brisasync/src${PYTHONPATH:+:$PYTHONPATH}"
-export PATH="${HERE}/lib/brisasync/bin:${PATH}"
-exec /usr/bin/python3 -m brisasync.main "$@"
+export APPDIR="${HERE}"
+export PATH="${HERE}/bin:${HERE}/lib/brisasync/bin:${PATH}"
+export LD_LIBRARY_PATH="${HERE}/lib/brisasync/_internal:${HERE}/lib:${LD_LIBRARY_PATH:-}"
+export QT_PLUGIN_PATH="${HERE}/lib/brisasync/_internal/PySide6/Qt/plugins:${QT_PLUGIN_PATH:-}"
+export XDG_DATA_DIRS="${HERE}/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+exec "${HERE}/lib/brisasync/brisasync" "$@"
 EOF
 chmod +x "${APPDIR}/usr/bin/brisasync"
 
@@ -48,17 +119,11 @@ cat > "${APPDIR}/AppRun" << 'EOF'
 HERE="$(dirname "$(readlink -f "${0}")")"
 export APPDIR="${HERE}"
 export PATH="${HERE}/usr/bin:${HERE}/usr/lib/brisasync/bin:${PATH}"
-export PYTHONPATH="${HERE}/usr/lib/brisasync/src${PYTHONPATH:+:$PYTHONPATH}"
+export LD_LIBRARY_PATH="${HERE}/usr/lib/brisasync/_internal:${HERE}/usr/lib:${LD_LIBRARY_PATH:-}"
+export QT_PLUGIN_PATH="${HERE}/usr/lib/brisasync/_internal/PySide6/Qt/plugins:${QT_PLUGIN_PATH:-}"
 export XDG_DATA_DIRS="${HERE}/usr/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
 
-# Se Python local do sistema existir, usa; caso contrário, executa python3 disponível
-PYTHON_BIN="$(which python3 || echo "/usr/bin/python3")"
-if [ ! -x "${PYTHON_BIN}" ]; then
-    echo "ERRO: Python 3 não foi localizado no sistema hospedeiro." >&2
-    exit 1
-fi
-
-exec "${PYTHON_BIN}" -m brisasync.main "$@"
+exec "${HERE}/usr/lib/brisasync/brisasync" "$@"
 EOF
 chmod +x "${APPDIR}/AppRun"
 
@@ -78,7 +143,10 @@ if [ -f "${ICON_256}" ]; then
     cp -f "${ICON_256}" "${APPDIR}/.DirIcon"
 fi
 
-echo "=== 2. Construindo AppImage ==="
+# Limpeza temporária
+rm -rf "${BUILD_TMP}"
+
+echo "=== 4. Construindo AppImage ==="
 TOOL_PATH="$(which appimagetool || true)"
 
 if [ -z "${TOOL_PATH}" ]; then
@@ -96,10 +164,10 @@ fi
 
 mkdir -p "${DIST_DIR}"
 
-# Executa appimagetool (usando --appimage-extract-and-run se for um AppImage)
+# Executa appimagetool
 echo "Executando appimagetool..."
 ARCH=x86_64 "${TOOL_PATH}" --appimage-extract-and-run "${APPDIR}" "${OUTPUT_APPIMAGE}" || \
 ARCH=x86_64 "${TOOL_PATH}" "${APPDIR}" "${OUTPUT_APPIMAGE}"
 
-echo "✓ AppImage gerado com sucesso em: ${OUTPUT_APPIMAGE}"
+echo "[OK] AppImage gerado com sucesso em: ${OUTPUT_APPIMAGE}"
 ls -lh "${OUTPUT_APPIMAGE}"

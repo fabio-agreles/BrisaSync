@@ -52,6 +52,7 @@ import tempfile
 from typing import Iterator
 
 from brisasync.backend.rclone_engine import resolve_rclone_binary
+from brisasync.platform_compat import is_windows
 from .oauth_google import GoogleOAuthDesktopClient, OAuthClientConfig
 from .store import (
     CredentialStore,
@@ -299,10 +300,10 @@ class RcloneEncryptedBridge:
                     finally:
                         os.close(fd_ram)
 
-                    pwd_cmd = (
-                        f"{sys.executable} -c "
-                        "\"import os; print(os.environ['BRISASYNC_INTERNAL_CFG_KEY'])\""
-                    )
+                    if is_windows():
+                        pwd_cmd = "cmd.exe /c echo %BRISASYNC_INTERNAL_CFG_KEY%"
+                    else:
+                        pwd_cmd = "sh -c 'printf \"%s\" \"$BRISASYNC_INTERNAL_CFG_KEY\"'"
                     env = {
                         **os.environ,
                         "RCLONE_CONFIG": str(ram_cfg_path),

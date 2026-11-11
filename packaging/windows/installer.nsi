@@ -6,7 +6,7 @@
 
 ; Definições Gerais
 !define PRODUCT_NAME "BrisaSync"
-!define PRODUCT_VERSION "0.1.26"
+!define PRODUCT_VERSION "0.1.27"
 !define PRODUCT_PUBLISHER "Fábio Agreles"
 !define PRODUCT_WEB_SITE "https://brisasync.com.br/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\brisasync.exe"
@@ -92,3 +92,4 @@ Section "Uninstall"
   ; O desinstalador PRESERVA ESTRITAMENTE os dados do usuário em %APPDATA%\BrisaSync
   ; e todas as pastas e arquivos sincronizados no disco local.
 SectionEnd
+

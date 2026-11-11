@@ -20,7 +20,7 @@ import sys
 import tarfile
 import time
 
-VERSION = "0.1.26"
+VERSION = "0.1.27"
 PKG_REL = "1"
 ARCH = "amd64"
 PACKAGE_NAME = "brisasync"
@@ -63,7 +63,7 @@ Priority: optional
 Architecture: {ARCH}
 Maintainer: Fábio Agreles <fabioagreles@gmail.com>
 Installed-Size: {installed_size_kb}
-Depends: python3 (>= 3.11), python3-pyside6 | python3-pyqt6, libsecret-tools | kwalletcli, ca-certificates
+Depends: python3 (>= 3.11), python3-pyside6, libsecret-tools | kwalletcli, ca-certificates
 Recommends: systemd
 Homepage: https://brisasync.com.br/
 Description: Modern, native, and efficient Google Drive synchronizer

@@ -33,9 +33,11 @@ from brisasync.service.autostart import (
 
 def test_file_locking_exclusive_and_non_blocking() -> None:
     """Valida o funcionamento cross-platform de lock_file e unlock_file."""
-    with tempfile.NamedTemporaryFile() as tf:
-        fd1 = os.open(tf.name, os.O_RDWR)
-        fd2 = os.open(tf.name, os.O_RDWR)
+    with tempfile.TemporaryDirectory() as td:
+        lock_file_path = Path(td) / "test_exclusive.lock"
+        lock_file_path.touch()
+        fd1 = os.open(str(lock_file_path), os.O_RDWR)
+        fd2 = os.open(str(lock_file_path), os.O_RDWR)
         try:
             lock_file(fd1, exclusive=True, non_blocking=True)
             # Segunda tentativa não bloqueante deve falhar com BlockingIOError

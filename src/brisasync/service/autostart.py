@@ -82,6 +82,13 @@ class SystemdUserAutostartManager:
         if self.service_executable:
             return self.service_executable
 
+        appimage = os.environ.get("APPIMAGE")
+        if appimage and Path(appimage).is_file():
+            return appimage
+
+        if getattr(sys, "frozen", False):
+            return sys.executable
+
         if self._is_installed_package_layout():
             candidates = (
                 Path(sys.prefix) / "bin" / "brisasync",
@@ -297,6 +304,13 @@ class XDGAutostartManager:
     def _resolve_installed_binary(self) -> str | None:
         if self.service_executable:
             return self.service_executable
+
+        appimage = os.environ.get("APPIMAGE")
+        if appimage and Path(appimage).is_file():
+            return appimage
+
+        if getattr(sys, "frozen", False):
+            return sys.executable
 
         if self._is_installed_package_layout():
             candidates = (

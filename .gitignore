@@ -15,8 +15,10 @@ htmlcov/
 build/
 dist/
 *.egg-info/
+*.spec
 packaging/appimage/AppDir/
 packaging/appimage/.tools/
+packaging/appimage/.build_tmp/
 packaging/windows/dist_win/
 packaging/windows/bin/
 packaging/arch/pkg/

@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-VERSION="0.1.26"
+VERSION="0.1.27"
 OAUTH_CLIENT_SRC="${BRISASYNC_DIST_OAUTH_CLIENT_JSON:-}"
 
 while [[ $# -gt 0 ]]; do
@@ -106,12 +106,20 @@ python3 "${REPO_ROOT}/packaging/deb/build_deb.py"
 echo "=== 7. Construindo pacote AppImage x86_64 (.AppImage) ==="
 "${REPO_ROOT}/packaging/appimage/build_appimage.sh"
 
-echo "=== 8. Atualizando somas de verificação SHA-256 oficiais em dist/SHA256SUMS.txt ==="
+echo "=== 8. Atualizando somas de verificação SHA-256 específicas da release em dist/SHA256SUMS.txt ==="
 cd "${REPO_ROOT}/dist"
-# Gera checksum de todos os artefatos preservando os históricos
+# Gera checksum específico para os anexos da release atual
 rm -f SHA256SUMS.txt
-sha256sum * > SHA256SUMS.txt
-echo "✓ SHA256SUMS.txt atualizado com sucesso."
+sha256sum \
+    "brisasync-${VERSION}-1-x86_64.pkg.tar.zst" \
+    "brisasync-${VERSION}-2-x86_64.pkg.tar.zst" \
+    "brisasync_${VERSION}-1_amd64.deb" \
+    "BrisaSync-${VERSION}-x86_64.AppImage" \
+    "brisasync-${VERSION}-py3-none-any.whl" \
+    "brisasync-${VERSION}.tar.gz" > SHA256SUMS.txt
+cp -f SHA256SUMS.txt "SHA256SUMS-${VERSION}.txt"
+echo "✓ SHA256SUMS.txt específico da v${VERSION} atualizado com sucesso:"
+cat SHA256SUMS.txt
 
 echo "=== 9. Resumo dos artefatos em dist/ ==="
 ls -lh "${REPO_ROOT}/dist"

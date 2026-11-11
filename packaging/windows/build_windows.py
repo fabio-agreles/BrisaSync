@@ -19,7 +19,15 @@ import sys
 import urllib.request
 import zipfile
 
-VERSION = "0.1.26"
+# Garantir saída UTF-8 no console Windows
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+VERSION = "0.1.27"
 RCLONE_VERSION = "v1.75.2"
 RCLONE_URL = f"https://github.com/rclone/rclone/releases/download/{RCLONE_VERSION}/rclone-{RCLONE_VERSION}-windows-amd64.zip"
 
@@ -47,7 +55,7 @@ def ensure_rclone_exe(dest_dir: Path) -> Path:
     if not rclone_exe.is_file():
         raise FileNotFoundError("Não foi possível extrair rclone.exe do arquivo baixado.")
 
-    print(f"✓ rclone.exe pronto em: {rclone_exe}")
+    print(f"[OK] rclone.exe pronto em: {rclone_exe}")
     return rclone_exe
 
 
@@ -109,23 +117,36 @@ def main() -> int:
                 full_p = Path(root) / f
                 rel_p = full_p.relative_to(build_dir)
                 z.write(full_p, f"BrisaSync/{rel_p}")
-    print(f"✓ Pacote portátil gerado: {zip_path}")
+    print(f"[OK] Pacote portátil gerado: {zip_path}")
 
     # 3. Compila instalador NSIS se makensis estiver instalado
     makensis = shutil.which("makensis")
+    if not makensis:
+        for candidate in [
+            Path(os.environ.get("PROGRAMFILES", "C:\\Program Files")) / "NSIS" / "makensis.exe",
+            Path(os.environ.get("PROGRAMFILES(X86)", "C:\\Program Files (x86)")) / "NSIS" / "makensis.exe",
+            Path(r"C:\Program Files (x86)\NSIS\makensis.exe"),
+            Path(r"C:\Program Files\NSIS\makensis.exe"),
+        ]:
+            if candidate.is_file():
+                makensis = str(candidate)
+                break
+
     if makensis:
-        print("Compilando instalador NSIS...")
+        print(f"Compilando instalador NSIS com {makensis}...")
         nsis_script = script_dir / "installer.nsi"
         res_nsis = subprocess.run([makensis, str(nsis_script)], check=False)
         if res_nsis.returncode == 0:
-            print("✓ Instalador NSIS gerado com sucesso em dist/")
+            print("[OK] Instalador NSIS gerado com sucesso em dist/")
         else:
-            print("Aviso: Falha ao compilar instalador NSIS.", file=sys.stderr)
+            print(f"ERRO: Falha ao compilar instalador NSIS (código {res_nsis.returncode}).", file=sys.stderr)
+            return res_nsis.returncode
     else:
-        print("makensis não encontrado no sistema. O instalador .exe será compilado no GitHub Actions.")
+        print("makensis não encontrado no sistema. O instalador .exe requer NSIS instalado.")
 
     return 0
 
 
 if __name__ == "__main__":
     sys.exit(main())
+

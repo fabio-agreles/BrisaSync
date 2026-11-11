@@ -23,6 +23,7 @@ finish-args:
   # D-Bus e Notificações do Sistema
   - --talk-name=org.freedesktop.secrets
   - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.portal.Background
   - --talk-name=org.kde.StatusNotifierWatcher
   - --own-name=org.brisasync.BrisaSync
 
@@ -40,7 +41,7 @@ modules:
   - name: python3-dependencies
     buildsystem: simple
     build-commands:
-      - pip3 install --no-index --find-links="file://${PWD}" --prefix=/app PySide6 platformdirs || true
+      - pip3 install --no-build-isolation --prefix=/app PySide6 platformdirs
     # Em builds offline/sandboxed, pacotes wheel ou runtime KDE fornecem bibliotecas Qt6
 
   - name: brisasync
@@ -60,3 +61,4 @@ modules:
     sources:
       - type: dir
         path: ../..
+

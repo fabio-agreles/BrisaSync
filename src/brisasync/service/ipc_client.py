@@ -113,14 +113,22 @@ class ServiceIPCClient:
             except ServiceUnavailableError:
                 pass
 
-            cmd = [
-                sys.executable,
-                "-m",
-                "brisasync.main",
-                "--service",
-                "--socket-path",
-                str(self.socket_path),
-            ]
+            if getattr(sys, "frozen", False):
+                cmd = [
+                    sys.executable,
+                    "--service",
+                    "--socket-path",
+                    str(self.socket_path),
+                ]
+            else:
+                cmd = [
+                    sys.executable,
+                    "-m",
+                    "brisasync.main",
+                    "--service",
+                    "--socket-path",
+                    str(self.socket_path),
+                ]
             if self.db_path is not None:
                 cmd.extend(["--db-path", str(self.db_path)])
 

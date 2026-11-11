@@ -2,5 +2,5 @@
 
 __app_name__ = "BrisaSync"
 __app_id__ = "brisasync"
-__version__ = "0.1.26"
+__version__ = "0.1.27"
 

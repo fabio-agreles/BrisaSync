@@ -32,11 +32,11 @@ Available in **English** and **Português (Brasil)**. Para a versão em portugu�
 
 | Platform / Format | Status | Package / Delivery | Notes |
 | :--- | :---: | :--- | :--- |
-| **Arch / Manjaro / BigLinux** | **Verified** | `.pkg.tar.zst` (ALPM) | Native package with bundled `rclone` binary and `systemd --user` service. |
-| **Debian / Ubuntu / Mint** | **Verified** | `brisasync_0.1.26-1_amd64.deb` | Standard `.deb` package with desktop integration and icon themes. |
-| **AppImage (Universal Linux)** | **Verified** | `BrisaSync-0.1.26-x86_64.AppImage` | Relocatable standalone package with embedded runtime and `rclone`. |
-| **Windows 10/11 x64** | **Verified** | `BrisaSync-0.1.26-Setup-x64.exe` & `.zip` | Native NSIS installer and portable bundle with Windows Credential Manager. |
-| **Flatpak** | **Pending** | `packaging/flatpak/org.brisasync.BrisaSync.yml` | Requires `--filesystem=home` due to background folder daemon requirements. |
+| **Arch / Manjaro / BigLinux** | **Verified** | `brisasync-0.1.27-1-x86_64.pkg.tar.zst` | Native package with bundled `rclone` binary and `systemd --user` service. |
+| **Debian / Ubuntu / Mint** | **Verified** | `brisasync_0.1.27-1_amd64.deb` | Standard `.deb` package targeting Ubuntu 24.04+ / Debian 13+ with native `python3-pyside6`. |
+| **AppImage (Universal Linux)** | **Verified** | `BrisaSync-0.1.27-x86_64.AppImage` | Truly standalone, relocatable bundle with embedded Python runtime, PySide6/Qt6, and `rclone`. |
+| **Windows 10/11 x64** | **Verified** | `BrisaSync-0.1.27-Setup-x64.exe` & `.zip` | Native NSIS installer and portable bundle with Windows Credential Manager. |
+| **Flatpak** | **Pending** | `packaging/flatpak/org.brisasync.BrisaSync.yml` | Requires `--filesystem=home` and background portal; offline dependency bundle pending. |
 
 ---
 
@@ -47,32 +47,37 @@ Available in **English** and **Português (Brasil)**. Para a versão em portugu�
 Download the package from [Releases](https://github.com/fabio-agreles/BrisaSync/releases) and install via `pacman`:
 
 ```bash
-sudo pacman -U brisasync-0.1.26-1-x86_64.pkg.tar.zst
+sudo pacman -U brisasync-0.1.27-1-x86_64.pkg.tar.zst
 ```
 
 To update from an existing installation:
 ```bash
 systemctl --user stop brisasync.service || true
-sudo pacman -U brisasync-0.1.26-2-x86_64.pkg.tar.zst
+sudo pacman -U brisasync-0.1.27-2-x86_64.pkg.tar.zst
 ```
 
 ### 2. Debian / Ubuntu / Linux Mint (`.deb`)
 
+> [!NOTE]
+> The native `.deb` package targets systems with official `python3-pyside6` in APT repositories (Ubuntu 24.04+ Noble and Debian 13+ Trixie). For Debian 12 (Bookworm) and Ubuntu 22.04 LTS (Jammy), use the **Universal AppImage** below.
+
 ```bash
 sudo apt-get update
-sudo apt-get install ./brisasync_0.1.26-1_amd64.deb
+sudo apt-get install ./brisasync_0.1.27-1_amd64.deb
 ```
 
 ### 3. AppImage (Universal Linux x86_64)
 
+The AppImage is fully standalone and bundles its own Python runtime, PySide6, Qt6 platform plugins, and `rclone`:
+
 ```bash
-chmod +x BrisaSync-0.1.26-x86_64.AppImage
-./BrisaSync-0.1.26-x86_64.AppImage
+chmod +x BrisaSync-0.1.27-x86_64.AppImage
+./BrisaSync-0.1.27-x86_64.AppImage
 ```
 
 ### 4. Windows 10 & 11 (64-bit)
 
-Download `BrisaSync-0.1.26-Setup-x64.exe` and run the installer. The installer runs at the user level into `%LOCALAPPDATA%\Programs\BrisaSync` without requiring administrator privileges.
+Download `BrisaSync-0.1.27-Setup-x64.exe` and run the installer. The installer runs at the user level into `%LOCALAPPDATA%\Programs\BrisaSync` without requiring administrator privileges.
 
 > [!TIP]
 > **Windows SmartScreen Note**: As an independent free software project without a commercial EV code signing certificate, Windows SmartScreen may display an "Unrecognized app" prompt on initial launch. Click **"More info"** and **"Run anyway"** to proceed. You can verify SHA-256 hashes against `SHA256SUMS.txt`.
