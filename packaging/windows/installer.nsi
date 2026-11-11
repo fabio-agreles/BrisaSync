@@ -22,8 +22,8 @@ RequestExecutionLevel user
 
 ; Configurações da Interface Modern UI (MUI2)
 !define MUI_ABORTWARNING
-!define MUI_ICON "..\..\src\brisasync\resources\icons\hicolor\256x256\apps\brisasync.png"
-!define MUI_UNICON "..\..\src\brisasync\resources\icons\hicolor\256x256\apps\brisasync.png"
+!define MUI_ICON "brisasync.ico"
+!define MUI_UNICON "brisasync.ico"
 
 ; Páginas do Instalador
 !insertmacro MUI_PAGE_WELCOME

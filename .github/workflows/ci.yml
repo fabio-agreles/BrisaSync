@@ -27,7 +27,7 @@ jobs:
       - name: Instalar dependências de sistema (Linux)
         run: |
           sudo apt-get update
-          sudo apt-get install -y rclone libsecret-1-dev libsecret-tools bubblewrap
+          sudo apt-get install -y rclone libsecret-1-dev libsecret-tools bubblewrap libegl1 libgl1 libxkbcommon-x11-0 libdbus-1-3 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xfixes0 libxcb-sync1 libxcb-xinerama0
 
       - name: Instalar dependências Python
         run: |
@@ -35,10 +35,14 @@ jobs:
           python -m pip install -e ".[dev]" platformdirs PySide6
 
       - name: Executar testes de compatibilidade multiplataforma
+        env:
+          QT_QPA_PLATFORM: offscreen
         run: |
           python -m pytest tests/test_platform_compat.py
 
       - name: Executar suíte de testes de internacionalização e correções
+        env:
+          QT_QPA_PLATFORM: offscreen
         run: |
           python -m pytest tests/test_i18n_support.py tests/test_attention_diagnostics_and_precheck.py
 

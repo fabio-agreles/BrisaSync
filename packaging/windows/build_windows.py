@@ -92,8 +92,10 @@ def main() -> int:
         f"{rclone_bin}{os.pathsep}.",
         "--distpath",
         str(script_dir),
-        str(entrypoint),
     ]
+    if icon_ico.is_file():
+        pyinstaller_cmd.extend(["--icon", str(icon_ico)])
+    pyinstaller_cmd.append(str(entrypoint))
 
     print("Executando PyInstaller...")
     res = subprocess.run(pyinstaller_cmd, check=False)
