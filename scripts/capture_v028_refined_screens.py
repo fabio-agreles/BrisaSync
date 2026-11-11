@@ -131,6 +131,9 @@ def main() -> None:
         enable_tray=False,
         allow_notify_send=False,
     )
+    # Garante materialização da configuração rclone para simular estado READY completo
+    win.bridge.config_path.parent.mkdir(parents=True, exist_ok=True)
+    win.bridge.config_path.write_text("RCLONE_ENCRYPT_V0:demo-config\n")
     win.show()
     app.processEvents()
 
@@ -232,10 +235,12 @@ def main() -> None:
         enable_tray=False,
         allow_notify_send=False,
     )
+    if win_unconf.bridge.config_path.exists():
+        win_unconf.bridge.config_path.unlink()
     win_unconf.show()
     app.processEvents()
 
-    # 7. Unconfigured Light (1055x790) - Comprova contraste legível do título, subtítulo e botão Ajuda
+    # 7. Visão Geral Sem Conta e Sem Par no tema Claro (1055x790) - Comprova legibilidade do banner
     db_unconf.set_theme_preference("light")
     set_active_theme_preference("light")
     win_unconf.apply_theme()
@@ -244,7 +249,10 @@ def main() -> None:
     win_unconf._apply_responsive_layout(1055)
     win_unconf.set_current_page(0)
     app.processEvents()
-    capture_widget(win_unconf, artifact_dir / "brisasync_v0.1.28_unconfigured_light.png")
+    out_vg_sem_conta = website_img_dir / "visao-geral-sem-conta-claro.png"
+    capture_widget(win_unconf, out_vg_sem_conta)
+    shutil.copy2(out_vg_sem_conta, artifact_dir / "brisasync_v0.1.28_visao-geral-sem-conta-claro.png")
+    shutil.copy2(out_vg_sem_conta, artifact_dir / "brisasync_v0.1.28_unconfigured_light.png")
 
     # 8. Unconfigured Dark (1055x790)
     db_unconf.set_theme_preference("dark")

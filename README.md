@@ -12,6 +12,17 @@ Available in **English** and **Português (Brasil)**. Para a versão em portugu�
 > [!NOTE]
 > **Independence Notice**: BrisaSync is an independent open-source community project and is **not** affiliated with, endorsed by, or an official product of Google LLC. "Google", "Google Drive", and related marks are registered trademarks of Google LLC.
 
+<p align="center">
+  <img src="website/assets/images/visao-geral-claro.png" alt="BrisaSync Overview Screen" width="780">
+</p>
+
+<details>
+<summary><b>View Initial Onboarding (No Account Connected)</b></summary>
+<p align="center">
+  <img src="website/assets/images/visao-geral-sem-conta-claro.png" alt="BrisaSync Initial Setup - No Account" width="780">
+</p>
+</details>
+
 ---
 
 ## Highlights & Features

@@ -2316,6 +2316,9 @@ class BrisaMainWindow(QMainWindow):
             return "NOT_CONNECTED", None, "Nenhuma conta Google conectada."
 
         if not self.bridge.config_path.is_file():
+            # Se o daemon já estiver ativo com par pronto confirmado por snapshot, a configuração rclone está operando
+            if getattr(self, "_last_snapshot", None) and self._last_snapshot.configured_pair_ready:
+                return "READY", creds, f"Conta conectada ({creds.account_email}) e daemon operacional."
             return (
                 "CONFIG_PENDING",
                 creds,
@@ -3262,7 +3265,8 @@ class BrisaMainWindow(QMainWindow):
             elided = _format_elided_email(account_email, max_email_chars)
             self.header_account_badge.setText(f"● {elided}")
             self.header_account_badge.setToolTip(f"Conta conectada: {account_email}")
-            self.header_account_badge.setStyleSheet("color: #9189FF; font-weight: bold;")
+            accent_col = "#9189FF" if is_dark_mode() else "#6355DE"
+            self.header_account_badge.setStyleSheet(f"color: {accent_col}; font-weight: bold;")
         elif state == "CONFIG_PENDING" and account_email:
             elided = _format_elided_email(account_email, max_email_chars)
             self.header_account_badge.setText(f"○ {elided} {tr('header_account_pending_suffix')}")

@@ -12,6 +12,17 @@ Para a versão em inglês deste documento, consulte o [README.md](README.md).
 > [!NOTE]
 > **Aviso de Independência**: O BrisaSync é um projeto comunitário independente de código aberto e **não** é um produto oficial ou afiliado à Google LLC. "Google", "Google Drive" e marcas associadas são marcas comerciais registradas de propriedade da Google LLC.
 
+<p align="center">
+  <img src="website/assets/images/visao-geral-claro.png" alt="Interface Principal do BrisaSync - Visão Geral" width="780">
+</p>
+
+<details>
+<summary><b>Visualizar Assistente Inicial (Sem Conta Conectada)</b></summary>
+<p align="center">
+  <img src="website/assets/images/visao-geral-sem-conta-claro.png" alt="Assistente Inicial do BrisaSync - Sem Conta" width="780">
+</p>
+</details>
+
 ---
 
 ## Destaques e Funcionalidades
