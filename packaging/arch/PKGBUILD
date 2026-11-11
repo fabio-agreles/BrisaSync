@@ -26,7 +26,7 @@ source=(
     "LICENSE"
     "THIRD_PARTY_NOTICES.md"
 )
-sha256sums=('61cb3d66b8e8d09cf70a5c233b82b85c4e6a82d647a214ca9e5a9071d7974ab9'
+sha256sums=('d1c74de34f0af5bb0ccd0d6a20f18b03cabae9536d7d8728f0458f080bdee3ca'
             'ed7ab1f17876bb006c3df3949a3044959671afd9112362dacaa5dd1647735bc1'
             '13ac3bd8cf95ce7616d836958bc74e0e34e7e14b14d74b5f43dc963a334efd98'
             'bb7796a5af0df485a5303ce95d85a3b6ca88d612977c22ae725028e91ad2a22a'
