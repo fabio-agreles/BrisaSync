@@ -27,7 +27,7 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-VERSION = "0.1.27"
+VERSION = "0.1.28"
 RCLONE_VERSION = "v1.75.2"
 RCLONE_URL = f"https://github.com/rclone/rclone/releases/download/{RCLONE_VERSION}/rclone-{RCLONE_VERSION}-windows-amd64.zip"
 

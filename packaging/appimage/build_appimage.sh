@@ -6,7 +6,7 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 DIST_DIR="${REPO_ROOT}/dist"
 APPDIR="${SCRIPT_DIR}/AppDir"
 BUILD_TMP="${SCRIPT_DIR}/.build_tmp"
-VERSION="0.1.27"
+VERSION="0.1.28"
 OUTPUT_APPIMAGE="${DIST_DIR}/BrisaSync-${VERSION}-x86_64.AppImage"
 
 echo "=== 1. Localizando ambiente de compilação PyInstaller ==="

@@ -6,7 +6,7 @@
 
 ; Definições Gerais
 !define PRODUCT_NAME "BrisaSync"
-!define PRODUCT_VERSION "0.1.27"
+!define PRODUCT_VERSION "0.1.28"
 !define PRODUCT_PUBLISHER "Fábio Agreles"
 !define PRODUCT_WEB_SITE "https://brisasync.com.br/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\brisasync.exe"

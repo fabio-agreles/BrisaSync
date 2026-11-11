@@ -20,7 +20,7 @@ import sys
 import tarfile
 import time
 
-VERSION = "0.1.27"
+VERSION = "0.1.28"
 PKG_REL = "1"
 ARCH = "amd64"
 PACKAGE_NAME = "brisasync"

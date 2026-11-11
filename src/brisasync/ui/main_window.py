@@ -1168,6 +1168,7 @@ class BrisaMainWindow(QMainWindow):
         is_dark = is_dark_mode()
         btn_icon_color = "#F0F4F8" if is_dark else "#475569"
         sec_icon_color = "#8B949E" if is_dark else "#64748B"
+        accent_color = "#9189FF" if is_dark else "#6355DE"
 
         if hasattr(self, "overview_verify_again_btn"):
             self.overview_verify_again_btn.setIcon(get_vector_icon("sync", 14, btn_icon_color))
@@ -1187,6 +1188,14 @@ class BrisaMainWindow(QMainWindow):
             self.sidebar_diag_btn.setIcon(get_vector_icon("info", 14, sec_icon_color))
         if hasattr(self, "sidebar_about_btn"):
             self.sidebar_about_btn.setIcon(get_vector_icon("info", 14, sec_icon_color))
+        if hasattr(self, "overview_account_drv_ic") and self.overview_account_drv_ic is not None:
+            self.overview_account_drv_ic.setPixmap(render_vector_pixmap("google_drive", 24, accent_color))
+        if hasattr(self, "settings_account_drv_ic") and self.settings_account_drv_ic is not None:
+            self.settings_account_drv_ic.setPixmap(render_vector_pixmap("google_drive", 24, accent_color))
+        if hasattr(self, "overview_folder_ic") and self.overview_folder_ic is not None:
+            self.overview_folder_ic.setPixmap(render_vector_pixmap("folder", 24, accent_color))
+        if hasattr(self, "folders_card_icon_lbl") and self.folders_card_icon_lbl is not None:
+            self.folders_card_icon_lbl.setPixmap(render_vector_pixmap("folder", 28, accent_color))
 
     def _on_system_color_scheme_changed(self) -> None:
         # Se a preferência salva for manual ("light" ou "dark"), mantém estável e ignora alterações do desktop
@@ -1622,9 +1631,9 @@ class BrisaMainWindow(QMainWindow):
         text_vbox = QVBoxLayout()
         text_vbox.setSpacing(2)
         self.hero_title_label = QLabel("Tudo em dia", self.hero_banner)
-        self.hero_title_label.setStyleSheet("color: #FFFFFF; font-size: 19px; font-weight: bold;")
+        self.hero_title_label.setObjectName("heroTitle")
         self.hero_subtitle_label = QLabel("Última verificação há 1 min", self.hero_banner)
-        self.hero_subtitle_label.setStyleSheet("color: rgba(255, 255, 255, 0.85); font-size: 12px;")
+        self.hero_subtitle_label.setObjectName("heroSubtitle")
         text_vbox.addWidget(self.hero_title_label)
         text_vbox.addWidget(self.hero_subtitle_label)
 
@@ -1655,37 +1664,39 @@ class BrisaMainWindow(QMainWindow):
         top_hero_row.addWidget(self.hero_actions_container)
         hero_layout.addLayout(top_hero_row)
 
-        # Faixa inferior de métricas no Hero Banner
-        metric_strip = QHBoxLayout()
+        # Faixa inferior de métricas no Hero Banner (dentro de container controlável)
+        self.hero_metrics_container = QWidget(self.hero_banner)
+        metric_strip = QHBoxLayout(self.hero_metrics_container)
+        metric_strip.setContentsMargins(0, 4, 0, 0)
         metric_strip.setSpacing(28)
 
         speed_col = QVBoxLayout()
         speed_col.setSpacing(1)
-        lbl_sp_t = QLabel(tr("hero_stat_speed"), self.hero_banner)
-        lbl_sp_t.setStyleSheet("font-size: 9px; font-weight: bold; color: rgba(255, 255, 255, 0.7);")
+        lbl_sp_t = QLabel(tr("hero_stat_speed"), self.hero_metrics_container)
+        lbl_sp_t.setObjectName("heroMetricLabel")
         self.hero_metric_speed_lbl = lbl_sp_t
-        self.hero_metric_speed_val = QLabel("—", self.hero_banner)
-        self.hero_metric_speed_val.setStyleSheet("font-size: 12px; font-weight: bold; color: #FFFFFF;")
+        self.hero_metric_speed_val = QLabel("—", self.hero_metrics_container)
+        self.hero_metric_speed_val.setObjectName("heroMetricValue")
         speed_col.addWidget(lbl_sp_t)
         speed_col.addWidget(self.hero_metric_speed_val)
 
         trans_col = QVBoxLayout()
         trans_col.setSpacing(1)
-        lbl_tr_t = QLabel(tr("hero_stat_transferred"), self.hero_banner)
-        lbl_tr_t.setStyleSheet("font-size: 9px; font-weight: bold; color: rgba(255, 255, 255, 0.7);")
+        lbl_tr_t = QLabel(tr("hero_stat_transferred"), self.hero_metrics_container)
+        lbl_tr_t.setObjectName("heroMetricLabel")
         self.hero_metric_transfer_lbl = lbl_tr_t
-        self.hero_metric_transfer_val = QLabel("0 B", self.hero_banner)
-        self.hero_metric_transfer_val.setStyleSheet("font-size: 12px; font-weight: bold; color: #FFFFFF;")
+        self.hero_metric_transfer_val = QLabel("0 B", self.hero_metrics_container)
+        self.hero_metric_transfer_val.setObjectName("heroMetricValue")
         trans_col.addWidget(lbl_tr_t)
         trans_col.addWidget(self.hero_metric_transfer_val)
 
         fold_col = QVBoxLayout()
         fold_col.setSpacing(1)
-        lbl_fd_t = QLabel(tr("hero_stat_active_folders"), self.hero_banner)
-        lbl_fd_t.setStyleSheet("font-size: 9px; font-weight: bold; color: rgba(255, 255, 255, 0.7);")
+        lbl_fd_t = QLabel(tr("hero_stat_active_folders"), self.hero_metrics_container)
+        lbl_fd_t.setObjectName("heroMetricLabel")
         self.hero_metric_folders_lbl = lbl_fd_t
-        self.hero_metric_folders_val = QLabel(tr("hero_stat_folders_ratio", active=0, total=0), self.hero_banner)
-        self.hero_metric_folders_val.setStyleSheet("font-size: 12px; font-weight: bold; color: #FFFFFF;")
+        self.hero_metric_folders_val = QLabel(tr("hero_stat_folders_ratio", active=0, total=0), self.hero_metrics_container)
+        self.hero_metric_folders_val.setObjectName("heroMetricValue")
         fold_col.addWidget(lbl_fd_t)
         fold_col.addWidget(self.hero_metric_folders_val)
 
@@ -1693,7 +1704,7 @@ class BrisaMainWindow(QMainWindow):
         metric_strip.addLayout(trans_col)
         metric_strip.addLayout(fold_col)
         metric_strip.addStretch(1)
-        hero_layout.addLayout(metric_strip)
+        hero_layout.addWidget(self.hero_metrics_container)
         layout.addWidget(self.hero_banner)
 
         # 2. Container Configurado: 2 Colunas Responsivas
@@ -1832,7 +1843,8 @@ class BrisaMainWindow(QMainWindow):
         abox_lay.setSpacing(12)
 
         drv_ic = QLabel(acc_box)
-        drv_ic.setPixmap(render_vector_pixmap("google_drive", 24, "#9189FF"))
+        self.overview_account_drv_ic = drv_ic
+        drv_ic.setPixmap(render_vector_pixmap("google_drive", 24, "#9189FF" if is_dark_mode() else "#6355DE"))
         drv_ic.setFixedSize(24, 24)
 
         abox_text = QVBoxLayout()
@@ -1881,7 +1893,8 @@ class BrisaMainWindow(QMainWindow):
         fbox_lay.setSpacing(12)
 
         f_ic = QLabel(fld_box)
-        f_ic.setPixmap(render_vector_pixmap("folder", 24, "#9189FF"))
+        self.overview_folder_ic = f_ic
+        f_ic.setPixmap(render_vector_pixmap("folder", 24, "#9189FF" if is_dark_mode() else "#6355DE"))
         f_ic.setFixedSize(24, 24)
 
         fbox_text = QVBoxLayout()
@@ -1958,8 +1971,9 @@ class BrisaMainWindow(QMainWindow):
         wz_layout.setSpacing(10)
 
         wz_title = QLabel("Configuração Inicial do BrisaSync", self.wizard_card)
+        wz_title.setProperty("class", "cardTitle")
         wz_title_font = QFont(self.font())
-        wz_title_font.setPointSize(max(wz_title_font.pointSize() + 3, 14))
+        wz_title_font.setPointSize(max(wz_title_font.pointSize() + 2, 14))
         wz_title_font.setBold(True)
         wz_title.setFont(wz_title_font)
 
@@ -1968,10 +1982,10 @@ class BrisaMainWindow(QMainWindow):
             self.wizard_card,
         )
         wz_subtitle.setWordWrap(True)
-        wz_subtitle.setStyleSheet("color: #8B949E;")
+        wz_subtitle.setProperty("class", "cardSubtitle")
 
         self.wizard_step_indicator = QLabel(self.wizard_card)
-        self.wizard_step_indicator.setStyleSheet("padding: 4px 0px; font-size: 11px;")
+        self.wizard_step_indicator.setStyleSheet("padding: 2px 0px; font-size: 11px;")
         self._update_wizard_progress(0)
 
         self.wizard_stack = QStackedWidget(self.wizard_card)
@@ -1983,7 +1997,7 @@ class BrisaMainWindow(QMainWindow):
         wz_layout.addWidget(wz_title)
         wz_layout.addWidget(wz_subtitle)
         wz_layout.addWidget(self.wizard_step_indicator)
-        wz_layout.addWidget(self.wizard_stack, stretch=1)
+        wz_layout.addWidget(self.wizard_stack)
 
         unconf_layout.addWidget(self.wizard_card)
         layout.addWidget(self.home_unconfigured_container)
@@ -1995,8 +2009,8 @@ class BrisaMainWindow(QMainWindow):
     def _build_wizard_page_connect(self, parent: QWidget) -> QWidget:
         page = QWidget(parent)
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(8, 8, 8, 8)
-        layout.setSpacing(10)
+        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(8)
 
         self.setup_step1_label = QLabel("1. Conectar conta Google", page)
         self.setup_step1_label.setStyleSheet("font-weight: bold; font-size: 12px;")
@@ -2009,11 +2023,12 @@ class BrisaMainWindow(QMainWindow):
         desc.setWordWrap(True)
 
         self.setup_step1_status = QLabel("Nenhuma conta Google conectada no momento.", page)
-        self.setup_step1_status.setStyleSheet("color: #8B949E;")
+        self.setup_step1_status.setProperty("class", "textSecondary")
 
         btn_row = QHBoxLayout()
         self.setup_connect_button = QPushButton("Conectar Conta Google", page)
         self.setup_connect_button.setProperty("primary", "true")
+        self.setup_connect_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setup_connect_button.clicked.connect(self._on_wizard_connect_clicked)
         btn_row.addWidget(self.setup_connect_button)
         btn_row.addStretch(1)
@@ -2028,7 +2043,7 @@ class BrisaMainWindow(QMainWindow):
         layout.addWidget(self.setup_step1_status)
         layout.addLayout(btn_row)
         layout.addWidget(self.setup_step1_hint)
-        layout.addStretch(1)
+        layout.addSpacing(6)
 
         nav_row = QHBoxLayout()
         nav_row.addStretch(1)
@@ -2043,8 +2058,8 @@ class BrisaMainWindow(QMainWindow):
     def _build_wizard_page_remote(self, parent: QWidget) -> QWidget:
         page = QWidget(parent)
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(8, 8, 8, 8)
-        layout.setSpacing(10)
+        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(8)
 
         self.setup_step2_label = QLabel("2. Escolher pasta no Google Drive", page)
         self.setup_step2_label.setStyleSheet("font-weight: bold; font-size: 12px;")
@@ -2067,8 +2082,10 @@ class BrisaMainWindow(QMainWindow):
 
         btns_row = QHBoxLayout()
         self.wizard_list_remote_btn = QPushButton("Listar Pastas do Drive", page)
+        self.wizard_list_remote_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.wizard_list_remote_btn.clicked.connect(self._on_list_remote_folders)
         self.wizard_create_remote_btn = QPushButton("+ Nova Pasta...", page)
+        self.wizard_create_remote_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.wizard_create_remote_btn.clicked.connect(
             self._on_wizard_create_remote_clicked
         )
@@ -2081,7 +2098,7 @@ class BrisaMainWindow(QMainWindow):
             page,
         )
         self.wizard_remote_feedback.setWordWrap(True)
-        self.wizard_remote_feedback.setStyleSheet("color: #8B949E;")
+        self.wizard_remote_feedback.setProperty("class", "textSecondary")
 
         self.setup_remote_button = self.wizard_list_remote_btn
 
@@ -2090,10 +2107,11 @@ class BrisaMainWindow(QMainWindow):
         layout.addLayout(combo_row)
         layout.addLayout(btns_row)
         layout.addWidget(self.wizard_remote_feedback)
-        layout.addStretch(1)
+        layout.addSpacing(6)
 
         nav_row = QHBoxLayout()
         self.wizard_step2_back_btn = QPushButton("← Voltar", page)
+        self.wizard_step2_back_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.wizard_step2_back_btn.clicked.connect(lambda: self._set_wizard_step(0))
         self.wizard_step2_next_btn = QPushButton("Avançar →", page)
         self.wizard_step2_next_btn.setEnabled(False)
@@ -2108,8 +2126,8 @@ class BrisaMainWindow(QMainWindow):
     def _build_wizard_page_local(self, parent: QWidget) -> QWidget:
         page = QWidget(parent)
         layout = QVBoxLayout(page)
-        layout.setContentsMargins(8, 8, 8, 8)
-        layout.setSpacing(10)
+        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(8)
 
         self.setup_step3_label = QLabel("3. Escolher pasta local (vazia na 1ª vez)", page)
         self.setup_step3_label.setStyleSheet("font-weight: bold; font-size: 12px;")
@@ -2127,6 +2145,7 @@ class BrisaMainWindow(QMainWindow):
         self.wizard_local_path_input.textChanged.connect(self._on_wizard_local_path_edited)
 
         self.wizard_local_browse_btn = QPushButton("Procurar Pasta...", page)
+        self.wizard_local_browse_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.wizard_local_browse_btn.clicked.connect(self._on_wizard_browse_local_folder)
         path_row.addWidget(self.wizard_local_path_input, stretch=1)
         path_row.addWidget(self.wizard_local_browse_btn)
@@ -2135,7 +2154,7 @@ class BrisaMainWindow(QMainWindow):
             "Escolha uma pasta vazia para a sincronização inicial.", page
         )
         self.wizard_local_feedback.setWordWrap(True)
-        self.wizard_local_feedback.setStyleSheet("color: #8B949E;")
+        self.wizard_local_feedback.setProperty("class", "textSecondary")
 
         self.setup_local_button = self.wizard_local_browse_btn
 
@@ -2143,10 +2162,11 @@ class BrisaMainWindow(QMainWindow):
         layout.addWidget(desc)
         layout.addLayout(path_row)
         layout.addWidget(self.wizard_local_feedback)
-        layout.addStretch(1)
+        layout.addSpacing(6)
 
         nav_row = QHBoxLayout()
         self.wizard_step3_back_btn = QPushButton("← Voltar", page)
+        self.wizard_step3_back_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.wizard_step3_back_btn.clicked.connect(lambda: self._set_wizard_step(1))
         self.wizard_step3_next_btn = QPushButton("Avançar →", page)
         self.wizard_step3_next_btn.setEnabled(False)
@@ -2176,19 +2196,19 @@ class BrisaMainWindow(QMainWindow):
         grid.setColumnStretch(1, 1)
 
         lbl_acc = QLabel("Conta Google:", summary_frame)
-        lbl_acc.setStyleSheet("color: #8B949E;")
+        lbl_acc.setProperty("class", "textSecondary")
         self.wizard_review_account_label = QLabel("—", summary_frame)
         self.wizard_review_account_label.setStyleSheet("font-weight: bold;")
         self.wizard_review_account_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
         lbl_rem = QLabel("Google Drive:", summary_frame)
-        lbl_rem.setStyleSheet("color: #8B949E;")
+        lbl_rem.setProperty("class", "textSecondary")
         self.wizard_review_remote_label = QLabel("—", summary_frame)
         self.wizard_review_remote_label.setStyleSheet("font-weight: bold;")
         self.wizard_review_remote_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
         lbl_loc = QLabel("Pasta no Computador:", summary_frame)
-        lbl_loc.setStyleSheet("color: #8B949E;")
+        lbl_loc.setProperty("class", "textSecondary")
         self.wizard_review_local_label = QLabel("—", summary_frame)
         self.wizard_review_local_label.setStyleSheet("font-weight: bold;")
         self.wizard_review_local_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
@@ -2508,7 +2528,8 @@ class BrisaMainWindow(QMainWindow):
         fcard_row.setSpacing(14)
 
         fic = QLabel(self.folders_card_frame)
-        fic.setPixmap(render_vector_pixmap("folder", 28, "#9189FF"))
+        self.folders_card_icon_lbl = fic
+        fic.setPixmap(render_vector_pixmap("folder", 28, "#9189FF" if is_dark_mode() else "#6355DE"))
         fic.setStyleSheet("background-color: rgba(145, 137, 255, 0.15); border-radius: 8px; padding: 6px;")
         fic.setFixedSize(40, 40)
 
@@ -2520,7 +2541,7 @@ class BrisaMainWindow(QMainWindow):
             tr("folders_pending_notice"),
             self.folders_card_frame,
         )
-        self.folders_card_subtitle_label.setStyleSheet("font-size: 12px; color: #8B949E;")
+        self.folders_card_subtitle_label.setProperty("class", "cardSubtitle")
         self.folders_card_subtitle_label.setWordWrap(True)
         ftext_vbox.addWidget(self.folders_card_title_label)
         ftext_vbox.addWidget(self.folders_card_subtitle_label)
@@ -2577,7 +2598,7 @@ class BrisaMainWindow(QMainWindow):
             self.folders_card_frame,
         )
         fnote.setWordWrap(True)
-        fnote.setStyleSheet("color: #8B949E; font-size: 11px;")
+        fnote.setProperty("class", "textMuted")
         self.folders_rule_notice = fnote
         fcard_lay.addWidget(fnote)
         layout.addWidget(self.folders_card_frame)
@@ -2622,7 +2643,7 @@ class BrisaMainWindow(QMainWindow):
             paths_card,
         )
         self.remote_folder_feedback_label.setWordWrap(True)
-        self.remote_folder_feedback_label.setStyleSheet("color: #8B949E; font-size: 11px;")
+        self.remote_folder_feedback_label.setProperty("class", "textSecondary")
 
         r_box.addWidget(r_lbl)
         r_box.addLayout(r_row)
@@ -2657,7 +2678,7 @@ class BrisaMainWindow(QMainWindow):
             paths_card,
         )
         self.folder_feedback_label.setWordWrap(True)
-        self.folder_feedback_label.setStyleSheet("color: #8B949E; font-size: 11px;")
+        self.folder_feedback_label.setProperty("class", "textSecondary")
 
         l_box.addWidget(l_lbl)
         l_box.addLayout(l_row)
@@ -2669,7 +2690,7 @@ class BrisaMainWindow(QMainWindow):
             paths_card,
         )
         self.sync_target_preview_label.setWordWrap(True)
-        self.sync_target_preview_label.setStyleSheet("color: #8B949E; font-size: 11px;")
+        self.sync_target_preview_label.setProperty("class", "textSecondary")
         playout.addWidget(self.sync_target_preview_label)
 
         layout.addWidget(paths_card)
@@ -2742,7 +2763,8 @@ class BrisaMainWindow(QMainWindow):
             tr("history_hint_double_click"),
             container,
         )
-        self.history_hint_label.setStyleSheet("color: #8B949E; font-size: 11px;")
+        self.history_hint_label.setProperty("class", "textMuted")
+        self.history_hint_label.setStyleSheet("font-size: 11px;")
         layout.addWidget(self.history_hint_label)
 
         return container
@@ -2807,7 +2829,8 @@ class BrisaMainWindow(QMainWindow):
         abox_lay.setSpacing(12)
 
         drv_ic = QLabel(acc_box)
-        drv_ic.setPixmap(render_vector_pixmap("google_drive", 24, "#9189FF"))
+        self.settings_account_drv_ic = drv_ic
+        drv_ic.setPixmap(render_vector_pixmap("google_drive", 24, "#9189FF" if is_dark_mode() else "#6355DE"))
         drv_ic.setFixedSize(24, 24)
 
         abox_text = QVBoxLayout()
@@ -2851,7 +2874,8 @@ class BrisaMainWindow(QMainWindow):
             card,
         )
         self.oauth_security_note_label.setWordWrap(True)
-        self.oauth_security_note_label.setStyleSheet("color: #8B949E; font-size: 11px;")
+        self.oauth_security_note_label.setProperty("class", "textSecondary")
+        self.oauth_security_note_label.setStyleSheet("font-size: 11px;")
         layout.addWidget(self.oauth_security_note_label)
 
         return card
@@ -3262,12 +3286,15 @@ class BrisaMainWindow(QMainWindow):
         self.home_unconfigured_container.setVisible(not show_configured_view)
 
         if is_locked:
-            self.hero_banner.setProperty("heroState", "attention")
-            self.hero_icon_label.setPixmap(render_vector_pixmap("alert", 36, "#FFFFFF"))
-            self.hero_title_label.setText(tr("hero_vault_locked_title"))
-            self.hero_subtitle_label.setText(tr("hero_vault_locked_subtitle"))
-            self.hero_pause_btn.setText(tr("hero_btn_unlock"))
-            self.hero_pause_btn.setIcon(get_vector_icon("lock", 14, "#FFFFFF"))
+            self._apply_hero_banner_state(
+                hero_state="attention",
+                icon_name="alert",
+                title=tr("hero_vault_locked_title"),
+                subtitle=tr("hero_vault_locked_subtitle"),
+                secondary_btn_text=tr("hero_btn_unlock"),
+                secondary_btn_icon="lock",
+                show_metrics=False,
+            )
             self.global_status_pill.setText(tr("pill_vault_locked"))
             self.global_status_pill.setProperty("class", "statusPill statusPillAttention")
             self.overview_idle_box.setVisible(False)
@@ -3278,29 +3305,32 @@ class BrisaMainWindow(QMainWindow):
                 "Desbloqueie o chaveiro para retomar a sincronização."
             )
         elif is_voluntary or state == "NOT_CONNECTED":
-            self.hero_banner.setProperty("heroState", "unconfigured")
-            self.hero_icon_label.setPixmap(render_vector_pixmap("folder", 36, "#9189FF"))
-            self.hero_title_label.setText(tr("hero_title_no_account"))
-            self.hero_subtitle_label.setText(tr("hero_subtitle_no_account"))
-            self.hero_pause_btn.setText(tr("hero_btn_help"))
-            self.hero_pause_btn.setIcon(get_vector_icon("info", 14, "#FFFFFF"))
+            self._apply_hero_banner_state(
+                hero_state="unconfigured",
+                icon_name="folder",
+                title=tr("hero_title_no_account"),
+                subtitle=tr("hero_subtitle_no_account"),
+                secondary_btn_text=tr("hero_btn_help"),
+                secondary_btn_icon="info",
+                show_metrics=False,
+            )
             self.global_status_pill.setText(tr("folder_status_waiting_account") if has_folders else tr("pill_unconfigured"))
             self.global_status_pill.setProperty("class", "statusPill")
             self.attention_banner_frame.setVisible(False)
             self.overview_idle_box.setVisible(True)
             self.overview_operation_header.setText(tr("folder_status_waiting_account") if has_folders else tr("overview_header_idle"))
         elif not is_configured:
-            self.hero_banner.setProperty("heroState", "unconfigured")
-            self.hero_icon_label.setPixmap(render_vector_pixmap("folder", 36, "#9189FF"))
-            self.hero_title_label.setText(tr("hero_welcome_title"))
-            if state == "CONFIG_PENDING":
-                self.hero_subtitle_label.setText(tr("hero_config_pending_subtitle"))
-                self.global_status_pill.setText(tr("pill_config_pending"))
-            else:
-                self.hero_subtitle_label.setText(tr("hero_unconfigured_subtitle"))
-                self.global_status_pill.setText(tr("pill_unconfigured"))
-            self.hero_pause_btn.setText(tr("hero_btn_help"))
-            self.hero_pause_btn.setIcon(get_vector_icon("info", 14, "#FFFFFF"))
+            sub = tr("hero_config_pending_subtitle") if state == "CONFIG_PENDING" else tr("hero_unconfigured_subtitle")
+            self._apply_hero_banner_state(
+                hero_state="unconfigured",
+                icon_name="folder",
+                title=tr("hero_welcome_title"),
+                subtitle=sub,
+                secondary_btn_text=tr("hero_btn_help"),
+                secondary_btn_icon="info",
+                show_metrics=False,
+            )
+            self.global_status_pill.setText(tr("pill_config_pending") if state == "CONFIG_PENDING" else tr("pill_unconfigured"))
             self.global_status_pill.setProperty("class", "statusPill")
 
         self._update_hero_primary_button(self._last_snapshot)
@@ -3828,6 +3858,45 @@ class BrisaMainWindow(QMainWindow):
             self.refresh_service_status_from_ipc()
             return None
 
+    def _apply_hero_banner_state(
+        self,
+        hero_state: str,
+        icon_name: str,
+        title: str,
+        subtitle: str,
+        secondary_btn_text: str,
+        secondary_btn_icon: str,
+        show_metrics: bool,
+    ) -> None:
+        """Centraliza o estado semântico, textos, ícones e re-polimento do Hero Banner."""
+        if not hasattr(self, "hero_banner") or self.hero_banner is None:
+            return
+
+        is_dark = is_dark_mode()
+        self.hero_banner.setProperty("heroState", hero_state)
+        self.hero_title_label.setText(title)
+        self.hero_subtitle_label.setText(subtitle)
+        self.hero_pause_btn.setText(secondary_btn_text)
+
+        if hero_state == "unconfigured":
+            banner_icon_col = "#9189FF" if is_dark else "#6355DE"
+            sec_icon_col = "#9189FF" if is_dark else "#4338CA"
+        else:
+            banner_icon_col = "#FFFFFF"
+            sec_icon_col = "#FFFFFF"
+
+        self.hero_icon_label.setPixmap(render_vector_pixmap(icon_name, 36, banner_icon_col))
+        self.hero_pause_btn.setIcon(get_vector_icon(secondary_btn_icon, 14, sec_icon_col))
+
+        if hasattr(self, "hero_metrics_container") and self.hero_metrics_container is not None:
+            self.hero_metrics_container.setVisible(show_metrics)
+
+        self.hero_banner.style().unpolish(self.hero_banner)
+        self.hero_banner.style().polish(self.hero_banner)
+        for child in self.hero_banner.findChildren(QWidget):
+            child.style().unpolish(child)
+            child.style().polish(child)
+
     def _update_hero_primary_button(
         self, snapshot: ServiceStatusSnapshot | None = None
     ) -> None:
@@ -3875,8 +3944,10 @@ class BrisaMainWindow(QMainWindow):
                 self.hero_sync_now_btn.setToolTip(
                     tr("sync_blocked_no_account")
                 )
+            is_dark = is_dark_mode()
+            unconf_primary_icon_col = "#0B0F15" if is_dark else "#FFFFFF"
             self.hero_sync_now_btn.setIcon(
-                get_vector_icon("google_drive", 16, "#0B0F15")
+                get_vector_icon("google_drive", 16, unconf_primary_icon_col)
             )
             self.hero_sync_now_btn.setEnabled(True)
             self.hero_sync_now_btn.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -3965,14 +4036,15 @@ class BrisaMainWindow(QMainWindow):
 
         is_paused = snapshot.auto_sync_paused or snapshot.state == STATE_PAUSED
         if is_locked:
-            self.hero_banner.setProperty("heroState", "attention")
-            self.hero_icon_label.setPixmap(render_vector_pixmap("alert", 36, "#FFFFFF"))
-            self.hero_title_label.setText(tr("hero_vault_locked_title"))
-            self.hero_subtitle_label.setText(
-                tr("hero_vault_locked_subtitle")
+            self._apply_hero_banner_state(
+                hero_state="attention",
+                icon_name="alert",
+                title=tr("hero_vault_locked_title"),
+                subtitle=tr("hero_vault_locked_subtitle"),
+                secondary_btn_text=tr("hero_btn_unlock"),
+                secondary_btn_icon="lock",
+                show_metrics=False,
             )
-            self.hero_pause_btn.setText(tr("hero_btn_unlock"))
-            self.hero_pause_btn.setIcon(get_vector_icon("lock", 14, "#FFFFFF"))
             self.global_status_pill.setText(tr("pill_vault_locked"))
             self.global_status_pill.setProperty("class", "statusPill statusPillAttention")
             self.overview_idle_box.setVisible(False)
@@ -3988,72 +4060,92 @@ class BrisaMainWindow(QMainWindow):
             )
         elif is_voluntary or state == "NOT_CONNECTED":
             if snapshot.attention_category in (ATTENTION_RECOVERY_REQUIRED, ATTENTION_CONFLICT_DETECTED, ATTENTION_PERSISTENT_FAILURE):
-                self.hero_banner.setProperty("heroState", "attention")
-                self.hero_icon_label.setPixmap(render_vector_pixmap("alert", 36, "#FFFFFF"))
-                self.hero_title_label.setText(tr("hero_attention_title"))
-                self.hero_subtitle_label.setText(snapshot.attention_title or snapshot.detail_message)
-                self.hero_pause_btn.setText(tr("hero_btn_inspect"))
-                self.hero_pause_btn.setIcon(get_vector_icon("info", 14, "#FFFFFF"))
+                self._apply_hero_banner_state(
+                    hero_state="attention",
+                    icon_name="alert",
+                    title=tr("hero_attention_title"),
+                    subtitle=snapshot.attention_title or snapshot.detail_message,
+                    secondary_btn_text=tr("hero_btn_inspect"),
+                    secondary_btn_icon="info",
+                    show_metrics=False,
+                )
                 self.global_status_pill.setText(tr("pill_attention"))
                 self.global_status_pill.setProperty("class", "statusPill statusPillAttention")
             else:
-                self.hero_banner.setProperty("heroState", "unconfigured")
-                self.hero_icon_label.setPixmap(render_vector_pixmap("folder", 36, "#9189FF"))
-                self.hero_title_label.setText(tr("hero_title_no_account"))
-                self.hero_subtitle_label.setText(tr("hero_subtitle_no_account"))
-                self.hero_pause_btn.setText(tr("hero_btn_help"))
-                self.hero_pause_btn.setIcon(get_vector_icon("info", 14, "#FFFFFF"))
+                self._apply_hero_banner_state(
+                    hero_state="unconfigured",
+                    icon_name="folder",
+                    title=tr("hero_title_no_account"),
+                    subtitle=tr("hero_subtitle_no_account"),
+                    secondary_btn_text=tr("hero_btn_help"),
+                    secondary_btn_icon="info",
+                    show_metrics=False,
+                )
                 self.global_status_pill.setText(tr("folder_status_waiting_account") if has_folders else tr("pill_unconfigured"))
                 self.global_status_pill.setProperty("class", "statusPill")
         elif not is_configured:
-            self.hero_banner.setProperty("heroState", "unconfigured")
-            self.hero_icon_label.setPixmap(render_vector_pixmap("folder", 36, "#9189FF"))
-            self.hero_title_label.setText(tr("hero_welcome_title"))
-            if state == "CONFIG_PENDING":
-                self.hero_subtitle_label.setText(tr("hero_config_pending_subtitle"))
-                self.global_status_pill.setText(tr("pill_config_pending"))
-            else:
-                self.hero_subtitle_label.setText(tr("hero_unconfigured_subtitle"))
-                self.global_status_pill.setText(tr("pill_unconfigured"))
-            self.hero_pause_btn.setText(tr("hero_btn_help"))
-            self.hero_pause_btn.setIcon(get_vector_icon("info", 14, "#FFFFFF"))
+            sub = tr("hero_config_pending_subtitle") if state == "CONFIG_PENDING" else tr("hero_unconfigured_subtitle")
+            self._apply_hero_banner_state(
+                hero_state="unconfigured",
+                icon_name="folder",
+                title=tr("hero_welcome_title"),
+                subtitle=sub,
+                secondary_btn_text=tr("hero_btn_help"),
+                secondary_btn_icon="info",
+                show_metrics=False,
+            )
+            self.global_status_pill.setText(tr("pill_config_pending") if state == "CONFIG_PENDING" else tr("pill_unconfigured"))
             self.global_status_pill.setProperty("class", "statusPill")
         elif snapshot.attention_category or snapshot.state == STATE_ATTENTION_REQUIRED:
-            self.hero_banner.setProperty("heroState", "attention")
-            self.hero_icon_label.setPixmap(render_vector_pixmap("alert", 36, "#FFFFFF"))
-            self.hero_title_label.setText(tr("hero_attention_title"))
-            self.hero_subtitle_label.setText(snapshot.attention_title or snapshot.detail_message)
-            self.hero_pause_btn.setText(tr("hero_btn_inspect"))
-            self.hero_pause_btn.setIcon(get_vector_icon("info", 14, "#FFFFFF"))
+            self._apply_hero_banner_state(
+                hero_state="attention",
+                icon_name="alert",
+                title=tr("hero_attention_title"),
+                subtitle=snapshot.attention_title or snapshot.detail_message,
+                secondary_btn_text=tr("hero_btn_inspect"),
+                secondary_btn_icon="info",
+                show_metrics=True,
+            )
             self.global_status_pill.setText(tr("pill_attention"))
             self.global_status_pill.setProperty("class", "statusPill statusPillAttention")
         elif is_paused or snapshot.state == STATE_PAUSING:
-            self.hero_banner.setProperty("heroState", "paused")
-            self.hero_icon_label.setPixmap(render_vector_pixmap("pause", 36, "#FFFFFF"))
-            self.hero_title_label.setText(tr("hero_paused_title"))
-            self.hero_subtitle_label.setText(tr("hero_paused_subtitle"))
-            self.hero_pause_btn.setText(tr("hero_btn_resume"))
-            self.hero_pause_btn.setIcon(get_vector_icon("play", 14, "#FFFFFF"))
+            self._apply_hero_banner_state(
+                hero_state="paused",
+                icon_name="pause",
+                title=tr("hero_paused_title"),
+                subtitle=tr("hero_paused_subtitle"),
+                secondary_btn_text=tr("hero_btn_resume"),
+                secondary_btn_icon="play",
+                show_metrics=True,
+            )
             self.global_status_pill.setText(tr("pill_paused"))
             self.global_status_pill.setProperty("class", "statusPill statusPillPaused")
         elif snapshot.state in (STATE_SYNCING, STATE_VERIFYING) or snapshot.is_cycle_active:
-            self.hero_banner.setProperty("heroState", "syncing")
-            self.hero_icon_label.setPixmap(render_vector_pixmap("sync", 36, "#FFFFFF"))
-            self.hero_title_label.setText(tr("hero_syncing_title"))
-            self.hero_subtitle_label.setText(tr("hero_syncing_subtitle"))
-            self.hero_pause_btn.setText(tr("hero_btn_pause"))
-            self.hero_pause_btn.setIcon(get_vector_icon("pause", 14, "#FFFFFF"))
+            self._apply_hero_banner_state(
+                hero_state="syncing",
+                icon_name="sync",
+                title=tr("hero_syncing_title"),
+                subtitle=tr("hero_syncing_subtitle"),
+                secondary_btn_text=tr("hero_btn_pause"),
+                secondary_btn_icon="pause",
+                show_metrics=True,
+            )
             self.global_status_pill.setText(tr("pill_syncing"))
             self.global_status_pill.setProperty("class", "statusPill statusPillSyncing")
         else:
-            self.hero_banner.setProperty("heroState", "healthy")
-            self.hero_icon_label.setPixmap(render_vector_pixmap("check_circle", 36, "#FFFFFF"))
-            self.hero_title_label.setText(tr("hero_healthy_title"))
             rel_time = _format_relative_timestamp(snapshot.last_confirmed_sync_at)
-            self.hero_subtitle_label.setText(tr("hero_last_check", rel_time=rel_time) if rel_time else tr("hero_waiting_first_check"))
-            self.hero_pause_btn.setText(tr("hero_btn_pause_all"))
-            self.hero_pause_btn.setIcon(get_vector_icon("pause", 14, "#FFFFFF"))
+            sub = tr("hero_last_check", rel_time=rel_time) if rel_time else tr("hero_waiting_first_check")
+            self._apply_hero_banner_state(
+                hero_state="healthy",
+                icon_name="check_circle",
+                title=tr("hero_healthy_title"),
+                subtitle=sub,
+                secondary_btn_text=tr("hero_btn_pause_all"),
+                secondary_btn_icon="pause",
+                show_metrics=True,
+            )
             self.global_status_pill.setText(tr("pill_healthy"))
+            self.global_status_pill.setProperty("class", "statusPill statusPillHealthy")
             self.global_status_pill.setProperty("class", "statusPill statusPillHealthy")
 
         self.hero_banner.style().unpolish(self.hero_banner)

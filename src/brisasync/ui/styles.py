@@ -137,8 +137,20 @@ def get_brisasync_stylesheet(dark_mode: bool | None = None) -> str:
         accent_lavender = "#9189FF"
         accent_lavender_hover = "#A39DFF"
         accent_lavender_pressed = "#7D74FA"
-        hero_unconfigured_bg = "#1E293B"
-        hero_unconfigured_border = "#9189FF"
+        hero_unconf_bg = "#1E293B"
+        hero_unconf_border = "#9189FF"
+        hero_unconf_title_color = "#F0F4F8"
+        hero_unconf_subtitle_color = "#94A3B8"
+        hero_unconf_metric_lbl_color = "#64748B"
+        hero_unconf_metric_val_color = "#F0F4F8"
+        hero_unconf_primary_bg = "#FFFFFF"
+        hero_unconf_primary_fg = "#0B0F15"
+        hero_unconf_primary_hover = "#E2E8F0"
+        hero_unconf_secondary_bg = "rgba(145, 137, 255, 0.12)"
+        hero_unconf_secondary_fg = "#9189FF"
+        hero_unconf_secondary_border = "rgba(145, 137, 255, 0.35)"
+        hero_unconf_secondary_hover = "rgba(145, 137, 255, 0.22)"
+        hero_unconf_secondary_border_hover = "#9189FF"
         table_bg = "#131923"
         table_alt_bg = "#161D2A"
         selection_bg = "#5446CF"
@@ -168,8 +180,20 @@ def get_brisasync_stylesheet(dark_mode: bool | None = None) -> str:
         accent_lavender = "#6355DE"
         accent_lavender_hover = "#5446CF"
         accent_lavender_pressed = "#4537BF"
-        hero_unconfigured_bg = "#F1F5F9"
-        hero_unconfigured_border = "#6355DE"
+        hero_unconf_bg = "#FFFFFF"
+        hero_unconf_border = "#6355DE"
+        hero_unconf_title_color = "#0F172A"
+        hero_unconf_subtitle_color = "#475569"
+        hero_unconf_metric_lbl_color = "#64748B"
+        hero_unconf_metric_val_color = "#0F172A"
+        hero_unconf_primary_bg = "#6355DE"
+        hero_unconf_primary_fg = "#FFFFFF"
+        hero_unconf_primary_hover = "#5446CF"
+        hero_unconf_secondary_bg = "#F1F5F9"
+        hero_unconf_secondary_fg = "#4338CA"
+        hero_unconf_secondary_border = "#CBD5E1"
+        hero_unconf_secondary_hover = "#E2E8F0"
+        hero_unconf_secondary_border_hover = "#6355DE"
         table_bg = "#FFFFFF"
         table_alt_bg = "#F8FAFC"
         selection_bg = "#6355DE"
@@ -343,11 +367,24 @@ QFrame.brisaInnerCard {{
     padding: 12px 14px;
 }}
 
-/* Títulos de Cartões */
+/* Títulos e Textos de Cartões */
 QLabel.cardTitle {{
     color: {text_heading};
     font-size: 14px;
     font-weight: 600;
+}}
+
+QLabel.cardSubtitle {{
+    color: {text_secondary};
+    font-size: 12px;
+}}
+
+QLabel.textSecondary {{
+    color: {text_secondary};
+}}
+
+QLabel.textMuted {{
+    color: {text_muted};
 }}
 
 /* Hero Status Banner */
@@ -377,11 +414,52 @@ QFrame#heroBanner[heroState="attention"] {{
 }}
 
 QFrame#heroBanner[heroState="unconfigured"] {{
-    background-color: {hero_unconfigured_bg};
-    border: 1.5px solid {hero_unconfigured_border};
+    background-color: {hero_unconf_bg};
+    border: 1.5px solid {hero_unconf_border};
 }}
 
-/* Botões de Ação do Hero Banner */
+/* Tipografia e Métricas do Hero Banner (Padrão para estados vibrantes) */
+QFrame#heroBanner QLabel#heroTitle {{
+    color: #FFFFFF;
+    font-size: 19px;
+    font-weight: 700;
+}}
+
+QFrame#heroBanner QLabel#heroSubtitle {{
+    color: rgba(255, 255, 255, 0.90);
+    font-size: 12px;
+}}
+
+QFrame#heroBanner QLabel#heroMetricLabel {{
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.75);
+}}
+
+QFrame#heroBanner QLabel#heroMetricValue {{
+    font-size: 12px;
+    font-weight: 700;
+    color: #FFFFFF;
+}}
+
+/* Sobrescritas Semânticas no Estado Não Configurado */
+QFrame#heroBanner[heroState="unconfigured"] QLabel#heroTitle {{
+    color: {hero_unconf_title_color};
+}}
+
+QFrame#heroBanner[heroState="unconfigured"] QLabel#heroSubtitle {{
+    color: {hero_unconf_subtitle_color};
+}}
+
+QFrame#heroBanner[heroState="unconfigured"] QLabel#heroMetricLabel {{
+    color: {hero_unconf_metric_lbl_color};
+}}
+
+QFrame#heroBanner[heroState="unconfigured"] QLabel#heroMetricValue {{
+    color: {hero_unconf_metric_val_color};
+}}
+
+/* Botões de Ação do Hero Banner (Padrão para estados vibrantes) */
 QPushButton#heroPrimaryBtn {{
     background-color: #FFFFFF;
     color: #0B0F15;
@@ -401,8 +479,8 @@ QPushButton#heroPrimaryBtn:focus {{
 }}
 
 QPushButton#heroPrimaryBtn:disabled {{
-    background-color: #FFFFFF;
-    color: #0B0F15;
+    background-color: #E2E8F0;
+    color: #94A3B8;
     border: none;
 }}
 
@@ -423,6 +501,38 @@ QPushButton#heroSecondaryBtn:hover {{
 
 QPushButton#heroSecondaryBtn:focus {{
     outline: 2px solid #FFFFFF;
+}}
+
+/* Botões do Hero Banner no Estado Não Configurado */
+QFrame#heroBanner[heroState="unconfigured"] QPushButton#heroPrimaryBtn {{
+    background-color: {hero_unconf_primary_bg};
+    color: {hero_unconf_primary_fg};
+    border: none;
+}}
+
+QFrame#heroBanner[heroState="unconfigured"] QPushButton#heroPrimaryBtn:hover {{
+    background-color: {hero_unconf_primary_hover};
+}}
+
+QFrame#heroBanner[heroState="unconfigured"] QPushButton#heroPrimaryBtn:disabled {{
+    background-color: {bg_control_disabled};
+    color: {text_disabled};
+}}
+
+QFrame#heroBanner[heroState="unconfigured"] QPushButton#heroSecondaryBtn {{
+    background-color: {hero_unconf_secondary_bg};
+    color: {hero_unconf_secondary_fg};
+    border: 1px solid {hero_unconf_secondary_border};
+}}
+
+QFrame#heroBanner[heroState="unconfigured"] QPushButton#heroSecondaryBtn:hover {{
+    background-color: {hero_unconf_secondary_hover};
+    border-color: {hero_unconf_secondary_border_hover};
+    color: {hero_unconf_secondary_fg};
+}}
+
+QFrame#heroBanner[heroState="unconfigured"] QPushButton#heroSecondaryBtn:focus {{
+    outline: 2px solid {focus_outline};
 }}
 
 /* Botões Padrão */

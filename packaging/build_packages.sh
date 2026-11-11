@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-VERSION="0.1.27"
+VERSION="0.1.28"
 OAUTH_CLIENT_SRC="${BRISASYNC_DIST_OAUTH_CLIENT_JSON:-}"
 
 while [[ $# -gt 0 ]]; do

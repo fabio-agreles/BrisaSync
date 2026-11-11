@@ -6,12 +6,12 @@ Este diretório contém os scripts de automação e configuração para geraçã
 
 ## 1. Artefatos Produzidos
 
-1. **Instalador Oficial (`BrisaSync-0.1.27-Setup-x64.exe`)**:
+1. **Instalador Oficial (`BrisaSync-0.1.28-Setup-x64.exe`)**:
    - Instalação limpa por usuário em `%LOCALAPPDATA%\Programs\BrisaSync` (sem necessidade de elevação de privilégios ou prompts de Administrador/UAC).
    - Criação de atalhos no Menu Iniciar e na Área de Trabalho.
    - Opção de autoinício com o Windows via Registro (`HKCU\Software\Microsoft\Windows\CurrentVersion\Run`).
    - Desinstalador limpo que remove binários e atalhos, **preservando rigorosamente** as configurações em `%APPDATA%\BrisaSync` e todos os arquivos sincronizados nas pastas locais.
-2. **Pacote Portátil (`BrisaSync-0.1.27-windows-x64.zip`)**:
+2. **Pacote Portátil (`BrisaSync-0.1.28-windows-x64.zip`)**:
    - Standalone, pronto para descompactar e executar em qualquer pasta sem instalação formal.
 
 ---
