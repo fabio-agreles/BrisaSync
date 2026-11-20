@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>app.brisasync.BrisaSync</id>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  <name>BrisaSync</name>
+  <summary>Sincronize o Google Drive e o OneDrive com pastas deste computador</summary>
+
+  <developer id="app.nuvem">
+    <name>Equipe do BrisaSync</name>
+  </developer>
+
+  <description>
+    <p>
+      BrisaSync mantém pastas do Google Drive e do OneDrive iguais às locais,
+      nos dois sentidos, com uma interface simples e clara. O motor de
+      sincronização é o rclone, que vem embutido no aplicativo.
+    </p>
+    <p>O que dá para fazer:</p>
+    <ul>
+      <li>Várias contas de Google Drive e OneDrive em um só lugar</li>
+      <li>Escolher quais pastas da nuvem sincronizar, e com qual pasta local</li>
+      <li>Acompanhar progresso, velocidade, atividade e conflitos em tempo real</li>
+      <li>Resolver conflitos escolhendo a versão da nuvem, a local ou guardando as duas</li>
+      <li>Ver a cota de cada conta, com o último valor conhecido quando a rede falha</li>
+      <li>Limitar banda, ignorar arquivos por padrão e sincronizar em intervalos</li>
+      <li>Ficar na bandeja do sistema, iniciar com o sistema e notificar ao terminar</li>
+    </ul>
+    <p>
+      Os dados ficam neste computador: as credenciais são gravadas no formato do
+      rclone, com permissão só para o seu usuário, e o BrisaSync não envia nada para
+      servidores próprios.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">app.brisasync.BrisaSync.desktop</launchable>
+
+  <url type="homepage">https://github.com/fabio-agreles/nuvem</url>
+  <url type="bugtracker">https://github.com/fabio-agreles/nuvem/issues</url>
+  <url type="vcs-browser">https://github.com/fabio-agreles/nuvem</url>
+  <url type="contribute">https://github.com/fabio-agreles/nuvem/blob/main/app/README.md</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>Visão geral: estado das pastas, velocidade e contas conectadas</caption>
+      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/nuvem/main/app/docs/previews/preview-dashboard.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Pastas: cada pasta da nuvem com o par local e o estado da sincronização</caption>
+      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/nuvem/main/app/docs/previews/preview-folders.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Arquivos: navegue pela nuvem sem baixar nada e envie arquivos avulsos</caption>
+      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/nuvem/main/app/docs/previews/preview-files.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Conflitos: escolha a versão da nuvem, a local ou fique com as duas</caption>
+      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/nuvem/main/app/docs/previews/preview-conflicts.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Ajustes: comportamento, credenciais próprias do Google e início automático</caption>
+      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/nuvem/main/app/docs/previews/preview-settings-advanced.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Tema escuro em toda a interface</caption>
+      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/nuvem/main/app/docs/previews/preview-dark.png</image>
+    </screenshot>
+  </screenshots>
+
+  <releases>
+    <release version="1.0.0" date="2026-11-20">
+      <description>
+        <p>Novos provedores, sincronização seletiva visual, detecção rápida na nuvem e atualizações no app.</p>
+        <ul>
+          <li>Suporte a contas Dropbox e Nextcloud no fluxo de conexão.</li>
+          <li>Sincronização seletiva visual de subpastas por perfil.</li>
+          <li>Detecção rápida de alterações remotas no Google Drive e OneDrive.</li>
+          <li>Envio múltiplo de arquivos e pastas por arrastar-e-soltar, animações de progresso e velocidade na bandeja.</li>
+          <li>Download e instalação de atualizações diretamente pelo aplicativo.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.6.5" date="2026-11-15">
+      <description>
+        <p>Fechar a janela e sair agora explicam o que acontece com a sincronização.</p>
+        <ul>
+          <li>Na primeira vez que a janela é fechada, uma notificação avisa que o BrisaSync continua na bandeja — e como encerrar de verdade.</li>
+          <li>"Sair" (bandeja, Ajustes ou busca rápida) pergunta antes de encerrar quando há sincronização em andamento, com a opção de continuar em segundo plano.</li>
+          <li>Novo ajuste em Comportamento: "Fechar a janela encerra o app".</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.6.4" date="2026-11-15">
+      <description>
+        <p>
+          Aviso sobre a verificação do Google e o limite de contas, com o caminho para contornar.
+        </p>
+        <ul>
+          <li>A janela "Conectar conta" avisa, antes de tentar, que o Google ainda não verificou o aplicativo e o que fazer se aparecer bloqueio por limite de usuários.</li>
+          <li>Novo botão "Como contornar" abre o passo a passo para conectar com um projeto OAuth do próprio usuário em Ajustes → Avançado.</li>
+          <li>A mensagem de autorização que não terminou a tempo agora cita o bloqueio por limite do projeto, que é o que acontece quando as 100 contas acabam.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.6.3" date="2026-11-10">
+      <description>
+        <p>
+          Correções do relato depois da 1.6.2: bandeja, janela de espera e OneDrive.
+        </p>
+        <ul>
+          <li>No Windows apareciam dois ícones na área de notificação: o aplicativo montava a bandeja e a configuração criava outra.</li>
+          <li>A janela de espera da autorização agora mostra o tempo decorrido e tem Cancelar que funciona, em vez de deixar a janela presa até o fim do prazo.</li>
+          <li>A autorização do OneDrive passou a ser feita pelo próprio BrisaSync: a última página é a do aplicativo, e não mais a do rclone.</li>
+          <li>O cartão Contas mostra o e-mail também nas contas OneDrive.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.6.2" date="2026-11-09">
+      <description>
+        <p>
+          Três correções: conflitos, identificação da conta e Windows.
+        </p>
+        <ul>
+          <li>Conflitos lado a lado voltam a aparecer na aba Conflitos: o motor de sincronização guardava as duas versões com nomes que o app não reconhecia (.conflict1/.conflict2) e a aba dizia "Nenhum conflito".</li>
+          <li>O cartão Contas e o cartão Armazenamento passam a mostrar o e-mail da conta, em vez de só o nome "Google Drive 1".</li>
+          <li>No Windows, conectar uma conta abre o navegador em vez do Explorer: o app entregava o endereço ao Explorer, que não é o programa padrão para endereços.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.6.1" date="2026-11-08">
+      <description>
+        <p>
+          Correção: conectar uma conta Google volta a funcionar.
+        </p>
+        <ul>
+          <li>A troca do código de autorização falhava com "error sending request for url": o cliente HTTP do app estava compilado sem suporte a HTTPS.</li>
+          <li>As raízes de confiança agora viajam dentro do binário, então o HTTPS funciona também dentro do sandbox do Flatpak.</li>
+          <li>Os erros da autorização passam a seguir o idioma do app e a mostrar a causa real (DNS, TLS, rede) em vez de só "error sending request".</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.6.0" date="2026-11-08">
+      <description>
+        <p>
+          A autorização do Google agora acontece dentro do BrisaSync.
+        </p>
+        <ul>
+          <li>Ao conectar uma conta, o navegador termina numa página do BrisaSync (“Conta conectada”), e não mais na página do rclone.</li>
+          <li>O retorno da autorização é recebido pelo próprio aplicativo, com um identificador sorteado a cada tentativa.</li>
+          <li>O token é criado pelo app e entregue ao motor de sincronização já pronto, sem a etapa interativa do rclone.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.5.1" date="2026-11-08">
+      <description>
+        <p>
+          Correção: o que nasce fora da janela também fala inglês.
+        </p>
+        <ul>
+          <li>O menu da bandeja (Abrir / Sincronizar agora / Sair) passa a seguir o
+            idioma escolhido, na hora.</li>
+          <li>As notificações do sistema e o registro de atividade — títulos e
+            detalhes — também.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.5.0" date="2026-11-08">
+      <description>
+        <p>
+          A interface agora fala inglês também, com troca na hora.
+        </p>
+        <ul>
+          <li>Em Ajustes → Sistema → Idioma há "Português" e "English"; a escolha
+            vale na hora, sem reiniciar, e fica salva.</li>
+          <li>O português continua o padrão: quem já usa o app não vê nada mudar.</li>
+          <li>Datas, números e "há 5 min" também seguem o idioma escolhido.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.4.0" date="2026-11-04">
+      <description>
+        <p>
+          Doações via Pix, para quem quiser ajudar a manter o projeto.
+        </p>
+        <ul>
+          <li>Em Ajustes, o cartão "Ajude a manter o projeto" abre um diálogo com
+            o QR code do Pix e o botão de copiar o código para colar no app do
+            banco.</li>
+          <li>A contribuição é voluntária: nenhum recurso do app depende dela, e
+            nenhum dado sai do computador por causa disso.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.3.0" date="2026-11-04">
+      <description>
+        <p>
+          O app passa a se chamar BrisaSync, com ícone novo e a bandeja
+          mostrando o estado da sincronização.
+        </p>
+        <ul>
+          <li>Ícone e logo novos, incluindo versões para o tema claro e o escuro.</li>
+          <li>A bandeja mostra o estado: parado, sincronizando, em dia, pausado,
+            com erro ou sem o motor — e troca a cor do traço conforme o tema do
+            painel.</li>
+          <li>O pacote do Linux mudou de nome (<code>nuvem</code> →
+            <code>nuvem-sync</code>) junto com a marca; o instalador substitui a
+            versão antiga sem deixar dois apps instalados.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.2.2" date="2026-11-02">
+      <description>
+        <p>
+          Limpeza do cabeçalho: saiu o avatar decorativo que não fazia nada.
+        </p>
+        <ul>
+          <li>O círculo com a letra "N" no canto superior direito foi removido
+            — ele parecia um perfil de usuário, mas o BrisaSync não tem conta nem
+            clique nenhum ali.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.2.1" date="2026-10-31">
+      <description>
+        <p>
+          Correções depois do primeiro uso no Windows e de uma pasta esvaziada
+          na nuvem.
+        </p>
+        <ul>
+          <li>Fim das janelas de console piscando no Windows ao navegar pelo app.</li>
+          <li>A sincronização é barrada quando um dos lados está vazio e o outro
+            não: antes ela apagaria o lado cheio, agora avisa e deixa o erro
+            clicável para ressincronizar.</li>
+          <li>Cada conta mostra qual projeto OAuth a autorizou.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.2.0" date="2026-10-30">
+      <description>
+        <p>
+          O Google Drive passa a usar o projeto OAuth do próprio BrisaSync, sem a
+          fila do projeto compartilhado do rclone: 3 arquivos pequenos subiram
+          em 4,4 s em vez de 22 s, sem nenhum "Rate limited".
+        </p>
+        <ul>
+          <li>Ajustes → Avançado mostra qual projeto OAuth está em uso.</li>
+          <li>Suas credenciais continuam ganhando do projeto do app.</li>
+          <li>Política de privacidade e guia do projeto OAuth no repositório.</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.1.0" date="2026-10-30">
+      <description>
+        <p>Diagnóstico e atualização:</p>
+        <ul>
+          <li>Relatório de diagnóstico em um clique (contas, pastas, ajustes e últimos erros, sem segredos)</li>
+          <li>Aviso de nova versão publicada, com atalho para baixar</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.0.0" date="2026-10-30">
+      <description>
+        <p>Primeira versão estável:</p>
+        <ul>
+          <li>Google Drive e OneDrive com sincronização bidirecional (bisync)</li>
+          <li>Progresso, atividade por arquivo e resolução de conflitos</li>
+          <li>Cota por conta, limites de banda e regras de ignorar</li>
+          <li>Bandeja do sistema com ícone simbólico e início automático</li>
+          <li>Credenciais OAuth próprias do Google em Ajustes → Avançado</li>
+          <li>Painel do rclone protegido por senha sorteada a cada execução</li>
+          <li>Estado local gravado com permissão de dono e recuperação de arquivo corrompido</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+
+  <categories>
+    <category>Network</category>
+    <category>FileTransfer</category>
+  </categories>
+
+  <keywords>
+    <keyword>drive</keyword>
+    <keyword>onedrive</keyword>
+    <keyword>sincronizacao</keyword>
+    <keyword>nuvem</keyword>
+    <keyword>backup</keyword>
+    <keyword>rclone</keyword>
+  </keywords>
+
+  <provides>
+    <binary>nuvem</binary>
+  </provides>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#4f6df5</color>
+    <color type="primary" scheme_preference="dark">#7f94ff</color>
+  </branding>
+
+  <content_rating type="oars-1.1"/>
+
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </recommends>
+</component>

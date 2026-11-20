@@ -1,0 +1,13 @@
+node_modules
+dist
+src-tauri/target
+src-tauri/gen
+*.log
+.flatpak-builder/
+builddir/
+flatpak-repo/
+
+# Binários do motor de sincronização (85 MB cada): o build baixa a versão fixada
+# — `scripts/build-windows.sh` e o workflow fazem isso quando o arquivo falta.
+src-tauri/resources/rclone
+src-tauri/resources/rclone.exe

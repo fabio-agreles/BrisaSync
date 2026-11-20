@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="brisasync.png">
+<link rel="canonical" href="https://brisasync.com.br/">
+<title>BrisaSync — Sincronização bidirecional para Linux e Windows</title>
+<meta name="description" content="BrisaSync 1.0.0: aplicativo desktop de código aberto que mantém suas pastas em sincronização bidirecional com Google Drive, OneDrive, Dropbox e Nextcloud.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://brisasync.com.br/">
+<meta property="og:title" content="BrisaSync — Sincronização bidirecional para Linux e Windows">
+<meta property="og:description" content="Sincronize Google Drive, OneDrive, Dropbox e Nextcloud no Linux e Windows com código aberto, zero telemetria e conexão direta.">
+<meta property="og:image" content="https://brisasync.com.br/brisasync.png">
+<style>
+  :root {
+    --abyss: #04152f;
+    --abyss-elevated: #0a2247;
+    --abyss-line: rgba(148, 197, 255, 0.16);
+    --paper: #f7fafd;
+    --surface: #ffffff;
+    --surface-soft: #eef4fb;
+    --line: #d7e3f0;
+    --ink: #0b1b33;
+    --muted: #4b627d;
+    --breeze: #0077cc;
+    --breeze-bright: #00a8e8;
+    --mint: #2ce6c1;
+    --mint-ink: #066e5b;
+    --warn-bg: #fff9ec;
+    --warn-line: #ebd094;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Cantarell, "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--breeze); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--breeze-bright);
+    outline-offset: 3px;
+  }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Hero Band (Deep Midnight Navy from BrisaSync Icon) */
+  .hero-band {
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(1100px 520px at 82% 18%, #0b3168 0%, var(--abyss) 68%);
+    color: #f0f6ff;
+    padding-bottom: 72px;
+  }
+
+  .breeze-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.32;
+  }
+
+  header {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--abyss-line);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.12rem;
+    letter-spacing: -0.01em;
+  }
+  .brand:hover { text-decoration: none; }
+  .brand img {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+  }
+  .ver-pill {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--mint);
+    background: rgba(44, 230, 193, 0.12);
+    border: 1px solid rgba(44, 230, 193, 0.28);
+    padding: 2px 9px;
+    border-radius: 999px;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 0.94rem;
+  }
+  nav a {
+    color: rgba(232, 242, 255, 0.78);
+    font-weight: 500;
+  }
+  nav a:hover {
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  .hero {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1.08fr 0.92fr;
+    gap: 48px;
+    align-items: center;
+    padding-top: 56px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.15rem, 4.2vw, 3.15rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin: 0 0 20px;
+    color: #ffffff;
+  }
+
+  .hero-lead {
+    color: rgba(224, 237, 255, 0.82);
+    font-size: 1.08rem;
+    max-width: 52ch;
+    margin: 0 0 30px;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+  .btn:hover { text-decoration: none; transform: translateY(-1px); }
+
+  .btn-hero-primary {
+    background: var(--mint);
+    color: #03221d;
+  }
+  .btn-hero-primary:hover { background: #52f0d1; }
+
+  .btn-hero-secondary {
+    background: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  .btn-hero-secondary:hover { background: rgba(255, 255, 255, 0.13); }
+
+  .btn-primary {
+    background: var(--breeze);
+    color: #ffffff;
+  }
+  .btn-primary:hover { background: #0062aa; }
+
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  .btn-secondary:hover { background: var(--surface-soft); }
+
+  .provider-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    font-size: 0.86rem;
+    color: rgba(214, 231, 255, 0.72);
+  }
+  .provider-chip {
+    padding: 4px 11px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e8f2ff;
+    font-weight: 500;
+  }
+
+  /* Hero Interactive Sync Preview */
+  .sync-panel {
+    background: rgba(10, 34, 71, 0.86);
+    border: 1px solid rgba(148, 197, 255, 0.22);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 28px 60px -24px rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(10px);
+  }
+  .sync-panel-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: rgba(4, 21, 47, 0.65);
+    border-bottom: 1px solid var(--abyss-line);
+    font-size: 0.82rem;
+    color: rgba(224, 237, 255, 0.75);
+  }
+  .win-dots { display: inline-flex; gap: 7px; }
+  .win-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+  }
+  .sync-panel-body { padding: 20px; }
+  .sync-status-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(0, 168, 232, 0.22), rgba(44, 230, 193, 0.16));
+    border: 1px solid rgba(44, 230, 193, 0.3);
+    margin-bottom: 14px;
+  }
+  .sync-status-card strong {
+    display: block;
+    font-size: 1.02rem;
+    color: #ffffff;
+  }
+  .sync-status-card span {
+    font-size: 0.84rem;
+    color: rgba(224, 237, 255, 0.82);
+  }
+  .pulse-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--mint);
+    box-shadow: 0 0 0 5px rgba(44, 230, 193, 0.2);
+    flex: none;
+  }
+  .pair-list { display: grid; gap: 9px; }
+  .pair-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: rgba(4, 21, 47, 0.55);
+    border: 1px solid rgba(148, 197, 255, 0.14);
+  }
+  .pair-row strong {
+    display: block;
+    font-size: 0.92rem;
+    color: #ffffff;
+  }
+  .pair-row small {
+    font-size: 0.8rem;
+    color: rgba(214, 231, 255, 0.68);
+  }
+  .pair-state {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--mint);
+  }
+
+  /* Main Daylight Sections */
+  main section {
+    padding: 64px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  main section:last-of-type { border-bottom: none; }
+
+  h2 {
+    font-size: clamp(1.5rem, 2.6vw, 1.95rem);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin: 0 0 10px;
+  }
+  .section-lead {
+    color: var(--muted);
+    max-width: 60ch;
+    margin: 0 0 32px;
+    font-size: 1.02rem;
+  }
+
+  /* Split Release Notes */
+  .split-section {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .release-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .release-items li {
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+  }
+  .release-items li:last-child { border-bottom: 1px solid var(--line); }
+  .release-items strong {
+    display: block;
+    font-size: 1.02rem;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+  .release-items p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  /* Editorial Feature Grid (Hairline rules, no card boxes) */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 36px 32px;
+  }
+  .feature-col {
+    padding-top: 16px;
+    border-top: 2px solid var(--ink);
+  }
+  .feature-col h3 {
+    font-size: 1.04rem;
+    margin: 0 0 8px;
+  }
+  .feature-col p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.94rem;
+  }
+
+  /* Screenshots Gallery */
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .tab {
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .tab:hover { color: var(--ink); border-color: #b8cce0; }
+  .tab.active {
+    background: var(--abyss);
+    border-color: var(--abyss);
+    color: #ffffff;
+  }
+  .stage {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 18px 40px -28px rgba(11, 27, 51, 0.25);
+  }
+  .stage img {
+    width: 100%;
+    max-width: 960px;
+    height: auto;
+    border-radius: 10px;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid var(--line);
+  }
+  .stage-cap {
+    margin-top: 14px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.93rem;
+  }
+
+  /* Downloads */
+  .dl-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .dl-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .dl-card h3 { margin: 0 0 6px; font-size: 1.02rem; }
+  .dl-card p { margin: 0 0 14px; color: var(--muted); font-size: 0.9rem; }
+  .cmd {
+    display: block;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.79rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    color: var(--ink);
+  }
+
+  .notice {
+    margin-top: 24px;
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-line);
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 0.94rem;
+    color: var(--muted);
+  }
+  .notice strong { color: var(--ink); }
+
+  /* Pix Donation Section */
+  .pix-panel {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 32px;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px;
+  }
+  .pix-qr-wrap {
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px;
+    width: 204px;
+    height: 204px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pix-qr-wrap img {
+    width: 180px;
+    height: 180px;
+    display: block;
+  }
+  .pix-meta h3 {
+    margin: 0 0 6px;
+    font-size: 1.15rem;
+  }
+  .pix-meta p {
+    margin: 0 0 14px;
+    color: var(--muted);
+    max-width: 54ch;
+  }
+  .pix-key-box {
+    display: inline-block;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.86rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 14px;
+    word-break: break-all;
+  }
+  .pix-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .pix-feedback {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--mint-ink);
+  }
+
+  footer {
+    padding: 32px 0 48px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.88rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  @media (max-width: 920px) {
+    .hero, .split-section { grid-template-columns: 1fr; gap: 32px; }
+    .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    nav { display: none; }
+    .feature-grid, .dl-grid, .pix-panel { grid-template-columns: 1fr; }
+    .pix-qr-wrap { margin: 0 auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero-band">
+  <svg class="breeze-bg" viewBox="0 0 1440 620" fill="none" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M-80 470 C 260 360, 520 560, 880 410 C 1140 300, 1320 360, 1520 260" stroke="url(#breezeGrad1)" stroke-width="2.5"/>
+    <path d="M-80 520 C 300 420, 580 600, 940 460 C 1180 365, 1340 410, 1520 320" stroke="url(#breezeGrad2)" stroke-width="2"/>
+    <defs>
+      <linearGradient id="breezeGrad1" x1="0" y1="0" x2="1440" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#00a8e8" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#00a8e8" stop-opacity="0.8"/>
+        <stop offset="100%" stop-color="#2ce6c1" stop-opacity="0.9"/>
+      </linearGradient>
+      <linearGradient id="breezeGrad2" x1="0" y1="0" x2="1440" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#2ce6c1" stop-opacity="0"/>
+        <stop offset="60%" stop-color="#2ce6c1" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#00a8e8" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="wrap">
+    <header>
+      <a class="brand" href="#">
+        <img src="brisasync.png" alt="BrisaSync">
+        <span>BrisaSync</span>
+        <span class="ver-pill">1.0.0</span>
+      </a>
+      <nav aria-label="Navegação principal">
+        <a href="#novidades">Novidades</a>
+        <a href="#recursos">Recursos</a>
+        <a href="#telas">Telas</a>
+        <a href="#baixar">Baixar</a>
+        <a href="#apoie">Apoie</a>
+        <a href="https://github.com/fabio-agreles/BrisaSync">GitHub</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div>
+        <h1>Sincronização bidirecional leve para suas pastas na nuvem</h1>
+        <p class="hero-lead">
+          O BrisaSync mantém diretórios do Linux e do Windows em sincronia contínua com
+          Google Drive, OneDrive, Dropbox e Nextcloud — direto do seu computador, sem
+          servidor intermediário e sem telemetria.
+        </p>
+        <div class="actions">
+          <a class="btn btn-hero-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/latest">Baixar BrisaSync 1.0.0</a>
+          <a class="btn btn-hero-secondary" href="https://github.com/fabio-agreles/BrisaSync">Ver código no GitHub</a>
+        </div>
+        <div class="provider-strip">
+          <span>Provedores:</span>
+          <span class="provider-chip">Google Drive</span>
+          <span class="provider-chip">OneDrive</span>
+          <span class="provider-chip">Dropbox</span>
+          <span class="provider-chip">Nextcloud</span>
+        </div>
+      </div>
+
+      <div class="sync-panel" aria-label="Resumo da interface do BrisaSync">
+        <div class="sync-panel-bar">
+          <div class="win-dots"><span></span><span></span><span></span></div>
+          <span>BrisaSync 1.0.0 · rclone bisync</span>
+        </div>
+        <div class="sync-panel-body">
+          <div class="sync-status-card">
+            <div>
+              <strong>Tudo em dia</strong>
+              <span>4 provedores suportados · detecção rápida ativa</span>
+            </div>
+            <span class="pulse-dot" aria-hidden="true"></span>
+          </div>
+          <div class="pair-list">
+            <div class="pair-row">
+              <div>
+                <strong>Documentos</strong>
+                <small>Google Drive · /Trabalho</small>
+              </div>
+              <span class="pair-state">Sincronizado</span>
+            </div>
+            <div class="pair-row">
+              <div>
+                <strong>Projetos</strong>
+                <small>OneDrive · /Projetos</small>
+              </div>
+              <span class="pair-state">Sincronizado</span>
+            </div>
+            <div class="pair-row">
+              <div>
+                <strong>Fotos</strong>
+                <small>Nextcloud · /Camera</small>
+              </div>
+              <span class="pair-state">Sincronizado</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<main class="wrap">
+  <section id="novidades" class="split-section">
+    <div>
+      <h2>O que há de novo na versão 1.0.0</h2>
+      <p class="section-lead">
+        Reconstruído em Rust e Tauri 2 com o motor bisync do rclone embutido em todos os pacotes.
+      </p>
+    </div>
+    <ul class="release-items">
+      <li>
+        <strong>Quatro provedores integrados</strong>
+        <p>Conecte contas do Google Drive, OneDrive, Dropbox e Nextcloud no mesmo lugar, com suporte a credenciais OAuth próprias no Google.</p>
+      </li>
+      <li>
+        <strong>Detecção rápida na nuvem</strong>
+        <p>Consulta leve às APIs de alterações do Google Drive e OneDrive a cada 30 segundos, evitando varreduras pesadas quando nada mudou.</p>
+      </li>
+      <li>
+        <strong>Sincronização seletiva visual</strong>
+        <p>Escolha quais subpastas da nuvem sincronizar ou ignorar em cada perfil sem precisar editar regras de filtro manualmente.</p>
+      </li>
+      <li>
+        <strong>Envio múltiplo por arrastar e soltar</strong>
+        <p>Arraste arquivos e pastas inteiras direto para o navegador de arquivos da nuvem ou baixe itens avulsos sob demanda.</p>
+      </li>
+      <li>
+        <strong>Bandeja com progresso e atualizador integrado</strong>
+        <p>Acompanhe velocidade e andamento na bandeja do sistema e instale novas versões pelo próprio aplicativo.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section id="recursos">
+    <h2>Projetado para uso diário sem surpresas</h2>
+    <p class="section-lead">Cada detalhe prioriza a integridade dos seus arquivos e o baixo consumo de memória.</p>
+    <div class="feature-grid">
+      <div class="feature-col">
+        <h3>Sincronização bidirecional real</h3>
+        <p>Alterações locais são detectadas na hora pelo observador do sistema e enviadas com conferência de integridade pelo motor rclone bisync.</p>
+      </div>
+      <div class="feature-col">
+        <h3>Conflitos resolvidos lado a lado</h3>
+        <p>Quando um arquivo muda nos dois lados ao mesmo tempo, você compara e escolhe qual versão manter — e a sincronização retoma imediatamente.</p>
+      </div>
+      <div class="feature-col">
+        <h3>Trava contra exclusões em massa</h3>
+        <p>Se uma pasta esvaziar de repente por erro ou desmontagem de disco, o BrisaSync interrompe o ciclo antes de apagar o outro lado.</p>
+      </div>
+      <div class="feature-col">
+        <h3>Navegador de arquivos sob demanda</h3>
+        <p>Explore pastas remotas, baixe itens avulsos ou envie novos arquivos sem precisar espelhar toda a sua nuvem no disco.</p>
+      </div>
+      <div class="feature-col">
+        <h3>Controle de banda e comportamento</h3>
+        <p>Defina limites de upload e download, inicialização automática com o sistema e fechamento discreto para a bandeja.</p>
+      </div>
+      <div class="feature-col">
+        <h3>Código aberto e zero telemetria</h3>
+        <p>Licença MIT, sem anúncios e sem servidor próprio: seus dados trafegam diretamente entre o seu computador e o provedor escolhido.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="telas">
+    <h2>Capturas do aplicativo</h2>
+    <p class="section-lead">Interface adaptativa com temas claro e escuro para Linux e Windows.</p>
+    <div class="tabs" role="tablist" aria-label="Telas do BrisaSync">
+      <button class="tab active" type="button" data-src="assets/images/visao-geral.png" data-cap="Visão geral: status das pastas, fila de transferência, contas conectadas e armazenamento.">Visão geral</button>
+      <button class="tab" type="button" data-src="assets/images/pastas.png" data-cap="Pastas: pares de sincronização bidirecional e seleção visual de subpastas.">Pastas</button>
+      <button class="tab" type="button" data-src="assets/images/arquivos.png" data-cap="Arquivos: navegue pela nuvem sem baixar tudo e envie arquivos por arrastar e soltar.">Arquivos</button>
+      <button class="tab" type="button" data-src="assets/images/ajustes.png" data-cap="Ajustes: limites de banda, comportamento na bandeja, idioma e atualizações.">Ajustes</button>
+      <button class="tab" type="button" data-src="assets/images/tema-escuro.png" data-cap="Tema escuro: interface adaptada para uso noturno no Linux e Windows.">Tema escuro</button>
+    </div>
+    <div class="stage">
+      <img id="stage-img" src="assets/images/visao-geral.png" alt="Captura de tela do BrisaSync">
+      <div id="stage-cap" class="stage-cap">Visão geral: status das pastas, fila de transferência, contas conectadas e armazenamento.</div>
+    </div>
+  </section>
+
+  <section id="baixar">
+    <h2>Baixar para Linux e Windows</h2>
+    <p class="section-lead">Escolha o pacote adequado para o seu sistema na página de lançamentos do GitHub. O rclone já vai embutido.</p>
+    <div class="dl-grid">
+      <div class="dl-card">
+        <div>
+          <h3>Debian, Ubuntu, Mint</h3>
+          <p>Pacote nativo <code>.deb</code> com integração à bandeja.</p>
+        </div>
+        <code class="cmd">sudo apt install ./BrisaSync*.deb</code>
+      </div>
+      <div class="dl-card">
+        <div>
+          <h3>Qualquer Linux</h3>
+          <p><code>AppImage</code> portátil, pronto para executar.</p>
+        </div>
+        <code class="cmd">chmod +x BrisaSync*.AppImage</code>
+      </div>
+      <div class="dl-card">
+        <div>
+          <h3>Flatpak</h3>
+          <p>Pacote isolado (<code>app.brisasync.BrisaSync</code>).</p>
+        </div>
+        <code class="cmd">flatpak install BrisaSync*.flatpak</code>
+      </div>
+      <div class="dl-card">
+        <div>
+          <h3>Windows 10 / 11</h3>
+          <p>Instalador <code>.exe</code> ou versão portátil <code>.zip</code>.</p>
+        </div>
+        <code class="cmd">BrisaSync_1.0.0_x64-setup.exe</code>
+      </div>
+    </div>
+
+    <div class="notice">
+      <strong>Sobre o aviso do Google ao conectar:</strong> o projeto OAuth padrão ainda não passou pela verificação paga do Google e possui teto de 100 contas.
+      Se atingir o limite, você pode cadastrar suas próprias credenciais do Google Cloud em <strong>Ajustes → Avançado</strong>.
+    </div>
+  </section>
+
+  <section id="apoie">
+    <h2>Apoie o projeto via Pix</h2>
+    <p class="section-lead">O BrisaSync é gratuito e de código aberto. Se ele ajuda no seu dia a dia, considere apoiar o desenvolvimento.</p>
+    <div class="pix-panel">
+      <div class="pix-qr-wrap">
+        <img src="pix-qr.svg" alt="QR Code Pix para apoiar o BrisaSync">
+      </div>
+      <div class="pix-meta">
+        <h3>Contribuição voluntária</h3>
+        <p>Escaneie o QR Code no aplicativo do seu banco ou copie o código abaixo. Beneficiário: <strong style="color: var(--ink);">Fábio Agreles Bezerra</strong>.</p>
+        <div class="pix-key-box" id="pix-key">e4bf0532-8016-42bf-bf2a-fd81326b6621</div>
+        <div class="pix-actions">
+          <button class="btn btn-primary" id="copy-brcode" type="button">Copiar Pix Copia e Cola</button>
+          <button class="btn btn-secondary" id="copy-pix" type="button">Copiar chave Pix</button>
+          <span class="pix-feedback" id="pix-msg" role="status" aria-live="polite"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="wrap">
+  <footer>
+    <span>BrisaSync é software livre sob licença MIT. Google Drive, OneDrive, Dropbox e Nextcloud pertencem aos seus respectivos donos.</span>
+    <div class="footer-links">
+      <a href="https://github.com/fabio-agreles/BrisaSync">GitHub</a>
+      <a href="https://github.com/fabio-agreles/BrisaSync/releases">Lançamentos</a>
+      <a href="https://github.com/fabio-agreles/BrisaSync/blob/main/PRIVACIDADE.md">Privacidade</a>
+      <a href="https://github.com/fabio-agreles/BrisaSync/blob/main/SECURITY.md">Segurança</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+  const PIX_BRCODE = "00020126580014br.gov.bcb.pix0136e4bf0532-8016-42bf-bf2a-fd81326b66215204000053039865802BR5921FABIO AGRELES BEZERRA6009SAO PAULO62070503***63044F7C";
+
+  document.querySelectorAll('.tab').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('stage-img').src = btn.dataset.src;
+      document.getElementById('stage-cap').textContent = btn.dataset.cap;
+    });
+  });
+
+  async function copyText(text, label) {
+    const msg = document.getElementById('pix-msg');
+    try {
+      await navigator.clipboard.writeText(text);
+      msg.textContent = label;
+    } catch {
+      msg.textContent = text;
+    }
+  }
+
+  document.getElementById('copy-brcode').addEventListener('click', () => {
+    copyText(PIX_BRCODE, 'Pix Copia e Cola copiado!');
+  });
+
+  document.getElementById('copy-pix').addEventListener('click', () => {
+    const key = document.getElementById('pix-key').textContent.trim();
+    copyText(key, 'Chave Pix copiada!');
+  });
+</script>
+</body>
+</html>

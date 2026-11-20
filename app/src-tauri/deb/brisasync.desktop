@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=BrisaSync
+GenericName=Sincronização em nuvem
+Comment=Sincronize Google Drive, OneDrive, Dropbox e Nextcloud com pastas deste computador
+Exec=brisasync
+Icon=brisasync
+Terminal=false
+Categories=Network;FileTransfer;
+Keywords=drive;onedrive;dropbox;nextcloud;sync;sincronizacao;nuvem;brisasync;backup;rclone;
+StartupNotify=true
+StartupWMClass=brisasync

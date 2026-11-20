@@ -1,0 +1,55 @@
+[package]
+name = "brisasync"
+version = "1.0.0"
+description = "Sincronização visual de Google Drive, OneDrive, Dropbox e Nextcloud"
+authors = ["BrisaSync contributors"]
+license = "MIT"
+edition = "2021"
+rust-version = "1.90"
+
+[lib]
+name = "brisasync_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.7", features = [] }
+
+[features]
+# Sem esta feature o binário abre a devUrl (localhost:1420) em vez dos arquivos
+# embutidos em `dist/`. O `tauri build` já a ativa; builds diretos com `cargo build
+# --release` (Flatpak, CI) precisam passá-la explicitamente.
+custom-protocol = ["tauri/custom-protocol"]
+
+[dependencies]
+# `image-png` habilita `Image::from_bytes`: os ícones simbólicos da bandeja
+# viajam embutidos no binário (nada para procurar em disco no Flatpak).
+tauri = { version = "2.12", features = ["tray-icon", "image-png"] }
+tauri-plugin-autostart = "2.7"
+tauri-plugin-dialog = "2.8"
+tauri-plugin-notification = "2.8"
+tauri-plugin-single-instance = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# `rustls-tls` (e não `default-tls`) porque as raízes de confiança viajam
+# dentro do binário: a autorização do Google precisa de HTTPS também dentro do
+# sandbox do Flatpak, sem depender do armazenamento de certificados do sistema.
+# Sem um recurso de TLS o reqwest não fala `https://` nenhum — era por isso que
+# a troca do código falhava com "error sending request".
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+# Sorteio da senha do painel RC do rclone a cada execução (ver `rclone::credenciais`).
+getrandom = "0.3"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "process", "time", "sync", "fs"] }
+notify = "8"
+
+# D-Bus: o portal `org.freedesktop.portal.Background` do Flatpak (iniciar junto
+# com o sistema). Só existe no Unix — no Windows quem cuida disso é o plugin do
+# Tauri, que grava a chave `Run` do registro.
+[target.'cfg(unix)'.dependencies]
+zbus = "5"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true
