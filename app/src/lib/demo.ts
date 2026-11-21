@@ -59,7 +59,7 @@ class DemoBackend {
       id: "demo-1",
       account: "pessoal",
       remotePath: "Projetos",
-      localPath: "~/Nuvem/Projetos",
+      localPath: "~/BrisaSync/Projetos",
       enabled: true,
       resyncNeeded: false,
       lastSync: now() - 6 * 60_000,
@@ -70,7 +70,7 @@ class DemoBackend {
       id: "demo-2",
       account: "pessoal",
       remotePath: "Fotos",
-      localPath: "~/Nuvem/Fotos",
+      localPath: "~/BrisaSync/Fotos",
       enabled: true,
       resyncNeeded: false,
       lastSync: now() - 2 * 60 * 60_000,
@@ -81,7 +81,7 @@ class DemoBackend {
       id: "demo-3",
       account: "trabalho",
       remotePath: "Documentos",
-      localPath: "~/Nuvem/Trabalho",
+      localPath: "~/BrisaSync/Trabalho",
       enabled: true,
       resyncNeeded: false,
       lastSync: now() - 26 * 60 * 60_000,
@@ -92,7 +92,7 @@ class DemoBackend {
       id: "demo-4",
       account: "trabalho",
       remotePath: "Backup antigo",
-      localPath: "~/Nuvem/Backup antigo",
+      localPath: "~/BrisaSync/Backup antigo",
       enabled: false,
       resyncNeeded: true,
       lastSync: null,
@@ -386,10 +386,10 @@ class DemoBackend {
     {
       id: "demo::Relatório final.docx",
       folder: "pessoal:Projetos",
-      localFolder: "~/Nuvem/Projetos",
+      localFolder: "~/BrisaSync/Projetos",
       baseName: "Relatório final.docx",
-      path1: "~/Nuvem/Projetos/Relatório final.docx..path1",
-      path2: "~/Nuvem/Projetos/Relatório final.docx..path2",
+      path1: "~/BrisaSync/Projetos/Relatório final.docx..path1",
+      path2: "~/BrisaSync/Projetos/Relatório final.docx..path2",
       path1Size: 2.4 * MB,
       path2Size: 2.7 * MB,
       path1Modified: now() - 5 * 60 * 60_000,
@@ -480,7 +480,7 @@ class DemoBackend {
 
   async installUpdate() {
     await delay(400);
-    return "/tmp/Nuvem-Sync-demo.deb";
+    return "/tmp/BrisaSync-demo.deb";
   }
 
   async openUrl() {
@@ -556,13 +556,13 @@ const TREE: Record<string, RemoteEntry[]> = {
     { name: "planilha-orçamento.xlsx", path: "planilha-orçamento.xlsx", size: 84 * 1024, isDir: false, modified: "2026-10-28T08:40:00Z" },
   ],
   "pessoal:Projetos": [
-    { name: "Nuvem", path: "Projetos/Nuvem", size: 0, isDir: true, modified: "2026-10-28T09:12:00Z" },
+    { name: "BrisaSync", path: "Projetos/BrisaSync", size: 0, isDir: true, modified: "2026-10-28T09:12:00Z" },
     { name: "Relatório anual 2026.pdf", path: "Projetos/Relatório anual 2026.pdf", size: 4.8 * MB, isDir: false, modified: "2026-10-28T09:12:00Z" },
     { name: "briefing.md", path: "Projetos/briefing.md", size: 18 * 1024, isDir: false, modified: "2026-10-24T14:20:00Z" },
   ],
-  "pessoal:Projetos/Nuvem": [
-    { name: "design-spec.fig", path: "Projetos/Nuvem/design-spec.fig", size: 22 * MB, isDir: false, modified: "2026-10-28T07:58:00Z" },
-    { name: "notas.txt", path: "Projetos/Nuvem/notas.txt", size: 2 * 1024, isDir: false, modified: "2026-10-27T22:10:00Z" },
+  "pessoal:Projetos/BrisaSync": [
+    { name: "design-spec.fig", path: "Projetos/BrisaSync/design-spec.fig", size: 22 * MB, isDir: false, modified: "2026-10-28T07:58:00Z" },
+    { name: "notas.txt", path: "Projetos/BrisaSync/notas.txt", size: 2 * 1024, isDir: false, modified: "2026-10-27T22:10:00Z" },
   ],
   "trabalho:": [
     { name: "Documentos", path: "Documentos", size: 0, isDir: true, modified: "2026-10-27T16:30:00Z" },
