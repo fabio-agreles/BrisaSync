@@ -81,6 +81,7 @@
         "install -Dm755 src-tauri/target/release/brisasync /app/bin/brisasync",
         "install -Dm644 flatpak/app.brisasync.BrisaSync.desktop /app/share/applications/app.brisasync.BrisaSync.desktop",
         "install -Dm644 flatpak/app.brisasync.BrisaSync.metainfo.xml /app/share/metainfo/app.brisasync.BrisaSync.metainfo.xml",
+        "install -Dm644 src-tauri/icons/icon.png /app/share/icons/hicolor/512x512/apps/app.brisasync.BrisaSync.png",
         "install -Dm644 src-tauri/icons/128x128@2x.png /app/share/icons/hicolor/256x256/apps/app.brisasync.BrisaSync.png",
         "install -Dm644 src-tauri/icons/32x32.png /app/share/icons/hicolor/32x32/apps/app.brisasync.BrisaSync.png",
         "install -Dm644 src-tauri/icons/64x64.png /app/share/icons/hicolor/64x64/apps/app.brisasync.BrisaSync.png",

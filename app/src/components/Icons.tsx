@@ -109,6 +109,97 @@ const STROKE: Record<IconName, string[]> = {
 
 const FILLED: IconName[] = ["play", "zap"];
 
+function ProviderLogo({
+  name,
+  size,
+  className,
+}: {
+  name: "drive" | "onedrive" | "dropbox" | "nextcloud";
+  size: number;
+  className?: string;
+}): ReactElement | null {
+  if (name === "drive") {
+    return (
+      <svg
+        className={className}
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M8.2 3.5h7.6l6.2 10.7-3.8 6.3H5.8L2 14.2z" fill="currentColor" fillOpacity="0.18" />
+        <path d="M8.5 3.5h7l6 10.4h-7z" fill="currentColor" />
+        <path d="M2 14.2 8.5 3.5l3.5 6-6.2 10.7z" fill="currentColor" fillOpacity="0.82" />
+        <path d="M5.8 20.5 9.3 14.5H22l-3.8 6z" fill="currentColor" fillOpacity="0.65" />
+      </svg>
+    );
+  }
+  if (name === "onedrive") {
+    return (
+      <svg
+        className={className}
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path
+          d="M10.2 7.2a5.2 5.2 0 0 1 9.4 2.1 3.8 3.8 0 0 1-.4 7.5H6.5a4.3 4.3 0 0 1-.8-8.5 5.2 5.2 0 0 1 4.5-1.1z"
+          fill="currentColor"
+          fillOpacity="0.85"
+        />
+        <path
+          d="M14.5 11.2a3.8 3.8 0 0 1 4.7 5.6H6.5a4.3 4.3 0 0 1-1.2-8.4l9.2 2.8z"
+          fill="currentColor"
+        />
+      </svg>
+    );
+  }
+  if (name === "dropbox") {
+    return (
+      <svg
+        className={className}
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M7.2 3.5 2 6.9l5.2 3.4 4.8-3.4z" />
+        <path d="M16.8 3.5 12 6.9l4.8 3.4L22 6.9z" />
+        <path d="M2 13.7l5.2 3.4 4.8-3.4-4.8-3.4z" />
+        <path d="M16.8 10.3 12 13.7l4.8 3.4 5.2-3.4z" />
+        <path d="M7.2 18.1 12 21.2l4.8-3.1-4.8-3.2z" />
+      </svg>
+    );
+  }
+  if (name === "nextcloud") {
+    return (
+      <svg
+        className={className}
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2.1}
+        aria-hidden="true"
+        focusable="false"
+      >
+        <circle cx="12" cy="12" r="3.6" />
+        <circle cx="5.2" cy="12" r="2.3" />
+        <circle cx="18.8" cy="12" r="2.3" />
+      </svg>
+    );
+  }
+  return null;
+}
+
 export function Icon({
   name,
   size = 18,
@@ -118,6 +209,9 @@ export function Icon({
   size?: number;
   className?: string;
 }): ReactElement {
+  if (name === "drive" || name === "onedrive" || name === "dropbox" || name === "nextcloud") {
+    return ProviderLogo({ name, size, className })!;
+  }
   const filled = FILLED.includes(name);
   return (
     <svg
