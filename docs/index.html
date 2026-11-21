@@ -17,16 +17,16 @@
     --abyss: #04152f;
     --abyss-elevated: #0a2247;
     --abyss-line: rgba(148, 197, 255, 0.16);
-    --paper: #f7fafd;
+    --paper: #f6f9fc;
     --surface: #ffffff;
-    --surface-soft: #eef4fb;
-    --line: #d7e3f0;
+    --surface-soft: #edf3fa;
+    --line: #d6e2ef;
     --ink: #0b1b33;
     --muted: #4b627d;
     --breeze: #0077cc;
     --breeze-bright: #00a8e8;
     --mint: #2ce6c1;
-    --mint-ink: #066e5b;
+    --mint-ink: #055e4e;
     --warn-bg: #fff9ec;
     --warn-line: #ebd094;
   }
@@ -54,20 +54,20 @@
     padding: 0 24px;
   }
 
-  /* Hero Band (Deep Midnight Navy from BrisaSync Icon) */
+  /* Faixa de abertura */
   .hero-band {
     position: relative;
     overflow: hidden;
-    background: radial-gradient(1100px 520px at 82% 18%, #0b3168 0%, var(--abyss) 68%);
+    background: radial-gradient(1100px 540px at 84% 16%, #0b3168 0%, var(--abyss) 68%);
     color: #f0f6ff;
-    padding-bottom: 72px;
+    padding-bottom: 76px;
   }
 
   .breeze-bg {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    opacity: 0.32;
+    opacity: 0.34;
   }
 
   header {
@@ -76,6 +76,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 20px;
     padding: 22px 0;
     border-bottom: 1px solid var(--abyss-line);
   }
@@ -108,11 +109,12 @@
   nav {
     display: flex;
     align-items: center;
-    gap: 24px;
+    flex-wrap: wrap;
+    gap: 22px;
     font-size: 0.94rem;
   }
   nav a {
-    color: rgba(232, 242, 255, 0.78);
+    color: rgba(232, 242, 255, 0.8);
     font-weight: 500;
   }
   nav a:hover {
@@ -132,15 +134,15 @@
 
   .hero h1 {
     font-size: clamp(2.15rem, 4.2vw, 3.15rem);
-    line-height: 1.1;
+    line-height: 1.08;
     letter-spacing: -0.03em;
     margin: 0 0 20px;
     color: #ffffff;
   }
 
   .hero-lead {
-    color: rgba(224, 237, 255, 0.82);
-    font-size: 1.08rem;
+    color: rgba(224, 237, 255, 0.84);
+    font-size: 1.06rem;
     max-width: 52ch;
     margin: 0 0 30px;
   }
@@ -176,9 +178,9 @@
   .btn-hero-secondary {
     background: rgba(255, 255, 255, 0.07);
     color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.22);
   }
-  .btn-hero-secondary:hover { background: rgba(255, 255, 255, 0.13); }
+  .btn-hero-secondary:hover { background: rgba(255, 255, 255, 0.14); }
 
   .btn-primary {
     background: var(--breeze);
@@ -196,27 +198,27 @@
   .provider-strip {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
     font-size: 0.86rem;
-    color: rgba(214, 231, 255, 0.72);
+    color: rgba(224, 237, 255, 0.72);
   }
   .provider-chip {
     padding: 4px 11px;
-    border-radius: 7px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     color: #e8f2ff;
     font-weight: 500;
   }
 
-  /* Hero Interactive Sync Preview */
+  /* Painel de sincronização no Hero */
   .sync-panel {
     background: rgba(10, 34, 71, 0.86);
     border: 1px solid rgba(148, 197, 255, 0.22);
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 28px 60px -24px rgba(0, 0, 0, 0.65);
+    box-shadow: 0 24px 60px rgba(2, 10, 24, 0.45);
     backdrop-filter: blur(10px);
   }
   .sync-panel-bar {
@@ -224,38 +226,42 @@
     align-items: center;
     justify-content: space-between;
     padding: 12px 16px;
-    background: rgba(4, 21, 47, 0.65);
     border-bottom: 1px solid var(--abyss-line);
     font-size: 0.82rem;
-    color: rgba(224, 237, 255, 0.75);
+    color: rgba(224, 237, 255, 0.72);
   }
-  .win-dots { display: inline-flex; gap: 7px; }
+  .win-dots {
+    display: inline-flex;
+    gap: 6px;
+  }
   .win-dots span {
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.22);
   }
-  .sync-panel-body { padding: 20px; }
+  .sync-panel-body {
+    padding: 18px;
+    display: grid;
+    gap: 12px;
+  }
   .sync-status-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    padding: 16px 18px;
+    padding: 14px 16px;
     border-radius: 12px;
-    background: linear-gradient(135deg, rgba(0, 168, 232, 0.22), rgba(44, 230, 193, 0.16));
-    border: 1px solid rgba(44, 230, 193, 0.3);
-    margin-bottom: 14px;
+    background: rgba(44, 230, 193, 0.1);
+    border: 1px solid rgba(44, 230, 193, 0.26);
   }
   .sync-status-card strong {
     display: block;
-    font-size: 1.02rem;
     color: #ffffff;
+    font-size: 0.98rem;
   }
   .sync-status-card span {
     font-size: 0.84rem;
-    color: rgba(224, 237, 255, 0.82);
+    color: rgba(224, 237, 255, 0.78);
   }
   .pulse-dot {
     width: 10px;
@@ -265,15 +271,19 @@
     box-shadow: 0 0 0 5px rgba(44, 230, 193, 0.2);
     flex: none;
   }
-  .pair-list { display: grid; gap: 9px; }
+  .pair-list {
+    display: grid;
+    gap: 8px;
+  }
   .pair-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
     padding: 11px 14px;
     border-radius: 10px;
-    background: rgba(4, 21, 47, 0.55);
-    border: 1px solid rgba(148, 197, 255, 0.14);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
   .pair-row strong {
     display: block;
@@ -282,35 +292,38 @@
   }
   .pair-row small {
     font-size: 0.8rem;
-    color: rgba(214, 231, 255, 0.68);
+    color: rgba(224, 237, 255, 0.68);
   }
   .pair-state {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 600;
     color: var(--mint);
+    white-space: nowrap;
   }
 
-  /* Main Daylight Sections */
+  /* Seções principais */
   main section {
-    padding: 64px 0;
+    padding: 72px 0;
     border-bottom: 1px solid var(--line);
   }
-  main section:last-of-type { border-bottom: none; }
+  main section:last-of-type {
+    border-bottom: none;
+  }
 
   h2 {
-    font-size: clamp(1.5rem, 2.6vw, 1.95rem);
+    font-size: clamp(1.6rem, 2.8vw, 2.15rem);
+    line-height: 1.18;
     letter-spacing: -0.025em;
-    line-height: 1.2;
-    margin: 0 0 10px;
+    margin: 0 0 12px;
   }
   .section-lead {
     color: var(--muted);
     max-width: 60ch;
-    margin: 0 0 32px;
+    margin: 0 0 36px;
     font-size: 1.02rem;
   }
 
-  /* Split Release Notes */
+  /* Novidades (layout dividido) */
   .split-section {
     display: grid;
     grid-template-columns: 0.85fr 1.15fr;
@@ -326,12 +339,13 @@
     padding: 18px 0;
     border-top: 1px solid var(--line);
   }
-  .release-items li:last-child { border-bottom: 1px solid var(--line); }
+  .release-items li:last-child {
+    border-bottom: 1px solid var(--line);
+  }
   .release-items strong {
     display: block;
     font-size: 1.02rem;
     margin-bottom: 4px;
-    color: var(--ink);
   }
   .release-items p {
     margin: 0;
@@ -339,19 +353,20 @@
     font-size: 0.95rem;
   }
 
-  /* Editorial Feature Grid (Hairline rules, no card boxes) */
+  /* Recursos (grade tipográfica limpa) */
   .feature-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 36px 32px;
+    gap: 32px 28px;
   }
   .feature-col {
-    padding-top: 16px;
+    padding-top: 18px;
     border-top: 2px solid var(--ink);
   }
   .feature-col h3 {
     font-size: 1.04rem;
     margin: 0 0 8px;
+    letter-spacing: -0.01em;
   }
   .feature-col p {
     margin: 0;
@@ -359,7 +374,7 @@
     font-size: 0.94rem;
   }
 
-  /* Screenshots Gallery */
+  /* Capturas */
   .tabs {
     display: flex;
     flex-wrap: wrap;
@@ -368,131 +383,137 @@
   }
   .tab {
     padding: 8px 16px;
-    border-radius: 8px;
-    background: var(--surface);
+    border-radius: 999px;
     border: 1px solid var(--line);
+    background: var(--surface);
     color: var(--muted);
+    font: inherit;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   }
-  .tab:hover { color: var(--ink); border-color: #b8cce0; }
+  .tab:hover {
+    color: var(--ink);
+    border-color: #b8cbe0;
+  }
   .tab.active {
     background: var(--abyss);
-    border-color: var(--abyss);
     color: #ffffff;
+    border-color: var(--abyss);
   }
   .stage {
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 18px;
-    box-shadow: 0 18px 40px -28px rgba(11, 27, 51, 0.25);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 14px 36px rgba(11, 27, 51, 0.07);
   }
   .stage img {
-    width: 100%;
-    max-width: 960px;
-    height: auto;
-    border-radius: 10px;
     display: block;
-    margin: 0 auto;
-    border: 1px solid var(--line);
+    width: 100%;
+    height: auto;
   }
   .stage-cap {
-    margin-top: 14px;
-    text-align: center;
+    padding: 14px 18px;
+    border-top: 1px solid var(--line);
+    font-size: 0.92rem;
     color: var(--muted);
-    font-size: 0.93rem;
+    background: var(--surface-soft);
   }
 
   /* Downloads */
   .dl-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
   }
   .dl-card {
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 12px;
-    padding: 20px;
+    padding: 22px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    gap: 14px;
   }
-  .dl-card h3 { margin: 0 0 6px; font-size: 1.02rem; }
-  .dl-card p { margin: 0 0 14px; color: var(--muted); font-size: 0.9rem; }
+  .dl-card h3 {
+    margin: 0 0 6px;
+    font-size: 1.06rem;
+  }
+  .dl-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.93rem;
+  }
+  .dl-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
   .cmd {
     display: block;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 0.79rem;
-    background: var(--paper);
-    border: 1px solid var(--line);
+    padding: 10px 12px;
     border-radius: 8px;
-    padding: 8px 10px;
-    overflow-x: auto;
-    white-space: nowrap;
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.84rem;
     color: var(--ink);
+    overflow-x: auto;
   }
-
   .notice {
-    margin-top: 24px;
+    margin-top: 22px;
+    padding: 16px 18px;
+    border-radius: 10px;
     background: var(--warn-bg);
     border: 1px solid var(--warn-line);
-    border-radius: 12px;
-    padding: 16px 20px;
-    font-size: 0.94rem;
-    color: var(--muted);
+    font-size: 0.93rem;
+    color: #4a3810;
   }
-  .notice strong { color: var(--ink); }
 
-  /* Pix Donation Section */
+  /* Pix */
   .pix-panel {
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 32px;
+    grid-template-columns: 210px 1fr;
+    gap: 28px;
     align-items: center;
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 28px;
+    border-radius: 14px;
+    padding: 26px;
   }
   .pix-qr-wrap {
     background: #ffffff;
     border: 1px solid var(--line);
-    border-radius: 14px;
+    border-radius: 12px;
     padding: 12px;
-    width: 204px;
-    height: 204px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
   .pix-qr-wrap img {
-    width: 180px;
-    height: 180px;
     display: block;
+    width: 100%;
+    height: auto;
   }
   .pix-meta h3 {
-    margin: 0 0 6px;
-    font-size: 1.15rem;
+    margin: 0 0 8px;
+    font-size: 1.12rem;
   }
   .pix-meta p {
     margin: 0 0 14px;
     color: var(--muted);
-    max-width: 54ch;
+    font-size: 0.95rem;
   }
   .pix-key-box {
-    display: inline-block;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 0.86rem;
-    background: var(--paper);
-    border: 1px solid var(--line);
+    padding: 10px 14px;
     border-radius: 8px;
-    padding: 8px 12px;
-    margin-bottom: 14px;
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.88rem;
     word-break: break-all;
+    margin-bottom: 14px;
   }
   .pix-actions {
     display: flex;
@@ -506,44 +527,54 @@
     color: var(--mint-ink);
   }
 
+  /* Rodapé */
   footer {
     padding: 32px 0 48px;
     border-top: 1px solid var(--line);
-    color: var(--muted);
-    font-size: 0.88rem;
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
     gap: 16px;
+    font-size: 0.88rem;
+    color: var(--muted);
   }
   .footer-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 18px;
   }
 
-  @media (max-width: 920px) {
-    .hero, .split-section { grid-template-columns: 1fr; gap: 32px; }
-    .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .dl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 900px) {
+    .hero, .split-section {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .feature-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
+
   @media (max-width: 640px) {
-    nav { display: none; }
-    .feature-grid, .dl-grid, .pix-panel { grid-template-columns: 1fr; }
-    .pix-qr-wrap { margin: 0 auto; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    .btn { transition: none; }
+    header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .feature-grid, .dl-grid, .pix-panel {
+      grid-template-columns: 1fr;
+    }
+    .pix-qr-wrap {
+      max-width: 200px;
+    }
   }
 </style>
 </head>
 <body>
 
 <div class="hero-band">
-  <svg class="breeze-bg" viewBox="0 0 1440 620" fill="none" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M-80 470 C 260 360, 520 560, 880 410 C 1140 300, 1320 360, 1520 260" stroke="url(#breezeGrad1)" stroke-width="2.5"/>
-    <path d="M-80 520 C 300 420, 580 600, 940 460 C 1180 365, 1340 410, 1520 320" stroke="url(#breezeGrad2)" stroke-width="2"/>
+  <svg class="breeze-bg" viewBox="0 0 1440 600" fill="none" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M-80 420 C 260 310, 540 510, 920 360 C 1180 260, 1340 310, 1520 220" stroke="url(#breezeGrad1)" stroke-width="2.5"/>
+    <path d="M-80 470 C 300 370, 620 540, 980 410 C 1220 320, 1360 360, 1520 280" stroke="url(#breezeGrad2)" stroke-width="1.8"/>
     <defs>
       <linearGradient id="breezeGrad1" x1="0" y1="0" x2="1440" y2="0" gradientUnits="userSpaceOnUse">
         <stop offset="0%" stop-color="#00a8e8" stop-opacity="0"/>
@@ -584,7 +615,7 @@
           servidor intermediário e sem telemetria.
         </p>
         <div class="actions">
-          <a class="btn btn-hero-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/latest">Baixar BrisaSync 1.0.0</a>
+          <a class="btn btn-hero-primary" href="#baixar">Baixar BrisaSync 1.0.0</a>
           <a class="btn btn-hero-secondary" href="https://github.com/fabio-agreles/BrisaSync">Ver código no GitHub</a>
         </div>
         <div class="provider-strip">
@@ -643,7 +674,7 @@
     <div>
       <h2>O que há de novo na versão 1.0.0</h2>
       <p class="section-lead">
-        Reconstruído em Rust e Tauri 2 com o motor bisync do rclone embutido em todos os pacotes.
+        Construído em Rust e Tauri 2 com o motor bisync do rclone embutido em todos os pacotes.
       </p>
     </div>
     <ul class="release-items">
@@ -719,40 +750,52 @@
 
   <section id="baixar">
     <h2>Baixar para Linux e Windows</h2>
-    <p class="section-lead">Escolha o pacote adequado para o seu sistema na página de lançamentos do GitHub. O rclone já vai embutido.</p>
+    <p class="section-lead">Escolha o pacote adequado para o seu sistema na release v1.0.0. O rclone já vai embutido.</p>
     <div class="dl-grid">
       <div class="dl-card">
         <div>
           <h3>Debian, Ubuntu, Mint</h3>
           <p>Pacote nativo <code>.deb</code> com integração à bandeja.</p>
         </div>
-        <code class="cmd">sudo apt install ./BrisaSync*.deb</code>
+        <div class="dl-actions">
+          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync_1.0.0_amd64.deb">Baixar .deb</a>
+        </div>
+        <code class="cmd">sudo apt install ./BrisaSync_1.0.0_amd64.deb</code>
       </div>
       <div class="dl-card">
         <div>
           <h3>Qualquer Linux</h3>
           <p><code>AppImage</code> portátil, pronto para executar.</p>
         </div>
-        <code class="cmd">chmod +x BrisaSync*.AppImage</code>
+        <div class="dl-actions">
+          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync_1.0.0_amd64.AppImage">Baixar AppImage</a>
+        </div>
+        <code class="cmd">chmod +x BrisaSync_1.0.0_amd64.AppImage &amp;&amp; ./BrisaSync_1.0.0_amd64.AppImage</code>
       </div>
       <div class="dl-card">
         <div>
           <h3>Flatpak</h3>
           <p>Pacote isolado (<code>app.brisasync.BrisaSync</code>).</p>
         </div>
-        <code class="cmd">flatpak install BrisaSync*.flatpak</code>
+        <div class="dl-actions">
+          <a class="btn btn-secondary" href="https://github.com/fabio-agreles/BrisaSync/releases/tag/v1.0.0">Ver lançamentos</a>
+        </div>
+        <code class="cmd">flatpak install BrisaSync-1.0.0-x86_64.flatpak</code>
       </div>
       <div class="dl-card">
         <div>
           <h3>Windows 10 / 11</h3>
           <p>Instalador <code>.exe</code> ou versão portátil <code>.zip</code>.</p>
         </div>
+        <div class="dl-actions">
+          <a class="btn btn-secondary" href="https://github.com/fabio-agreles/BrisaSync/releases/tag/v1.0.0">Ver lançamentos</a>
+        </div>
         <code class="cmd">BrisaSync_1.0.0_x64-setup.exe</code>
       </div>
     </div>
 
     <div class="notice">
-      <strong>Sobre o aviso do Google ao conectar:</strong> o projeto OAuth padrão ainda não passou pela verificação paga do Google e possui teto de 100 contas.
+      <strong>Sobre o aviso do Google ao conectar:</strong> o projeto OAuth padrão ainda não passou pela verificação do Google e possui teto de 100 contas.
       Se atingir o limite, você pode cadastrar suas próprias credenciais do Google Cloud em <strong>Ajustes → Avançado</strong>.
     </div>
   </section>
@@ -808,7 +851,16 @@
       await navigator.clipboard.writeText(text);
       msg.textContent = label;
     } catch {
-      msg.textContent = text;
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.top = '-1000px';
+      document.body.appendChild(area);
+      area.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(area);
+      msg.textContent = ok ? label : text;
     }
   }
 
