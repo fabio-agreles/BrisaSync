@@ -24,24 +24,34 @@ trap limpar EXIT
 
 # Par do projeto (opcional: sem ele o build sai com o projeto do rclone).
 par_id=""; par_segredo=""
+dbx_id=""; dbx_segredo=""
 if [[ -f "$raiz/.env.oauth" ]]; then
   # shellcheck disable=SC1091
   set -a; source "$raiz/.env.oauth"; set +a
   par_id="${BRISASYNC_GOOGLE_CLIENT_ID:-}"
   par_segredo="${BRISASYNC_GOOGLE_CLIENT_SECRET:-}"
+  dbx_id="${BRISASYNC_DROPBOX_CLIENT_ID:-}"
+  dbx_segredo="${BRISASYNC_DROPBOX_CLIENT_SECRET:-}"
 fi
 
-python3 - "$manifesto" "$temporario" "$par_id" "$par_segredo" <<'PY'
+python3 - "$manifesto" "$temporario" "$par_id" "$par_segredo" "$dbx_id" "$dbx_segredo" <<'PY'
 import json, sys
 
-origem, destino, client_id, segredo = sys.argv[1:5]
+origem, destino, client_id, segredo, dbx_id, dbx_segredo = sys.argv[1:7]
 manifesto = json.load(open(origem))
 for modulo in manifesto["modules"]:
-    if isinstance(modulo, dict) and modulo.get("name") == "brisasync" and client_id and segredo:
-        modulo["build-options"].setdefault("env", {}).update({
-            "BRISASYNC_GOOGLE_CLIENT_ID": client_id,
-            "BRISASYNC_GOOGLE_CLIENT_SECRET": segredo,
-        })
+    if isinstance(modulo, dict) and modulo.get("name") == "brisasync":
+        env = modulo["build-options"].setdefault("env", {})
+        if client_id and segredo:
+            env.update({
+                "BRISASYNC_GOOGLE_CLIENT_ID": client_id,
+                "BRISASYNC_GOOGLE_CLIENT_SECRET": segredo,
+            })
+        if dbx_id and dbx_segredo:
+            env.update({
+                "BRISASYNC_DROPBOX_CLIENT_ID": dbx_id,
+                "BRISASYNC_DROPBOX_CLIENT_SECRET": dbx_segredo,
+            })
 json.dump(manifesto, open(destino, "w"), indent=2, ensure_ascii=False)
 PY
 
