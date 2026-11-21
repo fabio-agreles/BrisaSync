@@ -63,9 +63,9 @@
       "build-options": {
         "append-path": "/usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/node22/bin",
         "env": {
-          "CARGO_HOME": "/run/build/nuvem/cargo",
+          "CARGO_HOME": "/run/build/brisasync/cargo",
           "CARGO_NET_OFFLINE": "true",
-          "npm_config_cache": "/run/build/nuvem/flatpak-node/npm-cache",
+          "npm_config_cache": "/run/build/brisasync/flatpak-node/npm-cache",
           "npm_config_offline": "true"
         }
       },
