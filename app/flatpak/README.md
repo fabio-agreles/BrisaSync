@@ -35,7 +35,7 @@ flatpak run app.brisasync.BrisaSync
 ```
 
 Instalar por caminho (`flatpak install --user ./flatpak-repo app.brisasync.BrisaSync`)
-também funciona, mas o remoto `nuvem-origin` deixa `flatpak update` enxergar os
+também funciona, mas o remoto `brisasync-origin` deixa `flatpak update` enxergar os
 commits novos.
 
 Antes de enviar mudanças, o lint local (o mesmo que o CI roda em
@@ -54,7 +54,7 @@ são relativos ao diretório atual, e apontá-los para fora de `app/` faz o
 flatpak-builder criar `flatpak-repo/` e `builddir/` no lugar errado (o app
 instalado continua no commit antigo). Os dois já estão no `.gitignore` da raiz.
 
-A fonte `type: dir` do módulo `nuvem` aponta para `..` (o diretório `app/`) e
+A fonte `type: dir` do módulo `brisasync` aponta para `..` (o diretório `app/`) e
 ignora `node_modules`, `dist`, `src-tauri/target`, `src-tauri/gen`,
 `src-tauri/resources`, `flatpak/repo`, `builddir` e `.flatpak-builder`.
 
@@ -69,7 +69,7 @@ ignora `node_modules`, `dist`, `src-tauri/target`, `src-tauri/gen`,
 2. **rclone v1.75.2** a partir do tarball oficial (sha256 fixo), com as dependências
    Go vendorizadas (`rclone-sources.json` + `modules.txt`), `CGO_ENABLED=0`,
    `GOFLAGS=-mod=vendor`, instalado em `/app/bin/rclone`. O app o encontra por
-   `NUVEM_RCLONE=/app/bin/rclone` (finish-arg).
+   `BRISASYNC_RCLONE=/app/bin/rclone` (finish-arg).
 3. **BrisaSync**: `npm ci --offline` + `npm run build` (Vite) e
    `cargo --offline build --release --features custom-protocol`, com Node 22 e Rust
    stable das extensões de SDK e as dependências vendorizadas
@@ -113,8 +113,8 @@ As três variáveis que fecham a porta da rede:
 
 ```json
 "rclone": { "GOFLAGS": "-mod=vendor", "CGO_ENABLED": "0" }
-"nuvem":  { "CARGO_NET_OFFLINE": "true",
-            "npm_config_cache": "/run/build/nuvem/flatpak-node/npm-cache",
+"brisasync":  { "CARGO_NET_OFFLINE": "true",
+            "npm_config_cache": "/run/build/brisasync/flatpak-node/npm-cache",
             "npm_config_offline": "true" }
 ```
 
@@ -194,12 +194,12 @@ explicit in vendor/modules.txt`. Use o `modules.txt` do próprio `go mod vendor`
 | Painel RC autenticado | ✅ `POST /core/version` sem credencial → `401`; com HTTP Basic → `200` |
 | Build sem rede nas etapas | ✅ `-mod=vendor`, `cargo --offline`, `npm ci --offline`; nenhum `--share=network` |
 | Bandeja (SNI) | ✅ registra `org/ayatana/NotificationItem/tray_icon_tray_app_main` |
-| Ícone simbólico da bandeja | ✅ painel escuro mostra a nuvem em traço branco; PNG entregue em `~/.var/app/app.brisasync.BrisaSync/cache/nuvem/bandeja/` |
+| Ícone simbólico da bandeja | ✅ painel escuro mostra a nuvem em traço branco; PNG entregue em `~/.var/app/app.brisasync.BrisaSync/cache/brisasync/bandeja/` |
 | Bibliotecas de bandeja em `/app/lib` | ✅ `libayatana-appindicator3`, `libdbusmenu`, `libayatana-indicator` |
 | Sincronização real com conta Google/OneDrive | ✅ verificada com conta real |
 | Início automático (`org.freedesktop.portal.Background`) | ✅ escreve `~/.config/autostart` do sistema |
 | Credenciais OAuth próprias (`Ajustes → Avançado · Google Drive`) | ✅ cartão presente no binário instalado (`client_id`/`client_secret` compilados); validação coberta por teste |
-| Projeto OAuth do próprio BrisaSync embutido no build | ✅ código; no Flatpak o par entra por `flatpak override --user --env=NUVEM_GOOGLE_CLIENT_ID=… --env=NUVEM_GOOGLE_CLIENT_SECRET=…` (o app lê em tempo de execução) ou `build-options.env` no manifesto |
+| Projeto OAuth do próprio BrisaSync embutido no build | ✅ código; no Flatpak o par entra por `flatpak override --user --env=BRISASYNC_GOOGLE_CLIENT_ID=… --env=BRISASYNC_GOOGLE_CLIENT_SECRET=…` (o app lê em tempo de execução) ou `build-options.env` no manifesto |
 | Trava do bisync removida após fechar o app no meio | ✅ observado no app instalado (“Trava antiga do bisync removida — 1 arquivo(s)”) |
 
 ### Início automático
@@ -214,7 +214,7 @@ que a sessão gráfica não lê. Dentro do Flatpak o switch de **Ajustes** passa
 Type=Application
 Name=BrisaSync
 X-XDP-Autostart=app.brisasync.BrisaSync
-Exec=flatpak run --command=/app/bin/nuvem app.brisasync.BrisaSync --minimized
+Exec=flatpak run --command=/app/bin/brisasync app.brisasync.BrisaSync --minimized
 X-Flatpak=app.brisasync.BrisaSync
 Icon=app.brisasync.BrisaSync
 ```
@@ -264,13 +264,13 @@ projeto OAuth) está em [`docs/flathub-pr.md`](../../docs/flathub-pr.md).
 | Licença | ✅ MIT no `project_license`, `LICENSE` instalada em `/app/share/licenses` |
 | `--filesystem=home` justificado | ⚠️ ver abaixo |
 | `aarch64` | ⚠️ não testado (sem máquina ARM aqui) |
-| Repositório público com as URLs do metainfo | ⚠️ `github.com/fabio-agreles/nuvem` existe, mas está **privado** por ora: as URLs e as capturas respondem 404 para quem não tem acesso |
+| Repositório público com as URLs do metainfo | ⚠️ `github.com/fabio-agreles/BrisaSync` existe, mas está **privado** por ora: as URLs e as capturas respondem 404 para quem não tem acesso |
 
 ### O que falta antes de abrir o PR no Flathub
 
-1. **Repositório público**: enquanto `github.com/fabio-agreles/nuvem` estiver
+1. **Repositório público**: enquanto `github.com/fabio-agreles/BrisaSync` estiver
    privado, `<url type="homepage">`, `bugtracker`, `vcs-browser` e as seis capturas
-   dão 404 para a revisão. Basta `gh repo edit fabio-agreles/nuvem --visibility
+   dão 404 para a revisão. Basta `gh repo edit fabio-agreles/BrisaSync --visibility
    public` antes de abrir o PR (a AppStream local valida igual, então o lint não
    acusa nada).
 2. **`aarch64`**: as fontes são independentes de arquitetura (zips do

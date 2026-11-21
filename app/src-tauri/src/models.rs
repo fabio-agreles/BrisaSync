@@ -7,7 +7,7 @@ pub struct Account {
     pub provider: String,
     pub label: String,
     /// Qual projeto OAuth autorizou a conta: `rclone` (o compartilhado, sem
-    /// `client_id`), `nuvem` (o embutido no build) ou `usuario` (o que a pessoa
+    /// `client_id`), `brisasync` (o embutido no build) ou `usuario` (o que a pessoa
     /// colou em Ajustes → Avançado).
     pub client_origem: String,
 }
@@ -139,7 +139,7 @@ pub struct AccountUsage {
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OAuthInfo {
-    /// `usuario`, `nuvem` ou `rclone`.
+    /// `usuario`, `brisasync` ou `rclone`.
     pub fonte: String,
     /// `client_id` do projeto em vigor (público; o segredo nunca sai daqui).
     pub client_id: Option<String>,

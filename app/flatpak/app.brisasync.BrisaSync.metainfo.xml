@@ -289,7 +289,7 @@
   </keywords>
 
   <provides>
-    <binary>nuvem</binary>
+    <binary>brisasync</binary>
   </provides>
 
   <branding>

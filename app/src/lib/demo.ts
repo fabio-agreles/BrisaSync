@@ -465,12 +465,12 @@ class DemoBackend {
 
   async openConfigFolder() {
     await delay(40);
-    return "~/.config/nuvem";
+    return "~/.config/app.brisasync.BrisaSync";
   }
 
   async saveDiagnostics() {
     await delay(120);
-    return "~/Documentos/nuvem-diagnostico-2026-10-30-1830.txt";
+    return "~/Documentos/brisasync-diagnostico-2026-10-30-1830.txt";
   }
 
   async checkUpdate() {

@@ -20,7 +20,7 @@
     "--talk-name=org.kde.StatusNotifierWatcher",
     "--talk-name=org.freedesktop.StatusNotifierWatcher",
     "--talk-name=org.freedesktop.portal.Background",
-    "--env=NUVEM_RCLONE=/app/bin/rclone"
+    "--env=BRISASYNC_RCLONE=/app/bin/rclone"
   ],
   "cleanup": [
     "/include",
@@ -100,7 +100,9 @@
             "src-tauri/resources",
             "flatpak/repo",
             "builddir",
-            ".flatpak-builder"
+            ".flatpak-builder",
+            ".env",
+            ".env.*"
           ]
         },
         {

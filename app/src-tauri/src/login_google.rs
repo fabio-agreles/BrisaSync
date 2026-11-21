@@ -794,7 +794,7 @@ mod testes {
     }
 
     #[test]
-    fn pagina_fala_do_nuvem_sync_nos_dois_idiomas() {
+    fn pagina_fala_do_brisasync_nos_dois_idiomas() {
         let _trava = TRAVA.lock().unwrap_or_else(|erro| erro.into_inner());
 
         crate::idioma::definir("pt");
@@ -817,7 +817,7 @@ mod testes {
     /// atrapalha, o retorno com `state` certo vira código e a página é a do
     /// BrisaSync.
     #[tokio::test]
-    async fn laco_local_entrega_o_codigo_e_a_pagina_do_nuvem() {
+    async fn laco_local_entrega_o_codigo_e_a_pagina_do_brisasync() {
         let _trava = TRAVA.lock().unwrap_or_else(|erro| erro.into_inner());
         crate::idioma::definir("pt");
 

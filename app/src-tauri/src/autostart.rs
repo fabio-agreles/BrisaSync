@@ -67,7 +67,7 @@ fn pedir_ao_portal(enable: bool) -> AppResult<()> {
     options.insert("reason", Value::from(reason));
     options.insert("autostart", Value::from(enable));
     // O portal monta `flatpak run --command=<1º item> <id> <resto>`, então o
-    // primeiro item é o executável (dentro do sandbox, `/app/bin/nuvem`).
+    // primeiro item é o executável (dentro do sandbox, `/app/bin/brisasync`).
     let exe = std::env::current_exe()
         .map(|path| path.to_string_lossy().into_owned())
         .unwrap_or_else(|_| APP_ID.to_owned());

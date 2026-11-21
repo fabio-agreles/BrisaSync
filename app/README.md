@@ -51,7 +51,7 @@ o rclone embutido.
 | Tamanho e contagem de itens da pasta aberta (`operations/size`) | ✅ |
 | Flatpak (GNOME 50, rclone + bandeja embutidos, build **offline** com crates/npm/Go vendorizados) | ✅ construído e instalado localmente |
 | Pacotes `.deb` e AppImage com rclone embutido | ✅ gerados e testados |
-| Versão Windows (`Nuvem.exe` x64 + `rclone.exe`), compilada a partir do Linux | ✅ pacote portátil gerado; instalação e teste em máquina Windows pendentes |
+| Versão Windows (`BrisaSync.exe` x64 + `rclone.exe`), compilada a partir do Linux | ✅ pacote portátil gerado; instalação e teste em máquina Windows pendentes |
 | Sincronização real (Google Drive, duas vias) | ✅ verificada: 1 pasta, ida e volta |
 | Histórico por arquivo (lido do log do bisync, por execução) | ✅ |
 | App de instância única (dois cliques não abrem dois motores) | ✅ |
@@ -61,7 +61,7 @@ o rclone embutido.
 | Aba Arquivos mantém a conta e o caminho ao trocar de aba | ✅ |
 | Transferências ajustadas para o limite do Google (3× mais rápido no teste) | ✅ |
 | Credenciais OAuth próprias do Google em **Ajustes → Avançado** | ✅ |
-| Projeto OAuth do próprio Nuvem Sync embutido no build (usuário > Nuvem Sync > rclone) | ✅ código e script; falta o par do projeto |
+| Projeto OAuth do próprio BrisaSync embutido no build (usuário > BrisaSync > rclone) | ✅ código e script; falta o par do projeto |
 | Painel RC do rclone com senha sorteada a cada execução (HTTP Basic) | ✅ |
 | Estado gravado com `0600` e recuperação automática de arquivo corrompido | ✅ |
 | Licença MIT (`LICENSE`) e repositório git versionado | ✅ |
@@ -85,7 +85,7 @@ metainfo do Flatpak são as mesmas, em 2480×1800:
 | ![Ajustes](docs/previews/preview-settings.png) | ![Credenciais próprias do Google em Ajustes → Avançado](docs/previews/preview-settings-advanced.png) |
 | ![Atividade com histórico por arquivo](docs/previews/preview-activity.png) | ![Limpar a atividade](docs/previews/preview-activity-clear.png) |
 | ![Adicionar pasta escolhendo na nuvem](docs/previews/preview-add-folder.png) | ![Paleta de comandos](docs/previews/preview-palette.png) |
-| ![Tema escuro](docs/previews/preview-dark.png) | ![Nuvem Sync no Flatpak, com conta real](docs/previews/flatpak.png) |
+| ![Tema escuro](docs/previews/preview-dark.png) | ![BrisaSync no Flatpak, com conta real](docs/previews/flatpak.png) |
 
 Para refazer o conjunto (o script esconde o selo *Modo demonstração* e usa
 1240×900 @2x):
@@ -101,7 +101,7 @@ NODE_PATH=/caminho/do/node_modules node scripts/capture-previews.mjs
 ## Rodar
 
 Pré-requisitos para **desenvolver** no Linux: Node 22+, Rust 1.90+, `webkit2gtk-4.1`,
-`libappindicator3` e **rclone 1.75+** no `PATH` (ou `NUVEM_RCLONE=/caminho/rclone`).
+`libappindicator3` e **rclone 1.75+** no `PATH` (ou `BRISASYNC_RCLONE=/caminho/rclone`).
 Os pacotes prontos (`.deb`, AppImage, Flatpak e o `.exe` do Windows) já trazem o
 rclone embutido.
 
@@ -111,7 +111,7 @@ GTK 3 — o AppImage não empacota o WebKit, porque ele conversa com o composito
 sessão. No Windows, o equivalente é o WebView2 (já vem no Windows 11).
 
 ```bash
-cd nuvem/app
+cd BrisaSync/app
 
 npm install
 
@@ -135,23 +135,23 @@ usa o backend Rust (`src-tauri/`). A UI escolhe automaticamente.
 
 | Pacote | Arquivo | Tamanho | rclone |
 | --- | --- | --- | --- |
-| `.deb` | `src-tauri/target/release/bundle/deb/Nuvem_1.1.0_amd64.deb` | 31,1 MB | embutido em `/usr/lib/Nuvem/rclone` |
-| AppImage | `src-tauri/target/release/bundle/appimage/Nuvem_1.1.0_amd64.AppImage` | 124,7 MB local · 102,8 MB no CI | embutido em `usr/lib/Nuvem/rclone` |
+| `.deb` | `src-tauri/target/release/bundle/deb/BrisaSync_1.1.0_amd64.deb` | 31,1 MB | embutido em `/usr/lib/BrisaSync/rclone` |
+| AppImage | `src-tauri/target/release/bundle/appimage/BrisaSync_1.1.0_amd64.AppImage` | 124,7 MB local · 102,8 MB no CI | embutido em `usr/lib/BrisaSync/rclone` |
 | Flatpak | repositório local em `flatpak-repo/` | 91,5 MB instalado | compilado em `/app/bin/rclone` |
-| Windows (portátil) | `src-tauri/target/x86_64-pc-windows-msvc/release/bundle/windows-portatil/Nuvem-1.1.0-windows-x64.zip` | 30 MB | `rclone.exe` ao lado do `Nuvem.exe` |
-| Windows (instalador) | Release `v1.1.0`, `Nuvem_1.1.0_x64-setup.exe` (gerado no CI) | 23,2 MB | `resources/rclone.exe` dentro do NSIS |
+| Windows (portátil) | `src-tauri/target/x86_64-pc-windows-msvc/release/bundle/windows-portatil/BrisaSync-1.1.0-windows-x64.zip` | 30 MB | `rclone.exe` ao lado do `BrisaSync.exe` |
+| Windows (instalador) | Release `v1.1.0`, `BrisaSync_1.1.0_x64-setup.exe` (gerado no CI) | 23,2 MB | `resources/rclone.exe` dentro do NSIS |
 
 Os pacotes do Linux também saem no CI, na página de Releases do repositório — o
 `.deb` de lá passa por `scripts/fix-deb.sh` e leva `LICENSE` em
-`/usr/share/doc/nuvem/copyright`, ícones 32/128/256/512 e um `.desktop` com
+`/usr/share/doc/brisasync/copyright`, ícones 32/128/256/512 e um `.desktop` com
 `Categories=Network;FileTransfer;`. O AppImage do CI sai menor (102,8 MB) porque o
 `appimagetool` do Ubuntu 22.04 comprime diferente do daqui.
 
-A busca do motor (`Rclone::find_binary`) tenta, em ordem: `NUVEM_RCLONE`, a cópia
+A busca do motor (`Rclone::find_binary`) tenta, em ordem: `BRISASYNC_RCLONE`, a cópia
 ao lado do executável (`rclone` ou `rclone.exe`, conforme o sistema) e em
-`resources/`, `lib/Nuvem/rclone` e `lib/nuvem/rclone` (pacotes), `PATH`,
+`resources/`, `lib/BrisaSync/rclone` e `lib/brisasync/rclone` (pacotes), `PATH`,
 `/app/bin`, `/usr/bin`, `/usr/local/bin` e `~/.local/bin`. No Windows ainda
-aparecem `%LOCALAPPDATA%\Nuvem Sync` e `%LOCALAPPDATA%\Programs\Nuvem Sync`. Por isso o
+aparecem `%LOCALAPPDATA%\BrisaSync` e `%LOCALAPPDATA%\Programs\BrisaSync`. Por isso o
 `.deb`, o AppImage e o `.exe` funcionam numa máquina sem rclone instalado.
 
 ```bash
@@ -178,7 +178,7 @@ aplica só a correção, sem reconstruir).
 Instalar o pacote:
 
 ```bash
-sudo dpkg -i src-tauri/target/release/bundle/deb/Nuvem_1.1.0_amd64.deb
+sudo dpkg -i src-tauri/target/release/bundle/deb/BrisaSync_1.1.0_amd64.deb
 # se faltar alguma dependência:
 sudo apt -f install
 ```
@@ -200,19 +200,19 @@ scripts/publicar-flatpak.sh v1.2.2     # builda (com o par do .env.oauth) e anex
 O script confere do lado do servidor se o anexo apareceu antes de dizer que deu
 certo. Sem isso, a Release tem `.deb`, AppImage e `.exe`, mas não o `.flatpak`.
 
-O **portátil do Windows** (`Nuvem-<versão>-windows-x64.zip`) tem o mesmo problema e
+O **portátil do Windows** (`BrisaSync-<versão>-windows-x64.zip`) tem o mesmo problema e
 a mesma saída: o job do CI no `windows-latest` gera só o instalador NSIS, então o
 zip sai de `scripts/build-windows.sh` (cargo-xwin) e é anexado à parte:
 
 ```bash
 cd app && scripts/build-windows.sh
-gh release upload v1.2.2 src-tauri/target/x86_64-pc-windows-msvc/release/bundle/windows-portatil/Nuvem-1.2.2-windows-x64.zip
+gh release upload v1.2.2 src-tauri/target/x86_64-pc-windows-msvc/release/bundle/windows-portatil/BrisaSync-1.2.2-windows-x64.zip
 ```
 
 O script lê a versão do `package.json` (o nome do zip acompanha sozinho) e, se
-`app/.env.oauth` existir, embute o par do projeto OAuth do Nuvem Sync — sem ele o
+`app/.env.oauth` existir, embute o par do projeto OAuth do BrisaSync — sem ele o
 portátil sai apontando para o projeto compartilhado do rclone. Confira com
-`strings` no `Nuvem.exe` de dentro do zip se o `client_id` está lá.
+`strings` no `BrisaSync.exe` de dentro do zip se o `client_id` está lá.
 
 
 ## Windows
@@ -232,14 +232,14 @@ scripts/build-windows.sh          # baixa o rclone.exe se faltar e monta o .zip
 ```
 
 Sai em `src-tauri/target/x86_64-pc-windows-msvc/release/bundle/windows-portatil/`:
-um `.zip` com `Nuvem.exe`, `rclone.exe` (o app procura o motor ao lado do
+um `.zip` com `BrisaSync.exe`, `rclone.exe` (o app procura o motor ao lado do
 executável) e um `LEIA-ME.txt` com requisitos, caminhos de dados e como ligar o
 início automático.
 
 O que muda no código por causa do Windows:
 
 - **`rclone.exe`**: o nome do binário tem sufixo (`RCLONE` em `rclone.rs`), e a
-  busca ganha `%LOCALAPPDATA%\Nuvem Sync` e `%LOCALAPPDATA%\Programs\Nuvem Sync`.
+  busca ganha `%LOCALAPPDATA%\BrisaSync` e `%LOCALAPPDATA%\Programs\BrisaSync`.
 - **`CREATE_NO_WINDOW`** ao subir o daemon: sem isso, cada sincronização abriria
   uma janela de console preta piscando.
 - **Abrir pasta**: `explorer` no lugar de `xdg-open`.
@@ -268,8 +268,8 @@ dentro do sandbox). Para reinstalar a partir do repositório local gerado:
 
 ```bash
 flatpak install --user --reinstall -y \
-  /home/agreles/Projetos/nuvem/flatpak-repo app.nuvem.Nuvem
-flatpak run app.nuvem.Nuvem
+  /home/agreles/Projetos/BrisaSync/flatpak-repo app.brisasync.BrisaSync
+flatpak run app.brisasync.BrisaSync
 ```
 
 O build é **offline**: crates (`cargo-sources.json`), pacotes npm
@@ -284,7 +284,7 @@ pendências (`$HOME` apenas, `aarch64`, metainfo), veja
 
 1. **Conectar conta** → escolha Google Drive ou OneDrive. No Google o próprio app
    abre o navegador e recebe o retorno (`127.0.0.1`), mostrando a página
-   "Nuvem Sync · Conta conectada" no fim; no OneDrive quem conduz é o rclone.
+   "BrisaSync · Conta conectada" no fim; no OneDrive quem conduz é o rclone.
    Nomeie a conta como quiser.
 2. **Adicionar pasta** → escolha a conta, navegue pelas pastas da nuvem na lista
    (dá para digitar o caminho também; vazio = raiz) e a pasta local. O app cria a
@@ -295,11 +295,11 @@ pendências (`$HOME` apenas, `aarch64`, metainfo), veja
 4. Acompanhe em **Visão geral** (fila, velocidade, ETA) e **Atividade**.
 5. Ao mudar conta ou caminhos de uma pasta, a próxima execução ressincroniza
    automaticamente.
-6. Em **Ajustes → Abrir com o sistema**, o Nuvem Sync passa a iniciar minimizado na
+6. Em **Ajustes → Abrir com o sistema**, o BrisaSync passa a iniciar minimizado na
    bandeja junto com a sessão. Dentro do Flatpak quem escreve o item de
    inicialização é o sistema (portal), não o app.
 7. Para desconectar uma conta: **Visão geral → Contas**, passe o mouse na conta e
-   use a lixeira. Se ainda houver pasta usando a conta, o Nuvem Sync pede para removê-la
+   use a lixeira. Se ainda houver pasta usando a conta, o BrisaSync pede para removê-la
    antes (e leva você para **Pastas**). Nada é apagado na nuvem nem no disco.
 8. **Limpar a atividade**: em **Atividade**, o botão *Limpar* (à direita dos filtros)
    pede confirmação e apaga o histórico deste computador — os arquivos não são
@@ -327,10 +327,10 @@ Cada pasta é um par `conta:caminho ←→ pasta local`. O app usa `sync/bisync`
 
 ## Onde ficam os dados
 
-- Perfis, atividade e ajustes: `~/.config/app.nuvem.Nuvem/`.
-- Cópias descartadas ao resolver conflitos: `~/.config/app.nuvem.Nuvem/conflitos-resolvidos/`.
+- Perfis, atividade e ajustes: `~/.config/app.brisasync.BrisaSync/`.
+- Cópias descartadas ao resolver conflitos: `~/.config/app.brisasync.BrisaSync/conflitos-resolvidos/`.
 - Credenciais das contas: configuração padrão do rclone (`~/.config/rclone/rclone.conf`).
-- Nenhum dado vai para servidores do Nuvem.
+- Nenhum dado vai para servidores do BrisaSync.
 
 ## Segurança e limites conscientes
 
@@ -391,7 +391,7 @@ O daemon sobe com um ajuste pensado no limite do Google (em `rclone.rs`):
 Medido neste ambiente (link de ~10 MB/s de subida, mesma conta e mesmos arquivos,
 antes → depois):
 
-| Carga | Antes (padrões do rclone) | Depois (ajustes de transferência) | Com o projeto OAuth do Nuvem Sync |
+| Carga | Antes (padrões do rclone) | Depois (ajustes de transferência) | Com o projeto OAuth do BrisaSync |
 | --- | --- | --- | --- |
 | 1 arquivo de 64 MiB | 121 s (uma vez) / 27 s | **9 s** (~7,5 MB/s) | — |
 | 100 arquivos de 200 KiB | 349 s | **242 s** | — |
@@ -409,11 +409,11 @@ sua. O cartão mostra o estado de cada conta (*projeto do rclone* / *cota própr
 avisa que contas antigas precisam ser removidas e conectadas de novo (o token vale
 para o projeto que o emitiu).
 
-O caminho definitivo é o **projeto do Nuvem Sync**, embutido no build: com ele todo
+O caminho definitivo é o **projeto do BrisaSync**, embutido no build: com ele todo
 mundo que instala já usa uma cota do aplicativo, sem criar projeto nenhum. O par
-entra pelas variáveis `NUVEM_GOOGLE_CLIENT_ID`/`NUVEM_GOOGLE_CLIENT_SECRET` na
+entra pelas variáveis `BRISASYNC_GOOGLE_CLIENT_ID`/`BRISASYNC_GOOGLE_CLIENT_SECRET` na
 compilação (ou em tempo de execução, sem recompilar) e a precedência é
-**usuário > Nuvem Sync > rclone** — Ajustes → Avançado mostra qual está em vigor e o
+**usuário > BrisaSync > rclone** — Ajustes → Avançado mostra qual está em vigor e o
 `client_id` em uso. Para criar o projeto e embutir o par:
 [`docs/oauth-google.md`](../docs/oauth-google.md) e `scripts/oauth-google.sh`.
 
@@ -430,7 +430,7 @@ escopo `drive` terminar.
 - Na aba Arquivos, o envio aceita múltiplos arquivos e pastas via seleção ou arrastar-e-soltar direto na janela, com fila sequencial e indicador de progresso; o download avulso continua um a um.
 - A nova tentativa automática cobre falhas de rede/limite do provedor; erros de
   configuração (token revogado, pasta sem permissão) aparecem na hora, sem repetir.
-- A bandeja mostra o estado, velocidade e progresso no tooltip (ex.: `Nuvem Sync — sincronizando (3,5 MB/s · 45%)`), além do ícone simbólico com troca de tema claro/escuro.
+- A bandeja mostra o estado, velocidade e progresso no tooltip (ex.: `BrisaSync — sincronizando (3,5 MB/s · 45%)`), além do ícone simbólico com troca de tema claro/escuro.
 - Resolver um conflito dispara imediatamente a sincronização da pasta para propagar a versão escolhida para a nuvem.
 - No Flatpak, a sincronização fica restrita ao `$HOME` (`--filesystem=home`).
 
@@ -438,7 +438,7 @@ escopo `drive` terminar.
 
 - `npx tsc --noEmit` — sem erros.
 - `npm run build` (tsc + Vite) — OK, bundle 300 kB (89 kB gzip).
-- `cargo build` (Tauri debug) — OK, binário em `src-tauri/target/debug/nuvem`.
+- `cargo build` (Tauri debug) — OK, binário em `src-tauri/target/debug/brisasync`.
 - UI renderizada em navegador headless (modo demonstração) sem erros de layout.
 - `cargo build` com os plugins de notificação e diálogo — OK.
 - Build Flatpak completo (`org.flatpak.Builder`, GNOME 50) — OK, exportado e
@@ -456,7 +456,7 @@ escopo `drive` terminar.
   Ubuntu 24.04+).
 - **AppImage executado nesta máquina**: o processo do app sobe, o WebKit cria os
   processos `WebKitNetworkProcess`/`WebKitWebProcess` e o `rclone` embutido em
-  `usr/lib/Nuvem/rclone` é o que responde ao daemon. Sem FUSE? O runtime 2 aceita
+  `usr/lib/BrisaSync/rclone` é o que responde ao daemon. Sem FUSE? O runtime 2 aceita
   `APPIMAGE_EXTRACT_AND_RUN=1` e roda igual.
 - **Windows (compilado no Linux)**: `scripts/build-windows.sh` com
   `cargo-xwin` + `x86_64-pc-windows-msvc` produziu um `PE32+ GUI x86-64` de 4,7 MB
@@ -482,9 +482,9 @@ escopo `drive` terminar.
   - refazer a mesma verificação dentro do **Flatpak** instalado: arquivo local subiu
     em 4 s e a interface passou a “Tudo em dia · agora” sozinha.
 - **Início automático**, exercitado com o código real dentro do Flatpak: ligar
-  criou `~/.config/autostart/app.nuvem.Nuvem.desktop` com
-  `Exec=flatpak run --command=/app/bin/nuvem app.nuvem.Nuvem --minimized`,
-  `X-Flatpak=app.nuvem.Nuvem` e `Icon=app.nuvem.Nuvem`; desligar apagou o arquivo;
+  criou `~/.config/autostart/app.brisasync.BrisaSync.desktop` com
+  `Exec=flatpak run --command=/app/bin/brisasync app.brisasync.BrisaSync --minimized`,
+  `X-Flatpak=app.brisasync.BrisaSync` e `Icon=app.brisasync.BrisaSync`; desligar apagou o arquivo;
   `kreadconfig6` lê o `Exec` de volta. A linha de comando foi aberta com
   `--minimized` e a janela **não** apareceu (só a bandeja).
 - **Histórico por arquivo**, no Flatpak com a conta real:
@@ -494,7 +494,7 @@ escopo `drive` terminar.
     (a exclusão foi propagada e a pasta ficou em dia);
   - `historico-nuvem.txt` criado direto no Drive → `historico-nuvem.txt ·
     baixado`, e o arquivo apareceu na pasta local.
-- **Instância única**: `flatpak run app.nuvem.Nuvem` com o app aberto não cria um
+- **Instância única**: `flatpak run app.brisasync.BrisaSync` com o app aberto não cria um
   segundo processo (continua 1 no `flatpak ps`) e a janela existente vem à frente.
 - **Escolha de pasta e de conta** (modo demonstração, navegador headless): trocar
   para a segunda conta em Arquivos, ir para Pastas e voltar manteve a conta
@@ -523,7 +523,7 @@ escopo `drive` terminar.
   verificado também no teste `limpar_atividade_apaga_memoria_e_arquivo`.
 - **Ícone simbólico da bandeja**, no app instalado: painel escuro mostrou a nuvem
   em traço branco (64×64, sem nenhum pixel colorido) e o arquivo entregue ao painel
-  é `~/.var/app/app.nuvem.Nuvem/cache/nuvem/bandeja/tray-icon-main-0.png` — fora do
+  é `~/.var/app/app.brisasync.BrisaSync/cache/brisasync/bandeja/tray-icon-main-0.png` — fora do
   tmpfs privado do sandbox, que é o que impedia o painel de ler o ícone.
 - **Velocidade do Google Drive**, medida com o rclone do Flatpak contra a conta
   real: 64 MiB em 27 s → **9 s**; 100 arquivos de 200 KiB em 349 s → 242 s (tabela
@@ -565,15 +565,11 @@ escopo `drive` terminar.
   daemon; faltava em `config dump` (que roda a cada tela de contas), no
   `rclone version` e no `explorer`. Hoje tudo passa pelo trait `SemConsole`
   (`rclone.rs`), que é no-op no Linux/macOS. Ao criar um subprocesso novo, use-o.
-- **Renomear o app sem quebrar quem já instalou**: o nome de exibição é "Nuvem
-  Sync", mas o identificador continua `app.nuvem.Nuvem` e o binário continua
-  `nuvem`. Mudar o identificador renomearia a pasta de configuração de todo mundo
-  (perfis, histórico, credenciais) e o `app-id` do Flatpak; mudar o binário
-  quebraria o `Exec` do `.desktop`, a busca do `rclone` ao lado do executável e o
-  `StartupWMClass`. O que muda com a marca é só o `productName` (nome dos
-  pacotes), os textos e os ícones. Como o `productName` entra no nome do pacote
-  Debian, o `.deb` declara `Conflicts`/`Replaces: nuvem (<< 1.3.0)` para o apt
-  trocar o pacote antigo em vez de acusar conflito de arquivo em `/usr/bin/nuvem`.
+- **Renomear o app sem quebrar quem já instalou**: o nome de exibição passou de
+  O identificador atual é `app.brisasync.BrisaSync` e o binário atual é
+  `brisasync`. Como o `productName` entra no nome do pacote Debian, o `.deb`
+  declara `Conflicts`/`Replaces: nuvem (<< 1.3.0)` para o apt trocar o pacote
+  antigo em vez de acusar conflito de arquivo em `/usr/bin/nuvem`.
 - **Ícones da bandeja**: são 12 PNGs embutidos por `include_bytes!` (6 estados ×
   2 temas). O painel do KDE/GNOME **não** recolore ícone de bandeja, então o
   "tema claro/escuro" é escolhido no app (`set_tray_theme`, que o front-end chama
@@ -605,7 +601,7 @@ escopo `drive` terminar.
   `invalid category`. Para o `.deb` ter o mesmo `.desktop` do Flatpak
   (`Network;FileTransfer;` + `Keywords` + `GenericName`), use
   `bundle.linux.deb.desktopTemplate` com um arquivo próprio
-  (`src-tauri/deb/nuvem.desktop`).
+  (`src-tauri/deb/brisasync.desktop`).
 - **`modules.txt` do `flatpak-go-mod` sai incompleto**: no rclone 1.75.2 ele gerou
   800 linhas em vez de 1743 e o `go build -mod=vendor` parou em
   `is explicitly required in go.mod, but not marked as explicit in
@@ -640,7 +636,7 @@ escopo `drive` terminar.
   file found*. `start_profile` agora reserva a pasta antes de preparar a tarefa e
   devolve o estado atual se já existe um pedido em andamento.
 - **Autostart do Flatpak não funciona pelo caminho normal**: o sandbox redireciona
-  `XDG_CONFIG_HOME` para `~/.var/app/app.nuvem.Nuvem/config`, pasta que a sessão
+  `XDG_CONFIG_HOME` para `~/.var/app/app.brisasync.BrisaSync/config`, pasta que a sessão
   gráfica não lê; o plugin do Tauri grava ali e o item nunca é iniciado. Dentro do
   Flatpak o pedido vai por `org.freedesktop.portal.Background.RequestBackground`,
   que escreve em `~/.config/autostart` (do sistema) com `X-Flatpak`. Nada de
@@ -649,7 +645,7 @@ escopo `drive` terminar.
   que o **primeiro** item seja o executável (ele monta
   `flatpak run --command=<1º> <id> <resto>`). Mandar só `["--minimized"]` devolve
   `org.freedesktop.portal.Error.InvalidArgument` e o erro genérico “o sistema
-  recusou o pedido” esconde a causa. Usamos `current_exe()` (`/app/bin/nuvem`).
+  recusou o pedido” esconde a causa. Usamos `current_exe()` (`/app/bin/brisasync`).
 - **O portal não devolve “deu certo”**: ele responde com um identificador de pedido
   e o resultado vem por sinal, assíncrono. O estado confiável é o próprio arquivo
   `.desktop`: o app consulta `~/.config/autostart` (e respeita `Hidden=true`, que é
@@ -684,7 +680,7 @@ escopo `drive` terminar.
   arquivo e cai no ícone do `.desktop`. O sintoma é o ícone trocar sempre para o
   azul do app (e um `IconName` apontando para um arquivo que não existe no
   sistema). A correção é `TrayIconBuilder::temp_dir_path` apontando para o cache
-  (`~/.cache/nuvem/bandeja`, ou o cache do Flatpak), que é visível no sistema.
+  (`~/.cache/brisasync/bandeja`, ou o cache do Flatpak), que é visível no sistema.
 - **`Image::from_bytes` não existe**: ele só aparece com a feature `image-png` do
   Tauri. E `TrayIconBuilder::icon` descarta o ícone **em silêncio** quando a
   conversão falha (por exemplo, buffer RGBA com tamanho errado), deixando a
@@ -724,10 +720,10 @@ escopo `drive` terminar.
 
 MIT — veja [`LICENSE`](../LICENSE). O rclone embutido nos pacotes também é MIT
 (copyright do projeto rclone); o arquivo de licença vai junto no Flatpak
-(`/app/share/licenses/app.nuvem.Nuvem/LICENSE`) e no pacote portátil do Windows.
+(`/app/share/licenses/app.brisasync.BrisaSync/LICENSE`) e no pacote portátil do Windows.
 
 O código-fonte está versionado em git na raiz do projeto
-(<https://github.com/fabio-agreles/nuvem>, privado por enquanto); `app/` é o aplicativo, `flatpak-repo/` e
+(<https://github.com/fabio-agreles/BrisaSync>, privado por enquanto); `app/` é o aplicativo, `flatpak-repo/` e
 `builddir/` são artefatos de build e ficam fora do repositório. O CI roda o lint do
 Flatpak (`flatpak-lint.yml`) e, em tags `v*`, gera `.deb`, AppImage e o instalador
 NSIS do Windows (`pacotes.yml`).
@@ -742,8 +738,8 @@ NSIS do Windows (`pacotes.yml`).
 2. **Validações que faltam**: conta OneDrive real, conflito real (edição simultânea
    nos dois lados), login de verdade para conferir o item de autostart, e instalar o
    `.deb` com `dpkg` numa máquina limpa.
-3. **Projeto OAuth para distribuição**: o código já aceita o par do Nuvem Sync embutido
-   (usuário > Nuvem Sync > rclone) e o guia está em
+3. **Projeto OAuth para distribuição**: o código já aceita o par do BrisaSync embutido
+   (usuário > BrisaSync > rclone) e o guia está em
    [`docs/oauth-google.md`](../docs/oauth-google.md). Falta o projeto existir: criar
    no Google Cloud, publicar (senão o refresh token expira em 7 dias), colar o par
    nos segredos do repositório e submeter à verificação do escopo `drive` — sem ela

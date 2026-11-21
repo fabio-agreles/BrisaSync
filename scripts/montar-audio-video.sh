@@ -13,8 +13,8 @@
 # Aceita 0:11, 00:01:40 ou segundos (75). Linhas em branco e com # são ignoradas:
 #
 #   # início   arquivo
-#   0:02       ~/Downloads/nuvem-video/narracao/01.mp3
-#   0:18       ~/Downloads/nuvem-video/narracao/02.mp3
+#   0:02       ~/Downloads/brisasync-video/narracao/01.mp3
+#   0:18       ~/Downloads/brisasync-video/narracao/02.mp3
 #
 # Dica: abra a gravação no player, ache o instante em que cada ação começa e
 # anote. Errou? Rode de novo — o vídeo original não é alterado.

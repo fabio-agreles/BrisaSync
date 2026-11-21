@@ -31,7 +31,12 @@ graphify-out/
 # Ferramenta de apoio (clone raso) para regenerar flatpak/cargo-sources.json
 /app/flatpak-builder-tools/
 
-# Credenciais do projeto OAuth do Google usado no build (scripts/oauth-google.sh)
+# Arquivos de ambiente e credenciais — nunca versionar
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Credenciais do projeto OAuth usadas no build (scripts/oauth-google.sh e
+# scripts/build-flatpak.sh). Mantido explícito para leitura rápida.
 /app/.env.oauth
-/app/flatpak/app.nuvem.Nuvem.build.json
-NuvemSync_Desktop_Assets.zip

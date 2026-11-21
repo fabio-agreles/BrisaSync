@@ -11,12 +11,12 @@
 # narração técnica. Vem do pacote `edge-tts`, rodado via `uvx` (sem instalar
 # nada). Trocar a voz: VOZ=en-US-AvaNeural bash scripts/narracao-video.sh
 #
-# Uso: scripts/narracao-video.sh [destino]     (padrão: ~/Downloads/nuvem-video/narracao)
+# Uso: scripts/narracao-video.sh [destino]     (padrão: ~/Downloads/brisasync-video/narracao)
 set -euo pipefail
 
 voz="${VOZ:-en-US-AndrewNeural}"
 ritmo="${RITMO:-+0%}"
-destino="${1:-$HOME/Downloads/nuvem-video/narracao}"
+destino="${1:-$HOME/Downloads/brisasync-video/narracao}"
 
 for ferramenta in uvx ffmpeg; do
   command -v "$ferramenta" >/dev/null || {
@@ -30,16 +30,16 @@ mkdir -p "$destino"
 
 # Um trecho por momento da tela (os tempos batem com docs/video-verificacao.md).
 textos=(
-  "This is Nuvem Sync, an open-source desktop application that keeps a folder on my computer in two-way sync with a folder in my own Google Drive."
+  "This is BrisaSync, an open-source desktop application that keeps a folder on my computer in two-way sync with a folder in my own Google Drive."
   "There is no server component. The sync engine and the OAuth token stay on this computer."
   "I'm adding a Google Drive account. The authorization request is about to open in the browser, and it will show the app name and the single permission it needs."
-  "Here is the Google consent screen. The app name is Nuvem Sync, exactly as on the website. The only permission requested is access to Google Drive files, the drive scope. The app is not verified yet, and that is what I'm applying for. I'll allow it."
+  "Here is the Google consent screen. The app name is BrisaSync, exactly as on the website. The only permission requested is access to Google Drive files, the drive scope. The app is not verified yet, and that is what I'm applying for. I'll allow it."
   "Back in the app, the account is connected, with its name, e-mail address and Drive quota."
-  "Now I'm adding a folder. I browse my existing Google Drive and select Nuvem-demo. A narrower permission, drive dot file, could not see a folder the app did not create itself. That is the reason the full drive scope is required."
+  "Now I'm adding a folder. I browse my existing Google Drive and select BrisaSync-demo. A narrower permission, drive dot file, could not see a folder the app did not create itself. That is the reason the full drive scope is required."
   "I'll create a file on the computer, inside the synced folder. The activity list shows it being uploaded, and here it is in the Drive web interface."
   "Now the other direction. I edit the same file in the Drive web interface, and the app brings the change back down to the computer on its own."
   "Only the folders I add are touched. The rest of my Drive is untouched. And access can be revoked at any time: here is the app in my Google account permissions. Once revoked, syncing stops immediately."
-  "That's Nuvem Sync. It is open source, MIT licensed, at github dot com slash fabio dash agreles slash nuvem. Thank you."
+  "That's BrisaSync. It is open source, MIT licensed, at github dot com slash fabio dash agreles slash brisasync. Thank you."
 )
 
 # A API pública do Edge às vezes devolve vazio quando recebe várias chamadas

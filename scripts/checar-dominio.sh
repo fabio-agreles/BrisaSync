@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Confere a zona do domínio próprio antes de mesclar o docs/CNAME.
 #
-# Uso: scripts/checar-dominio.sh [dominio]     (padrão: nuvem-sync.app.br)
+# Uso: scripts/checar-dominio.sh [dominio]     (padrão: brisasync.com.br)
 #
 # Não precisa de `dig`. A conferência pergunta ao resolvedor público quem são os
 # servidores da zona e depois fala DIRETO com eles: resolvedor guarda cache e já
@@ -13,7 +13,7 @@
 # Sai com código 1 enquanto faltar registro obrigatório.
 set -euo pipefail
 
-dominio="${1:-nuvem-sync.app.br}"
+dominio="${1:-brisasync.com.br}"
 usuario_github="fabio-agreles"
 
 python3 - "$dominio" "$usuario_github" <<'PY'

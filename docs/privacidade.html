@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="brisasync.png">
+<link rel="canonical" href="https://brisasync.com.br/privacidade.html">
+<title>Política de Privacidade — BrisaSync</title>
+<meta name="description" content="Política de privacidade do BrisaSync: aplicativo desktop de código aberto sem servidor próprio, sem telemetria e com tokens armazenados localmente.">
+<style>
+  :root {
+    --abyss: #04152f;
+    --abyss-elevated: #0a2247;
+    --abyss-line: rgba(148, 197, 255, 0.16);
+    --paper: #f6f9fc;
+    --surface: #ffffff;
+    --surface-soft: #edf3fa;
+    --line: #d6e2ef;
+    --ink: #0b1b33;
+    --muted: #4b627d;
+    --breeze: #0077cc;
+    --breeze-bright: #00a8e8;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Cantarell, "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--breeze); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible {
+    outline: 2px solid var(--breeze-bright);
+    outline-offset: 3px;
+  }
+
+  .topbar {
+    background: var(--abyss);
+    color: #f4f8ff;
+    border-bottom: 1px solid var(--abyss-line);
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 0;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #f4f8ff;
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  .brand img {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+  }
+
+  .back-link {
+    color: #b8d4f5;
+    font-size: 14px;
+  }
+
+  main {
+    padding: 40px 0 64px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 36px 40px;
+  }
+
+  h1 {
+    margin: 0 0 8px;
+    font-size: 30px;
+    line-height: 1.2;
+  }
+
+  .updated {
+    margin: 0 0 24px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  h2 {
+    margin: 32px 0 12px;
+    font-size: 20px;
+    line-height: 1.3;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+
+  p { margin: 0 0 14px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 8px; }
+
+  code {
+    background: var(--surface-soft);
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-size: 0.9em;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 20px;
+    font-size: 14.5px;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  th {
+    background: var(--surface-soft);
+    font-weight: 600;
+  }
+
+  footer {
+    padding: 24px 0 40px;
+    color: var(--muted);
+    font-size: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 640px) {
+    .card { padding: 24px 20px; }
+    h1 { font-size: 24px; }
+    table { display: block; overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="./">
+      <img src="brisasync.png" alt="BrisaSync">
+      <span>BrisaSync</span>
+    </a>
+    <a class="back-link" href="./">← Voltar para a página inicial</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <article class="card">
+    <h1>Política de privacidade do BrisaSync</h1>
+    <p class="updated">Última atualização: 20 de novembro de 2026.</p>
+
+    <p>O BrisaSync é um aplicativo de desktop que mantém pastas deste computador em sincronização bidirecional com o Google Drive, OneDrive, Dropbox e Nextcloud. <strong>Não existe servidor do BrisaSync</strong>: nada do seu conteúdo passa por máquinas nossas, porque não temos nenhuma.</p>
+
+    <h2>Que dados o aplicativo acessa</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Dado</th>
+          <th>Para quê</th>
+          <th>Onde fica</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Arquivos e pastas da nuvem <strong>que você escolhe sincronizar</strong></td>
+          <td>Copiar de/para a pasta local que você indicou (bisync)</td>
+          <td>No seu computador e no provedor que você conectou</td>
+        </tr>
+        <tr>
+          <td>Nome, e-mail e cota da sua conta (Google, OneDrive, Dropbox ou Nextcloud)</td>
+          <td>Mostrar o card da conta e o uso de armazenamento</td>
+          <td>No seu computador</td>
+        </tr>
+        <tr>
+          <td>Tokens de acesso (OAuth)</td>
+          <td>Falar com a API do provedor sem pedir sua senha a cada vez</td>
+          <td><code>~/.config/rclone/rclone.conf</code> (<code>%APPDATA%\rclone</code>), permissão <code>0600</code></td>
+        </tr>
+        <tr>
+          <td>Ajustes e histórico de atividade</td>
+          <td>Manter as preferências e mostrar o que foi sincronizado</td>
+          <td><code>~/.config/app.brisasync.BrisaSync</code> (<code>%APPDATA%\app.brisasync.BrisaSync</code>)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>O aplicativo <strong>não</strong> lê arquivos fora das pastas que você adicionou, <strong>não</strong> acessa Gmail, contatos, calendário ou fotos, e <strong>não</strong> guarda cópia do seu conteúdo em lugar nenhum além do computador e da conta que você conectou.</p>
+
+    <h2>Escopo do Google Drive</h2>
+    <p>O BrisaSync pede o escopo <code>https://www.googleapis.com/auth/drive</code> porque a sincronização precisa ler e gravar arquivos que <strong>já existem</strong> na sua conta — é o caso de uma pasta de trabalho que você quer manter igual nos dois lados. O escopo mais restrito (<code>drive.file</code>) só enxerga arquivos criados pelo próprio aplicativo, o que impediria a sincronização de pastas existentes. O acesso é usado exclusivamente para transferir os arquivos das pastas que você escolheu.</p>
+
+    <h2>O que sai do seu computador</h2>
+    <ul>
+      <li>Requisições para as APIs do <strong>Google</strong>, <strong>Microsoft</strong>, <strong>Dropbox</strong> ou do seu servidor <strong>Nextcloud</strong> (as mesmas que o seu navegador faria ao usar o serviço na web), autenticadas com o token ou credencial da sua conta.</li>
+      <li>Se você pedir "Verificar atualização" em Ajustes → Sobre: uma requisição para <code>https://api.github.com</code> perguntando a última versão publicada. Ela não leva identificador seu, arquivos, nomes de pastas nem token.</li>
+    </ul>
+    <p>Não há telemetria, análise de uso, crash reporting remoto nem publicidade.</p>
+
+    <h2>Como os dados são usados</h2>
+    <p>Os dados do Google têm uma única finalidade: transferir os arquivos das pastas que você escolheu entre o Drive e o seu computador, e mostrar no aplicativo o nome, o e-mail e a cota da conta. Não há outra finalidade, não há análise de uso e não há uso publicitário.</p>
+
+    <h2>Com quem os dados são compartilhados</h2>
+    <p><strong>Com ninguém.</strong> O BrisaSync não tem servidor e não envia seus arquivos, seu token ou seu e-mail para terceiros. Só veem os dados: você, o computador onde o aplicativo roda e o provedor que você conectou (Google, Microsoft, Dropbox ou seu servidor Nextcloud) — este último porque é ele quem hospeda a sua pasta. Nada é vendido, alugado ou cedido a corretores de dados, anunciantes ou qualquer outro terceiro.</p>
+
+    <h2>Como os dados são protegidos</h2>
+    <ul>
+      <li>O token OAuth fica só no seu computador, em <code>rclone.conf</code>, com permissão <code>0600</code> (só o seu usuário lê).</li>
+      <li>Todo o tráfego com os provedores vai por HTTPS, com verificação de certificado.</li>
+      <li>Não existe servidor do BrisaSync, então não existe base de dados nossa para vazar: o que não é coletado não pode ser perdido.</li>
+      <li>O código é aberto (licença MIT): qualquer pessoa pode conferir o que o aplicativo faz com os dados.</li>
+    </ul>
+
+    <h2>Uso limitado dos dados do Google (Limited Use)</h2>
+    <p>O uso das informações recebidas das APIs do Google pelo BrisaSync está em conformidade com a <a href="https://developers.google.com/terms/api-services-user-data-policy">Política de Dados do Usuário dos Serviços de API do Google</a>, incluindo os requisitos de Uso Limitado.</p>
+    <p>O BrisaSync não usa dados do Google para desenvolver, melhorar ou treinar modelos de inteligência artificial ou de aprendizado de máquina, e não os transfere para serviços de terceiros que façam isso — o aplicativo não usa IA/ML em nenhuma função.</p>
+
+    <h2>Relatório de diagnóstico</h2>
+    <p>O relatório (Ajustes → Sobre → Salvar) é gerado <strong>localmente</strong> e só é enviado se você mesmo enviar. Ele contém versão do app, sistema, versão do rclone, nomes das contas e das pastas, ajustes e os últimos erros — nunca senhas, tokens ou o <code>client_secret</code> do OAuth.</p>
+
+    <h2>Por quanto tempo os dados ficam e como apagá-los</h2>
+    <p><strong>Retenção:</strong> nada é guardado em servidores nossos, porque não temos nenhum. No seu computador, o token da conta fica até você desconectar a conta no aplicativo; os ajustes e o histórico ficam até você desinstalar e apagar as pastas de configuração; os arquivos sincronizados ficam na pasta local e no Drive, e apagar de um lado apaga do outro, como em qualquer sincronização.</p>
+    <ol>
+      <li><strong>Desconectar uma conta</strong> (Visão geral → Contas): apaga as credenciais dela do <code>rclone.conf</code> e o estado do bisync daquelas pastas.</li>
+      <li><strong>Desinstalar</strong> o aplicativo: os arquivos ficam em <code>~/.config/app.brisasync.BrisaSync</code> e <code>~/.config/rclone</code> (Windows: <code>%APPDATA%</code>). Apague essas duas pastas para remover tudo. Seus arquivos na nuvem não são tocados.</li>
+      <li><strong>Revogar o acesso</strong> direto no provedor: <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a> (Google) ou <a href="https://account.live.com/consent/Manage">account.live.com/consent/Manage</a> (Microsoft).</li>
+    </ol>
+
+    <h2>Contato</h2>
+    <p>Dúvidas sobre privacidade: abra uma issue em <a href="https://github.com/fabio-agreles/BrisaSync/issues">github.com/fabio-agreles/BrisaSync/issues</a>.</p>
+
+    <h2>Privacy policy — English summary</h2>
+    <p>BrisaSync is an open-source desktop application (MIT) that keeps folders on your computer in two-way sync with Google Drive, OneDrive, Dropbox, or Nextcloud. It has <strong>no server</strong>: your files and credentials never reach us.</p>
+    <p>The application only accesses the files and folders you explicitly add to it, plus your account name, e-mail and storage quota (to show them in the interface). OAuth tokens and settings are stored locally with <code>0600</code> permissions. The <code>https://www.googleapis.com/auth/drive</code> scope is requested because syncing an existing folder requires reading and writing files the app did not create — the narrower <code>drive.file</code> scope would only cover app-created files. Data received from Google APIs is used solely to transfer the files in the folders you selected.</p>
+    <p>Network requests go only to the Google, Microsoft, Dropbox, or your Nextcloud server APIs, and — if you press "Check for updates" — to <code>api.github.com</code>. There is no telemetry, analytics, remote crash reporting or advertising.</p>
+    <p><strong>Data use:</strong> Google user data is used for one purpose only — transferring the files of the folders you selected between your Drive and your computer, and showing your account name, e-mail and quota in the app. No analytics, no advertising.</p>
+    <p><strong>Data transfer:</strong> nothing is shared with third parties. There is no server of ours; data is never sold, rented or handed to data brokers, advertisers or any other party.</p>
+    <p><strong>Data protection:</strong> the OAuth token stays on your machine in <code>rclone.conf</code> with <code>0600</code> permissions, all traffic to your cloud providers uses HTTPS with certificate validation, and there is no server-side database of ours that could leak.</p>
+    <p><strong>Retention and deletion:</strong> nothing is retained on our side. The account token stays on your computer until you disconnect the account; settings and history stay until you uninstall and remove the configuration folders; synced files stay in your local folder and in your Drive, and deleting one side deletes the other, as in any sync tool.</p>
+    <p><strong>Limited Use:</strong> BrisaSync's use and transfer to any other app of information received from Google APIs will adhere to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements. Google user data is not used to develop, improve or train AI/ML models and is not transferred to third-party AI/ML services; the app does not use AI/ML at all.</p>
+    <p>To delete your data: disconnect the account in the app, remove <code>~/.config/app.brisasync.BrisaSync</code> and <code>~/.config/rclone</code>, and revoke access at <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>. Contact: open an issue at <a href="https://github.com/fabio-agreles/BrisaSync/issues">github.com/fabio-agreles/BrisaSync/issues</a>.</p>
+  </article>
+</main>
+
+<div class="wrap">
+  <footer>
+    <span>BrisaSync é software livre sob licença MIT.</span>
+    <div class="footer-links">
+      <a href="./">Início</a>
+      <a href="https://github.com/fabio-agreles/BrisaSync">GitHub</a>
+      <a href="https://github.com/fabio-agreles/BrisaSync/blob/main/SECURITY.md">Segurança</a>
+    </div>
+  </footer>
+</div>
+</body>
+</html>
