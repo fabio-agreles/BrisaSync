@@ -34,7 +34,7 @@ rclone_exe="$recursos/rclone.exe"
 alvo="x86_64-pc-windows-msvc"
 # A versão vem do package.json: assim o zip nunca sai com nome de versão velha.
 versao="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["version"])' "$root/package.json")"
-produto="Nuvem-Sync-$versao-windows-x64"
+produto="BrisaSync-$versao-windows-x64"
 
 # O par do projeto OAuth do BrisaSync entra embutido (`option_env!`) quando existe:
 # sem ele o portátil sai com o projeto do rclone, mais lento e sujeito a
@@ -68,7 +68,12 @@ destino="$saida/bundle/windows-portatil/$produto"
 rm -rf "$destino"
 mkdir -p "$destino"
 
-cp "$saida/nuvem.exe" "$destino/Nuvem.exe"
+# Binário do Tauri: brisasync.exe
+if [[ -f "$saida/brisasync.exe" ]]; then
+  cp "$saida/brisasync.exe" "$destino/BrisaSync.exe"
+elif [[ -f "$saida/nuvem.exe" ]]; then
+  cp "$saida/nuvem.exe" "$destino/BrisaSync.exe"
+fi
 cp "$rclone_exe" "$destino/rclone.exe"
 # A licença viaja junto: o pacote é o que o usuário recebe, não o repositório.
 cp "$root/../LICENSE" "$destino/LICENSE"
@@ -80,10 +85,10 @@ Como usar
 ---------
 1. Extraia esta pasta em qualquer lugar (ex.: C:\Program Files\BrisaSync
    ou %LOCALAPPDATA%\BrisaSync).
-2. Execute Nuvem.exe (o binário mantém o nome curto).
+2. Execute BrisaSync.exe.
 
 Não precisa instalar o rclone: o rclone.exe desta pasta é o motor de
-sincronização e o Nuvem o encontra sozinho. Se quiser usar outro, defina a
+sincronização e o BrisaSync o encontra sozinho. Se quiser usar outro, defina a
 variável de ambiente NUVEM_RCLONE com o caminho do executável.
 
 Requisitos
@@ -97,7 +102,7 @@ Dados e configuração
 --------------------
 Ficam em %APPDATA%\app.brisasync.BrisaSync (perfis, ajustes, histórico de atividade) e
 %APPDATA%\rclone (rclone.conf, com os tokens das contas). Nada é enviado para
-servidores do Nuvem.
+servidores externos.
 
 Iniciar com o Windows
 ---------------------

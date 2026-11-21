@@ -20,7 +20,7 @@ raiz="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$raiz"
 
 versao="$(python3 -c 'import json;print(json.load(open("package.json"))["version"])')"
-bundle="$raiz/../Nuvem-Sync-$versao-x86_64.flatpak"
+bundle="$raiz/../BrisaSync-$versao-x86_64.flatpak"
 
 echo "publicar-flatpak: construindo a $versao (par OAuth de .env.oauth, se existir)"
 scripts/build-flatpak.sh

@@ -17,7 +17,7 @@ temporario="$raiz/flatpak/app.brisasync.BrisaSync.build.json"
 repo="$raiz/../flatpak-repo"
 builddir="$raiz/../builddir"
 versao="$(python3 -c 'import json;print(json.load(open("'"$raiz"'/package.json"))["version"])')"
-bundle="$raiz/../Nuvem-Sync-$versao-x86_64.flatpak"
+bundle="$raiz/../BrisaSync-$versao-x86_64.flatpak"
 
 limpar() { rm -f "$temporario"; }
 trap limpar EXIT
