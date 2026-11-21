@@ -490,6 +490,8 @@ const EN: Record<string, string> = {
   "Remover regra {regra}": "Remove rule {regra}",
   "nova regra, ex.: *.iso": "new rule, e.g.: *.iso",
   "Nova regra de ignorar": "New ignore rule",
+  "Aparência e Notificações": "Appearance & Notifications",
+  "Aplicativo e Sistema": "App & System",
   "Idioma": "Language",
   "Vale na hora, sem reiniciar o app.": "Applies right away, no restart needed.",
   Português: "Portuguese",

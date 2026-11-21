@@ -144,11 +144,24 @@ export default function App() {
     definirIdioma(settings.language === "en" ? "en" : "pt");
   }, [settings.language]);
 
+  // A bandeja acompanha o tema do sistema operacional (painel do desktop):
+  // se o sistema for escuro, o ícone na bandeja deve ser claro.
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const updateTray = (sistemaEscuro: boolean) => {
+      void api.setTrayTheme(sistemaEscuro).catch(() => undefined);
+    };
+
+    updateTray(mediaQuery.matches);
+
+    const listener = (event: MediaQueryListEvent) => updateTray(event.matches);
+    mediaQuery.addEventListener("change", listener);
+    return () => mediaQuery.removeEventListener("change", listener);
+  }, []);
+
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem("nuvem.theme", theme);
-    // A bandeja acompanha o tema: preto no claro, branco no escuro.
-    void api.setTrayTheme(theme === "dark").catch(() => undefined);
   }, [theme]);
 
   useEffect(() => {

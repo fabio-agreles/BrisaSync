@@ -81,19 +81,22 @@ static ESTADO_U8: AtomicU8 = AtomicU8::new(0);
 static APLICADO: AtomicU16 = AtomicU16::new(u16::MAX);
 
 fn bytes(escuro: bool, estado: Estado) -> &'static [u8] {
+    // Se o tema/painel do sistema for escuro (escuro = true), o ícone da bandeja
+    // precisa ser CLARO (LIGHT_*, branco) para dar contraste contra o fundo escuro.
+    // Se o painel for claro (escuro = false), o ícone precisa ser ESCURO (DARK_*, preto).
     match (escuro, estado) {
-        (false, Estado::Sincronizando) => LIGHT_SYNCING,
-        (false, Estado::EmDia) => LIGHT_SYNCED,
-        (false, Estado::Pausado) => LIGHT_PAUSED,
-        (false, Estado::Erro) => LIGHT_ERROR,
-        (false, Estado::Offline) => LIGHT_OFFLINE,
-        (false, Estado::Parado) => LIGHT_IDLE,
-        (true, Estado::Sincronizando) => DARK_SYNCING,
-        (true, Estado::EmDia) => DARK_SYNCED,
-        (true, Estado::Pausado) => DARK_PAUSED,
-        (true, Estado::Erro) => DARK_ERROR,
-        (true, Estado::Offline) => DARK_OFFLINE,
-        (true, Estado::Parado) => DARK_IDLE,
+        (true, Estado::Sincronizando) => LIGHT_SYNCING,
+        (true, Estado::EmDia) => LIGHT_SYNCED,
+        (true, Estado::Pausado) => LIGHT_PAUSED,
+        (true, Estado::Erro) => LIGHT_ERROR,
+        (true, Estado::Offline) => LIGHT_OFFLINE,
+        (true, Estado::Parado) => LIGHT_IDLE,
+        (false, Estado::Sincronizando) => DARK_SYNCING,
+        (false, Estado::EmDia) => DARK_SYNCED,
+        (false, Estado::Pausado) => DARK_PAUSED,
+        (false, Estado::Erro) => DARK_ERROR,
+        (false, Estado::Offline) => DARK_OFFLINE,
+        (false, Estado::Parado) => DARK_IDLE,
     }
 }
 
@@ -253,7 +256,7 @@ pub fn init(app: &mut App) -> tauri::Result<()> {
         .get_webview_window("main")
         .and_then(|window| window.theme().ok())
         .map(|theme| theme == Theme::Dark)
-        .unwrap_or(false);
+        .unwrap_or(true);
 
     let mut builder = TrayIconBuilder::with_id("main")
         .temp_dir_path(pasta_dos_icones())

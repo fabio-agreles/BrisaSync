@@ -209,6 +209,150 @@ export function Settings({
         </div>
       </section>
 
+      {/* Sincronização automática e intervalo */}
+      <section className="card">
+        <div className="card-head">
+          <h2>{t("Sincronização")}</h2>
+        </div>
+        <div className="card-body" style={{ paddingTop: 8 }}>
+          <div className="row">
+            <div className="row-text">
+              <div className="row-title">{t("Sincronizar sozinho")}</div>
+              <div className="row-desc">
+                {t(
+                  "Verifica as pastas e envia mudanças locais sem você pedir. Reage a arquivos novos em segundos e confere a nuvem no intervalo escolhido.",
+                )}
+              </div>
+            </div>
+            <div className="row-control">
+              <button
+                className={`switch ${settings.autoSync ? "on" : ""}`}
+                role="switch"
+                aria-checked={settings.autoSync}
+                aria-label={t("Sincronizar automaticamente")}
+                onClick={() => onUpdate({ autoSync: !settings.autoSync })}
+              />
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="row-text">
+              <div className="row-title">{t("Conferir a nuvem a cada")}</div>
+              <div className="row-desc">
+                {t(
+                  "Mudanças locais entram na hora; este intervalo pega o que mudou do outro lado.",
+                )}
+              </div>
+            </div>
+            <div className="row-control">
+              <select
+                className="select"
+                aria-label={t("Intervalo da sincronização automática")}
+                value={settings.syncIntervalMin}
+                disabled={!settings.autoSync}
+                onChange={(event) =>
+                  onUpdate({ syncIntervalMin: Number(event.target.value) })
+                }
+              >
+                <option value={1}>{t("1 minuto")}</option>
+                <option value={5}>{t("5 minutos")}</option>
+                <option value={15}>{t("15 minutos")}</option>
+                <option value={30}>{t("30 minutos")}</option>
+                <option value={60}>{t("1 hora")}</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="row-text">
+              <div className="row-title">{t("Tentar de novo sozinho")}</div>
+              <div className="row-desc">
+                {t(
+                  "Repete a sincronização até 3 vezes (15 s, 60 s, 180 s) quando a falha parece ser de rede ou de limite do provedor.",
+                )}
+              </div>
+            </div>
+            <div className="row-control">
+              <button
+                className={`switch ${settings.autoRetry ? "on" : ""}`}
+                role="switch"
+                aria-checked={settings.autoRetry}
+                aria-label={t("Repetir falhas transitórias")}
+                onClick={() => onUpdate({ autoRetry: !settings.autoRetry })}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Aparência e Notificações */}
+      <section className="card">
+        <div className="card-head">
+          <h2>{t("Aparência e Notificações")}</h2>
+        </div>
+        <div className="card-body" style={{ paddingTop: 8 }}>
+          <div className="row">
+            <div className="row-text">
+              <div className="row-title">{t("Idioma")}</div>
+              <div className="row-desc">{t("Vale na hora, sem reiniciar o app.")}</div>
+            </div>
+            <div className="row-control">
+              {IDIOMAS.map((item) => (
+                <button
+                  key={item.id}
+                  className={`chip ${
+                    (settings.language === "en" ? "en" : "pt") === item.id ? "active" : ""
+                  }`}
+                  onClick={() => onUpdate({ language: item.id })}
+                  title={t(item.nome)}
+                  aria-pressed={(settings.language === "en" ? "en" : "pt") === item.id}
+                >
+                  {t(item.nomeNativo)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="row-text">
+              <div className="row-title">{t("Tema")}</div>
+              <div className="row-desc">{t("Segue sua preferência neste computador.")}</div>
+            </div>
+            <div className="row-control">
+              <button
+                className={`chip ${theme === "light" ? "active" : ""}`}
+                onClick={() => onTheme("light")}
+              >
+                {t("Claro")}
+              </button>
+              <button
+                className={`chip ${theme === "dark" ? "active" : ""}`}
+                onClick={() => onTheme("dark")}
+              >
+                {t("Escuro")}
+              </button>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="row-text">
+              <div className="row-title">{t("Notificações")}</div>
+              <div className="row-desc">{t("Avisar sobre conflitos e falhas.")}</div>
+            </div>
+            <div className="row-control">
+              <button
+                className={`switch ${settings.notifications ? "on" : ""}`}
+                role="switch"
+                aria-checked={settings.notifications}
+                aria-label={t("Notificações")}
+                onClick={() => onUpdate({ notifications: !settings.notifications })}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Banda e regras */}
       <section className="card">
         <div className="card-head">
           <h2>{t("Banda e regras")}</h2>
@@ -296,134 +440,30 @@ export function Settings({
         </div>
       </section>
 
+      {/* Aplicativo e Sistema */}
       <section className="card">
         <div className="card-head">
-          <h2>{t("Sistema")}</h2>
+          <h2>{t("Aplicativo e Sistema")}</h2>
         </div>
         <div className="card-body" style={{ paddingTop: 8 }}>
           <div className="row">
             <div className="row-text">
-              <div className="row-title">{t("Idioma")}</div>
-              <div className="row-desc">{t("Vale na hora, sem reiniciar o app.")}</div>
-            </div>
-            <div className="row-control">
-              {IDIOMAS.map((item) => (
-                <button
-                  key={item.id}
-                  className={`chip ${
-                    (settings.language === "en" ? "en" : "pt") === item.id ? "active" : ""
-                  }`}
-                  onClick={() => onUpdate({ language: item.id })}
-                  title={t(item.nome)}
-                  aria-pressed={(settings.language === "en" ? "en" : "pt") === item.id}
-                >
-                  {t(item.nomeNativo)}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="row-text">
-              <div className="row-title">{t("Tema")}</div>
-              <div className="row-desc">{t("Segue sua preferência neste computador.")}</div>
-            </div>
-            <div className="row-control">
-              <button
-                className={`chip ${theme === "light" ? "active" : ""}`}
-                onClick={() => onTheme("light")}
-              >
-                {t("Claro")}
-              </button>
-              <button
-                className={`chip ${theme === "dark" ? "active" : ""}`}
-                onClick={() => onTheme("dark")}
-              >
-                {t("Escuro")}
-              </button>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="row-text">
-              <div className="row-title">{t("Notificações")}</div>
-              <div className="row-desc">{t("Avisar sobre conflitos e falhas.")}</div>
-            </div>
-            <div className="row-control">
-              <button
-                className={`switch ${settings.notifications ? "on" : ""}`}
-                role="switch"
-                aria-checked={settings.notifications}
-                aria-label={t("Notificações")}
-                onClick={() => onUpdate({ notifications: !settings.notifications })}
-              />
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="row-text">
-              <div className="row-title">{t("Sincronizar sozinho")}</div>
+              <div className="row-title">{t("Abrir com o sistema")}</div>
               <div className="row-desc">
-                {t(
-                  "Verifica as pastas e envia mudanças locais sem você pedir. Reage a arquivos novos em segundos e confere a nuvem no intervalo escolhido.",
-                )}
+                {autostartBusy
+                  ? t("Aguardando o sistema confirmar…")
+                  : t("Inicia minimizado na bandeja.")}
               </div>
             </div>
             <div className="row-control">
               <button
-                className={`switch ${settings.autoSync ? "on" : ""}`}
+                className={`switch ${autostart ? "on" : ""}`}
                 role="switch"
-                aria-checked={settings.autoSync}
-                aria-label={t("Sincronizar automaticamente")}
-                onClick={() => onUpdate({ autoSync: !settings.autoSync })}
-              />
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="row-text">
-              <div className="row-title">{t("Conferir a nuvem a cada")}</div>
-              <div className="row-desc">
-                {t(
-                  "Mudanças locais entram na hora; este intervalo pega o que mudou do outro lado.",
-                )}
-              </div>
-            </div>
-            <div className="row-control">
-              <select
-                className="select"
-                aria-label={t("Intervalo da sincronização automática")}
-                value={settings.syncIntervalMin}
-                disabled={!settings.autoSync}
-                onChange={(event) =>
-                  onUpdate({ syncIntervalMin: Number(event.target.value) })
-                }
-              >
-                <option value={1}>{t("1 minuto")}</option>
-                <option value={5}>{t("5 minutos")}</option>
-                <option value={15}>{t("15 minutos")}</option>
-                <option value={30}>{t("30 minutos")}</option>
-                <option value={60}>{t("1 hora")}</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="row-text">
-              <div className="row-title">{t("Tentar de novo sozinho")}</div>
-              <div className="row-desc">
-                {t(
-                  "Repete a sincronização até 3 vezes (15 s, 60 s, 180 s) quando a falha parece ser de rede ou de limite do provedor.",
-                )}
-              </div>
-            </div>
-            <div className="row-control">
-              <button
-                className={`switch ${settings.autoRetry ? "on" : ""}`}
-                role="switch"
-                aria-checked={settings.autoRetry}
-                aria-label={t("Repetir falhas transitórias")}
-                onClick={() => onUpdate({ autoRetry: !settings.autoRetry })}
+                aria-checked={autostart}
+                aria-label={t("Iniciar com o sistema")}
+                aria-busy={autostartBusy}
+                disabled={autostartBusy}
+                onClick={() => onAutostart(!autostart)}
               />
             </div>
           </div>
@@ -446,28 +486,6 @@ export function Settings({
                 aria-checked={settings.closeQuits}
                 aria-label={t("Fechar a janela encerra o app")}
                 onClick={() => onUpdate({ closeQuits: !settings.closeQuits })}
-              />
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="row-text">
-              <div className="row-title">{t("Abrir com o sistema")}</div>
-              <div className="row-desc">
-                {autostartBusy
-                  ? t("Aguardando o sistema confirmar…")
-                  : t("Inicia minimizado na bandeja.")}
-              </div>
-            </div>
-            <div className="row-control">
-              <button
-                className={`switch ${autostart ? "on" : ""}`}
-                role="switch"
-                aria-checked={autostart}
-                aria-label={t("Iniciar com o sistema")}
-                aria-busy={autostartBusy}
-                disabled={autostartBusy}
-                onClick={() => onAutostart(!autostart)}
               />
             </div>
           </div>
@@ -504,8 +522,6 @@ export function Settings({
               <button
                 className="btn sm danger"
                 onClick={() => {
-                  // Com sincronização em andamento o próprio app pergunta
-                  // antes de encerrar (a janela de saída tem três opções).
                   void api.requestQuit();
                 }}
               >
@@ -516,119 +532,10 @@ export function Settings({
         </div>
       </section>
 
-      <section className="card" style={{ gridColumn: "1 / -1" }}>
-        <div className="card-head">
-          <h2>{t("Avançado · Google Drive")}</h2>
-          <span className="spacer" />
-          <span className={`badge ${fonteOauth === "rclone" ? "muted" : "ok"}`}>
-            {t(rotuloOauth)}
-          </span>
-        </div>
-        <div className="card-body" style={{ paddingTop: 10 }}>
-          <div className="advanced">
-            <div>
-              <p className="muted" style={{ fontSize: 12.5 }}>
-                {t(
-                  "O Google cobra a cota de requisições por minuto no projeto OAuth usado na autorização. O projeto compartilhado do rclone é usado por todos os usuários dele e vive estourado — daí a sincronização arrastar mesmo com banda sobrando.",
-                )}
-              </p>
-              <div className="row" style={{ padding: "10px 0", borderBottom: "none" }}>
-                <div className="row-text">
-                  <div className="row-title">{t("Projeto em uso")}</div>
-                  <div className="row-desc mono" style={{ fontSize: 11.5, wordBreak: "break-all" }}>
-                    {oauth?.clientId ?? t("sem client_id (projeto compartilhado do rclone)")}
-                  </div>
-                </div>
-              </div>
-              <p className="muted" style={{ fontSize: 12.5 }}>
-                {fonteOauth === "nuvem"
-                  ? t(
-                      "Este build já usa o projeto OAuth do próprio BrisaSync: a cota é do aplicativo e não a do rclone. Preencha os campos abaixo só se quiser usar um projeto seu.",
-                    )
-                  : fonteOauth === "usuario"
-                    ? t("As contas Google deste computador usam o projeto que você colou abaixo.")
-                    : t(
-                        "Sem projeto próprio, a cota é a do projeto compartilhado do rclone. Crie o seu para a fila ser só sua.",
-                      )}
-              </p>
-              <p className="muted" style={{ fontSize: 12.5, marginTop: 8 }}>
-                {t(
-                  "1. Crie um projeto no Google Cloud, ative a Drive API e configure a tela de consentimento. 2. Em Credenciais, crie um ID do cliente OAuth do tipo app para computador. 3. Cole aqui os dois valores.",
-                )}
-              </p>
-
-              {driveConectado ? (
-                <div className="banner warn" style={{ marginTop: 12 }}>
-                  <Icon name="info" size={16} />
-                  {credenciaisProprias
-                    ? t(
-                        "As contas Google já conectadas continuam no projeto do rclone: remova as pastas que usam a conta, remova a conta em Visão geral → Contas e conecte de novo. O navegador pede a autorização uma vez.",
-                      )
-                    : t(
-                        "Contas conectadas antes desta mudança só passam a usar as credenciais novas depois de removidas e conectadas de novo.",
-                      )}
-                </div>
-              ) : null}
-
-              <p className="muted" style={{ fontSize: 11.5, marginTop: 10 }}>
-                {t("Fica salvo em")}{" "}
-                <span className="mono">settings.json</span>
-                {t(
-                  ", neste computador, do mesmo jeito que o rclone guarda os tokens. Projeto no modo Testing do Google expira a autorização em 7 dias; publicar o app evita reautorizar toda semana.",
-                )}
-              </p>
-            </div>
-
-            <div>
-              <div className="field">
-                <label htmlFor="drive-client-id">client_id</label>
-                <input
-                  id="drive-client-id"
-                  className="input mono"
-                  value={clientId}
-                  spellCheck={false}
-                  autoComplete="off"
-                  placeholder="123456789-abc.apps.googleusercontent.com"
-                  onChange={(event) => setClientId(event.target.value)}
-                />
-              </div>
-
-              <div className="field" style={{ marginTop: 10 }}>
-                <label htmlFor="drive-client-secret">client_secret</label>
-                <div style={{ display: "flex", gap: 8 }}>
-                  <input
-                    id="drive-client-secret"
-                    className="input mono"
-                    type={mostrarSegredo ? "text" : "password"}
-                    value={clientSecret}
-                    spellCheck={false}
-                    autoComplete="off"
-                    placeholder="GOCSPX-…"
-                    onChange={(event) => setClientSecret(event.target.value)}
-                  />
-                  <button
-                    className="btn sm ghost"
-                    type="button"
-                    aria-label={mostrarSegredo ? t("Ocultar segredo") : t("Mostrar segredo")}
-                    onClick={() => setMostrarSegredo(!mostrarSegredo)}
-                  >
-                    {mostrarSegredo ? t("Ocultar") : t("Mostrar")}
-                  </button>
-                </div>
-              </div>
-
-              <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12 }}>
-                <button className="btn sm ghost" onClick={salvarCredenciais}>
-                  {t("Salvar credenciais")}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
+      {/* Apoie o projeto (Doações) */}
       <Doacoes notify={notify} />
 
+      {/* Sobre */}
       <section className="card">
         <div className="card-head">
           <h2>{t("Sobre")}</h2>
@@ -748,6 +655,118 @@ export function Settings({
                 {t(
                   "Credenciais ficam na configuração local do rclone. O BrisaSync não envia dados para servidores próprios.",
                 )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Avançado · Google Drive */}
+      <section className="card" style={{ gridColumn: "1 / -1" }}>
+        <div className="card-head">
+          <h2>{t("Avançado · Google Drive")}</h2>
+          <span className="spacer" />
+          <span className={`badge ${fonteOauth === "rclone" ? "muted" : "ok"}`}>
+            {t(rotuloOauth)}
+          </span>
+        </div>
+        <div className="card-body" style={{ paddingTop: 10 }}>
+          <div className="advanced">
+            <div>
+              <p className="muted" style={{ fontSize: 12.5 }}>
+                {t(
+                  "O Google cobra a cota de requisições por minuto no projeto OAuth usado na autorização. O projeto compartilhado do rclone é usado por todos os usuários dele e vive estourado — daí a sincronização arrastar mesmo com banda sobrando.",
+                )}
+              </p>
+              <div className="row" style={{ padding: "10px 0", borderBottom: "none" }}>
+                <div className="row-text">
+                  <div className="row-title">{t("Projeto em uso")}</div>
+                  <div className="row-desc mono" style={{ fontSize: 11.5, wordBreak: "break-all" }}>
+                    {oauth?.clientId ?? t("sem client_id (projeto compartilhado do rclone)")}
+                  </div>
+                </div>
+              </div>
+              <p className="muted" style={{ fontSize: 12.5 }}>
+                {fonteOauth === "nuvem"
+                  ? t(
+                      "Este build já usa o projeto OAuth do próprio BrisaSync: a cota é do aplicativo e não a do rclone. Preencha os campos abaixo só se quiser usar um projeto seu.",
+                    )
+                  : fonteOauth === "usuario"
+                    ? t("As contas Google deste computador usam o projeto que você colou abaixo.")
+                    : t(
+                        "Sem projeto próprio, a cota é a do projeto compartilhado do rclone. Crie o seu para a fila ser só sua.",
+                      )}
+              </p>
+              <p className="muted" style={{ fontSize: 12.5, marginTop: 8 }}>
+                {t(
+                  "1. Crie um projeto no Google Cloud, ative a Drive API e configure a tela de consentimento. 2. Em Credenciais, crie um ID do cliente OAuth do tipo app para computador. 3. Cole aqui os dois valores.",
+                )}
+              </p>
+
+              {driveConectado ? (
+                <div className="banner warn" style={{ marginTop: 12 }}>
+                  <Icon name="info" size={16} />
+                  {credenciaisProprias
+                    ? t(
+                        "As contas Google já conectadas continuam no projeto do rclone: remova as pastas que usam a conta, remova a conta em Visão geral → Contas e conecte de novo. O navegador pede a autorização uma vez.",
+                      )
+                    : t(
+                        "Contas conectadas antes desta mudança só passam a usar as credenciais novas depois de removidas e conectadas de novo.",
+                      )}
+                </div>
+              ) : null}
+
+              <p className="muted" style={{ fontSize: 11.5, marginTop: 10 }}>
+                {t("Fica salvo em")}{" "}
+                <span className="mono">settings.json</span>
+                {t(
+                  ", neste computador, do mesmo jeito que o rclone guarda os tokens. Projeto no modo Testing do Google expira a autorização em 7 dias; publicar o app evita reautorizar toda semana.",
+                )}
+              </p>
+            </div>
+
+            <div>
+              <div className="field">
+                <label htmlFor="drive-client-id">client_id</label>
+                <input
+                  id="drive-client-id"
+                  className="input mono"
+                  value={clientId}
+                  spellCheck={false}
+                  autoComplete="off"
+                  placeholder="123456789-abc.apps.googleusercontent.com"
+                  onChange={(event) => setClientId(event.target.value)}
+                />
+              </div>
+
+              <div className="field" style={{ marginTop: 10 }}>
+                <label htmlFor="drive-client-secret">client_secret</label>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <input
+                    id="drive-client-secret"
+                    className="input mono"
+                    type={mostrarSegredo ? "text" : "password"}
+                    value={clientSecret}
+                    spellCheck={false}
+                    autoComplete="off"
+                    placeholder="GOCSPX-…"
+                    onChange={(event) => setClientSecret(event.target.value)}
+                  />
+                  <button
+                    className="btn sm ghost"
+                    type="button"
+                    aria-label={mostrarSegredo ? t("Ocultar segredo") : t("Mostrar segredo")}
+                    onClick={() => setMostrarSegredo(!mostrarSegredo)}
+                  >
+                    {mostrarSegredo ? t("Ocultar") : t("Mostrar")}
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12 }}>
+                <button className="btn sm ghost" onClick={salvarCredenciais}>
+                  {t("Salvar credenciais")}
+                </button>
               </div>
             </div>
           </div>
