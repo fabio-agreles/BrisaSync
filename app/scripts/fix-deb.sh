@@ -12,7 +12,7 @@ root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 deb="${1:-}"
 
 # Sem argumento, pega o .deb mais recente do bundle — o nome carrega a versão,
-# então não dá para fixar `Nuvem_0.1.0_amd64.deb` aqui.
+# então não dá para fixar `BrisaSync_0.1.0_amd64.deb` aqui.
 if [[ -z "$deb" ]]; then
   deb="$(ls -t "$root"/src-tauri/target/release/bundle/deb/*.deb 2>/dev/null | head -1)"
 fi

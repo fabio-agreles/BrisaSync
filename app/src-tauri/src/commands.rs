@@ -407,6 +407,17 @@ pub async fn connect_account(
         opcoes = json!({ "nonInteractive": true });
     }
 
+    if provider == "dropbox" {
+        if let Some((client_id, client_secret)) = crate::login_dropbox::credenciais_do_build() {
+            let token = crate::login_dropbox::autorizar(&client_id, &client_secret).await?;
+            parametros["client_id"] = Value::String(client_id);
+            parametros["client_secret"] = Value::String(client_secret);
+            parametros["token"] = Value::String(token.to_string());
+            parametros["config_refresh_token"] = Value::String("false".to_string());
+            opcoes = json!({ "nonInteractive": true });
+        }
+    }
+
     let mut rclone_type = provider.clone();
     if provider == "nextcloud" {
         let nc_user = user.unwrap_or_default().trim().to_string();
@@ -1493,7 +1504,7 @@ pub async fn resolve_conflict(
         let profiles = state.profiles.lock().await;
         profiles.iter().find(|profile| {
             std::fs::canonicalize(&profile.local_path)
-                .map(|candidate| candidate == folder)
+                .map(|candidate| folder.starts_with(&candidate))
                 .unwrap_or(false)
         }).map(|p| p.id.clone())
     };
@@ -2416,7 +2427,7 @@ fn sistema_legivel() -> String {
 /// rede fora) devolve `None` em vez de erro: não é falha do app.
 #[tauri::command]
 pub async fn check_update() -> AppResult<Option<UpdateInfo>> {
-    const URL: &str = "https://api.github.com/repos/fabio-agreles/nuvem/releases/latest";
+    const URL: &str = "https://api.github.com/repos/fabio-agreles/BrisaSync/releases/latest";
     let cliente = reqwest::Client::builder()
         .no_proxy()
         .timeout(Duration::from_secs(12))
@@ -2425,7 +2436,7 @@ pub async fn check_update() -> AppResult<Option<UpdateInfo>> {
     let resposta = cliente
         .get(URL)
         // A API do GitHub recusa requisição sem User-Agent.
-        .header("User-Agent", format!("Nuvem-Sync/{}", env!("CARGO_PKG_VERSION")))
+        .header("User-Agent", format!("BrisaSync/{}", env!("CARGO_PKG_VERSION")))
         .header("Accept", "application/vnd.github+json")
         .send()
         .await
@@ -2494,7 +2505,7 @@ fn escolher_asset_por_sufixo(assets: &[Value], sufixo: &str) -> Option<(String, 
 }
 
 fn url_de_atualizacao_valida(url: &str) -> bool {
-    url.starts_with("https://github.com/fabio-agreles/nuvem/")
+    url.starts_with("https://github.com/fabio-agreles/BrisaSync/")
         || url.starts_with("https://objects.githubusercontent.com/")
 }
 
@@ -2520,7 +2531,7 @@ pub async fn install_update(
 
     let resposta = cliente
         .get(&url)
-        .header("User-Agent", format!("Nuvem-Sync/{}", env!("CARGO_PKG_VERSION")))
+        .header("User-Agent", format!("BrisaSync/{}", env!("CARGO_PKG_VERSION")))
         .send()
         .await
         .map_err(|erro| AppError::new(format!("não foi possível baixar a atualização: {erro}")))?;
@@ -2729,7 +2740,7 @@ mod tests {
     fn trava_recente_e_respeitada() {
         use std::time::Duration;
 
-        let dir = std::env::temp_dir().join(format!("nuvem-travas-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("brisasync-travas-{}", std::process::id()));
         std::fs::create_dir_all(&dir).expect("pasta temporária");
         let trava = dir.join("conta_Documentos..home_Documentos.lck");
         std::fs::write(&trava, "pid").expect("trava");
@@ -2807,7 +2818,7 @@ mod tests {
 
     #[test]
     fn sentinela_de_pasta_vazia_le_um_unico_item() {
-        let dir = std::env::temp_dir().join(format!("nuvem-vazia-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("brisasync-vazia-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).expect("pasta temporária");
 
@@ -2826,7 +2837,7 @@ mod tests {
         use super::{collect_conflict_files, ConflictSlot};
         use std::collections::HashMap;
 
-        let dir = std::env::temp_dir().join(format!("nuvem-conflitos-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("brisasync-conflitos-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         let sub = dir.join("Documentos");
         std::fs::create_dir_all(&sub).expect("pasta temporária");
@@ -2866,7 +2877,7 @@ mod tests {
         use super::{collect_conflict_files, ConflictSlot};
         use std::collections::HashMap;
 
-        let dir = std::env::temp_dir().join(format!("nuvem-sem-conflito-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("brisasync-sem-conflito-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).expect("pasta temporária");
         std::fs::write(dir.join("relatorio..path1.bak"), "x").expect("arquivo");
@@ -2881,7 +2892,7 @@ mod tests {
 
     #[tokio::test]
     async fn credenciais_do_drive_precisam_vir_em_par() {
-        let dir = std::env::temp_dir().join(format!("nuvem-credenciais-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("brisasync-credenciais-{}", std::process::id()));
         std::fs::create_dir_all(&dir).expect("pasta temporária");
         let state = crate::state::AppState::load(dir.clone());
 
@@ -2924,7 +2935,7 @@ mod tests {
 
     #[tokio::test]
     async fn client_id_com_formato_errado_e_recusado() {
-        let dir = std::env::temp_dir().join(format!("nuvem-credenciais-id-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("brisasync-credenciais-id-{}", std::process::id()));
         std::fs::create_dir_all(&dir).expect("pasta temporária");
         let state = crate::state::AppState::load(dir.clone());
         {

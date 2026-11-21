@@ -3,7 +3,7 @@
 #
 # O Tauri gera o `.exe` sem problema (cargo-xwin + MSVC no alvo), mas o
 # instalador NSIS usa `makensis.exe` — ou seja, só é gerado no próprio Windows.
-# O que sai daqui é o pacote **portátil**: `Nuvem.exe` (nome do binário, o
+# O que sai daqui é o pacote **portátil**: `BrisaSync.exe` (nome do binário, o
 # mesmo desde a 1.0) + `rclone.exe` na mesma
 # pasta, que é exatamente onde o app procura o motor de sincronização.
 #
@@ -43,7 +43,7 @@ produto="BrisaSync-$versao-windows-x64"
 if [[ -f "$root/.env.oauth" ]]; then
   # shellcheck disable=SC1091
   set -a; source "$root/.env.oauth"; set +a
-  echo "build-windows: par OAuth do BrisaSync embutido (${NUVEM_GOOGLE_CLIENT_ID:0:20}…)"
+  echo "build-windows: par OAuth do BrisaSync embutido (${BRISASYNC_GOOGLE_CLIENT_ID:0:20}…)"
 else
   echo "build-windows: sem .env.oauth — o portátil vai usar o projeto do rclone." >&2
 fi
@@ -71,8 +71,8 @@ mkdir -p "$destino"
 # Binário do Tauri: brisasync.exe
 if [[ -f "$saida/brisasync.exe" ]]; then
   cp "$saida/brisasync.exe" "$destino/BrisaSync.exe"
-elif [[ -f "$saida/nuvem.exe" ]]; then
-  cp "$saida/nuvem.exe" "$destino/BrisaSync.exe"
+elif [[ -f "$saida/brisasync.exe" ]]; then
+  cp "$saida/brisasync.exe" "$destino/BrisaSync.exe"
 fi
 cp "$rclone_exe" "$destino/rclone.exe"
 # A licença viaja junto: o pacote é o que o usuário recebe, não o repositório.
@@ -89,7 +89,7 @@ Como usar
 
 Não precisa instalar o rclone: o rclone.exe desta pasta é o motor de
 sincronização e o BrisaSync o encontra sozinho. Se quiser usar outro, defina a
-variável de ambiente NUVEM_RCLONE com o caminho do executável.
+variável de ambiente BRISASYNC_RCLONE com o caminho do executável.
 
 Requisitos
 ----------

@@ -10,6 +10,7 @@ mod autosync;
 mod commands;
 mod error;
 mod idioma;
+mod login_dropbox;
 mod login_google;
 mod login_microsoft;
 mod models;

@@ -12,7 +12,7 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 versao="${1:-1.75.2}"
 alvo="${2:-todos}"
-recursos="${NUVEM_RESOURCES:-$root/src-tauri/resources}"
+recursos="${BRISASYNC_RESOURCES:-$root/src-tauri/resources}"
 mkdir -p "$recursos"
 
 baixar() {

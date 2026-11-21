@@ -27,8 +27,8 @@ par_id=""; par_segredo=""
 if [[ -f "$raiz/.env.oauth" ]]; then
   # shellcheck disable=SC1091
   set -a; source "$raiz/.env.oauth"; set +a
-  par_id="${NUVEM_GOOGLE_CLIENT_ID:-}"
-  par_segredo="${NUVEM_GOOGLE_CLIENT_SECRET:-}"
+  par_id="${BRISASYNC_GOOGLE_CLIENT_ID:-}"
+  par_segredo="${BRISASYNC_GOOGLE_CLIENT_SECRET:-}"
 fi
 
 python3 - "$manifesto" "$temporario" "$par_id" "$par_segredo" <<'PY'
@@ -37,10 +37,10 @@ import json, sys
 origem, destino, client_id, segredo = sys.argv[1:5]
 manifesto = json.load(open(origem))
 for modulo in manifesto["modules"]:
-    if isinstance(modulo, dict) and modulo.get("name") == "nuvem" and client_id and segredo:
+    if isinstance(modulo, dict) and modulo.get("name") == "brisasync" and client_id and segredo:
         modulo["build-options"].setdefault("env", {}).update({
-            "NUVEM_GOOGLE_CLIENT_ID": client_id,
-            "NUVEM_GOOGLE_CLIENT_SECRET": segredo,
+            "BRISASYNC_GOOGLE_CLIENT_ID": client_id,
+            "BRISASYNC_GOOGLE_CLIENT_SECRET": segredo,
         })
 json.dump(manifesto, open(destino, "w"), indent=2, ensure_ascii=False)
 PY

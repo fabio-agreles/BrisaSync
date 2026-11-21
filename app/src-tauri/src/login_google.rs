@@ -43,6 +43,10 @@ pub fn cancelar() {
     CANCELAR.store(true, Ordering::SeqCst);
 }
 
+pub(crate) fn limpar_cancelamento() {
+    CANCELAR.store(false, Ordering::SeqCst);
+}
+
 /// O laço da autorização da Microsoft usa o mesmo sinal de cancelamento.
 pub(crate) fn cancelada() -> bool {
     CANCELAR.load(Ordering::SeqCst)
@@ -1129,17 +1133,17 @@ mod testes {
     }
 
     /// Prova de ponta a ponta contra o Google de verdade: mesmo `about`, mesmo
-    /// HTTPS. Precisa de um token no ambiente (`NUVEM_TOKEN_DE_TESTE` = o JSON
+    /// HTTPS. Precisa de um token no ambiente (`BRISASYNC_TOKEN_DE_TESTE` = o JSON
     /// guardado no `rclone.conf`), por isso fica `#[ignore]`:
     ///
     /// ```text
-    /// NUVEM_TOKEN_DE_TESTE="$(...)"; cargo test --lib -- --ignored le_o_email_da_conta
+    /// BRISASYNC_TOKEN_DE_TESTE="$(...)"; cargo test --lib -- --ignored le_o_email_da_conta
     /// ```
     #[tokio::test]
     #[ignore]
     async fn le_o_email_da_conta() {
-        let Ok(bruto) = std::env::var("NUVEM_TOKEN_DE_TESTE") else {
-            eprintln!("sem NUVEM_TOKEN_DE_TESTE: nada para conferir");
+        let Ok(bruto) = std::env::var("BRISASYNC_TOKEN_DE_TESTE") else {
+            eprintln!("sem BRISASYNC_TOKEN_DE_TESTE: nada para conferir");
             return;
         };
         let token: Value = serde_json::from_str(&bruto).expect("token em JSON");

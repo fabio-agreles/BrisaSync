@@ -444,10 +444,42 @@ export function Files({
                             onPath(entry.path);
                             setQuery("");
                           } else {
-                            void navigator.clipboard
-                              ?.writeText(`${account}:${joinPath(path, entry.name)}`)
-                              .then(() => notify(t("Caminho copiado."), "ok"))
-                              .catch(() => notify(t("Não foi possível copiar."), "error"));
+                            const texto = `${account}:${joinPath(path, entry.name)}`;
+                            const copiarFallback = () => {
+                              try {
+                                const area = document.createElement("textarea");
+                                area.value = texto;
+                                area.setAttribute("readonly", "");
+                                area.style.position = "fixed";
+                                area.style.top = "-1000px";
+                                area.style.opacity = "0";
+                                document.body.appendChild(area);
+                                area.select();
+                                const ok = document.execCommand("copy");
+                                document.body.removeChild(area);
+                                return ok;
+                              } catch {
+                                return false;
+                              }
+                            };
+                            if (navigator.clipboard?.writeText) {
+                              void navigator.clipboard
+                                .writeText(texto)
+                                .then(() => notify(t("Caminho copiado."), "ok"))
+                                .catch(() => {
+                                  const ok = copiarFallback();
+                                  notify(
+                                    ok ? t("Caminho copiado.") : t("Não foi possível copiar."),
+                                    ok ? "ok" : "error",
+                                  );
+                                });
+                            } else {
+                              const ok = copiarFallback();
+                              notify(
+                                ok ? t("Caminho copiado.") : t("Não foi possível copiar."),
+                                ok ? "ok" : "error",
+                              );
+                            }
                           }
                         }}
                       >

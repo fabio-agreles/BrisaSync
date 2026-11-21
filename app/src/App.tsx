@@ -71,7 +71,7 @@ const TITLES: Record<ViewId, { title: string; subtitle: string }> = {
 };
 
 function initialTheme(): "light" | "dark" {
-  const stored = localStorage.getItem("nuvem.theme");
+  const stored = localStorage.getItem("brisasync.theme");
   if (stored === "light" || stored === "dark") return stored;
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
@@ -161,7 +161,7 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem("nuvem.theme", theme);
+    localStorage.setItem("brisasync.theme", theme);
   }, [theme]);
 
   useEffect(() => {
@@ -647,6 +647,10 @@ export default function App() {
         <AddAccountModal
           onClose={() => setAddAccountOpen(false)}
           onConnect={addAccount}
+          onOpenSettings={() => {
+            setAddAccountOpen(false);
+            setView("settings");
+          }}
         />
       ) : null}
 
@@ -721,6 +725,7 @@ export default function App() {
 function AddAccountModal({
   onClose,
   onConnect,
+  onOpenSettings,
 }: {
   onClose: () => void;
   onConnect: (
@@ -728,6 +733,7 @@ function AddAccountModal({
     name: string,
     extra?: { url?: string; user?: string; pass?: string },
   ) => Promise<void>;
+  onOpenSettings: () => void;
 }) {
   const t = useT();
   const [provider, setProvider] = useState("drive");
@@ -918,11 +924,7 @@ function AddAccountModal({
             <button
               type="button"
               className="link-btn"
-              onClick={() => {
-                void api
-                  .openUrl("https://nuvem-sync.app.br/limite-usuarios.html")
-                  .catch(() => undefined);
-              }}
+              onClick={onOpenSettings}
             >
               {t("Como contornar")}
             </button>
@@ -1200,7 +1202,7 @@ function AddFolderModal({
             className="input"
             value={localPath}
             onChange={(event) => setLocalPath(event.target.value)}
-            placeholder={t("/home/você/Nuvem/Projetos")}
+            placeholder={t("/home/você/BrisaSync/Projetos")}
             disabled={busy}
           />
           <button className="btn ghost" onClick={() => void pickFolder()} disabled={busy}>

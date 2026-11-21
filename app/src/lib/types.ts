@@ -4,7 +4,7 @@ export type Account = {
   label: string;
   /** Projeto OAuth que autorizou a conta: o do rclone (cota estourada), o do
    *  BrisaSync (embutido no build) ou o do próprio usuário. */
-  clientOrigem: "rclone" | "nuvem" | "usuario";
+  clientOrigem: "rclone" | "brisasync" | "usuario";
 };
 
 export type Profile = {
@@ -153,9 +153,9 @@ export type UpdateInfo = {
 
 /** Qual projeto OAuth do Google está em uso no Google Drive. */
 export type OAuthInfo = {
-  /** "usuario" (credenciais coladas em Ajustes), "nuvem" (projeto embutido no
+  /** "usuario" (credenciais coladas em Ajustes), "brisasync" (projeto embutido no
    *  build) ou "rclone" (projeto compartilhado, com cota estourada). */
-  fonte: "usuario" | "nuvem" | "rclone";
+  fonte: "usuario" | "brisasync" | "rclone";
   /** client_id em vigor — público, vai na URL de autorização. */
   clientId: string | null;
 };

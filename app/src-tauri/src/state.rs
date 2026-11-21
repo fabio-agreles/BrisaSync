@@ -440,7 +440,7 @@ mod tests {
             .map(|tempo| tempo.as_nanos())
             .unwrap_or_default();
         let dir = std::env::temp_dir().join(format!(
-            "nuvem-teste-{nome}-{}-{carimbo}",
+            "brisasync-teste-{nome}-{}-{carimbo}",
             std::process::id()
         ));
         std::fs::create_dir_all(&dir).expect("pasta temporária");

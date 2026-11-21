@@ -12,8 +12,8 @@ app/scripts/fetch-rclone.sh 1.75.2 linux
 O `tauri.conf.json` (Linux) e o `tauri.windows.conf.json` apontam para estes
 arquivos:
 
-- `resources/rclone` → `.deb` e AppImage embutem em `usr/lib/Nuvem/rclone`
-- `resources/rclone.exe` → instalador/portátil do Windows copia ao lado do `Nuvem.exe`
+- `resources/rclone` → `.deb` e AppImage embutem em `usr/lib/BrisaSync/rclone`
+- `resources/rclone.exe` → instalador/portátil do Windows copia ao lado do `BrisaSync.exe`
 
 Sem o arquivo da plataforma alvo, `tauri build` falha na etapa de empacotamento
 (a compilação em si não precisa dele). O Flatpak não usa esta pasta: ele compila

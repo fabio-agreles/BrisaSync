@@ -43,6 +43,18 @@ export function Settings({
   const [newRule, setNewRule] = useState("");
   const [clientId, setClientId] = useState(settings.driveClientId);
   const [clientSecret, setClientSecret] = useState(settings.driveClientSecret);
+
+  useEffect(() => {
+    setUp(settings.bandwidthUp);
+    setDown(settings.bandwidthDown);
+    setClientId(settings.driveClientId);
+    setClientSecret(settings.driveClientSecret);
+  }, [
+    settings.bandwidthUp,
+    settings.bandwidthDown,
+    settings.driveClientId,
+    settings.driveClientSecret,
+  ]);
   const [mostrarSegredo, setMostrarSegredo] = useState(false);
   const [procurandoAtualizacao, setProcurandoAtualizacao] = useState(false);
   const [baixandoAtualizacao, setBaixandoAtualizacao] = useState(false);
@@ -67,11 +79,11 @@ export function Settings({
     };
   }, [settings.driveClientId, settings.driveClientSecret]);
 
-  const fonteOauth: "usuario" | "nuvem" | "rclone" =
+  const fonteOauth: "usuario" | "brisasync" | "rclone" =
     oauth?.fonte ?? (credenciaisProprias ? "usuario" : "rclone");
   const rotuloOauth = {
     usuario: "seu projeto",
-    nuvem: "projeto do BrisaSync",
+    brisasync: "projeto do BrisaSync",
     rclone: "projeto do rclone",
   }[fonteOauth]; // chave em português; traduzida em `t(rotuloOauth)`
   const driveConectado = accounts.some((account) => account.provider === "drive");
@@ -94,7 +106,7 @@ export function Settings({
     notify(
       id
         ? t("Credenciais salvas. As contas conectadas agora precisam ser autorizadas de novo.")
-        : fonteOauth === "nuvem"
+        : fonteOauth === "brisasync"
           ? t("Credenciais apagadas. O Google Drive volta a usar o projeto do BrisaSync.")
           : t("Credenciais apagadas. O Google Drive volta a usar o projeto do rclone."),
       "ok",
@@ -131,7 +143,17 @@ export function Settings({
             accounts.map((account) => (
               <div className="row" key={account.name}>
                 <div className={`provider ${account.provider}`} style={{ width: 32, height: 32 }}>
-                  <Icon name={account.provider === "drive" ? "drive" : "onedrive"} size={16} />
+                  <Icon
+                    name={
+                      account.provider === "drive" ||
+                      account.provider === "onedrive" ||
+                      account.provider === "dropbox" ||
+                      account.provider === "nextcloud"
+                        ? account.provider
+                        : "cloud"
+                    }
+                    size={16}
+                  />
                 </div>
                 <div className="row-text">
                   <div className="row-title">{account.name}</div>
@@ -143,9 +165,9 @@ export function Settings({
                       <span className="badge ok" title={t("Autorizada com o seu projeto OAuth")}>
                         {t("cota própria")}
                       </span>
-                    ) : account.clientOrigem === "nuvem" ? (
+                    ) : account.clientOrigem === "brisasync" ? (
                       <span className="badge ok" title={t("Autorizada com o projeto OAuth do BrisaSync")}>
-                        {t("cota do Nuvem")}
+                        {t("cota do BrisaSync")}
                       </span>
                     ) : (
                       <span
@@ -203,7 +225,7 @@ export function Settings({
           {engine && !engine.available ? (
             <div className="banner danger" style={{ marginTop: 8 }}>
               <Icon name="alert" size={16} />
-              {t("Instale o rclone ou defina NUVEM_RCLONE.")}
+              {t("Instale o rclone ou defina BRISASYNC_RCLONE.")}
             </div>
           ) : null}
         </div>
@@ -687,7 +709,7 @@ export function Settings({
                 </div>
               </div>
               <p className="muted" style={{ fontSize: 12.5 }}>
-                {fonteOauth === "nuvem"
+                {fonteOauth === "brisasync"
                   ? t(
                       "Este build já usa o projeto OAuth do próprio BrisaSync: a cota é do aplicativo e não a do rclone. Preencha os campos abaixo só se quiser usar um projeto seu.",
                     )

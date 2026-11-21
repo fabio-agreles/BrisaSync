@@ -6,7 +6,7 @@
   <name>BrisaSync</name>
   <summary>Sincronize o Google Drive e o OneDrive com pastas deste computador</summary>
 
-  <developer id="app.nuvem">
+  <developer id="app.brisasync">
     <name>Equipe do BrisaSync</name>
   </developer>
 
@@ -35,35 +35,35 @@
 
   <launchable type="desktop-id">app.brisasync.BrisaSync.desktop</launchable>
 
-  <url type="homepage">https://github.com/fabio-agreles/nuvem</url>
-  <url type="bugtracker">https://github.com/fabio-agreles/nuvem/issues</url>
-  <url type="vcs-browser">https://github.com/fabio-agreles/nuvem</url>
-  <url type="contribute">https://github.com/fabio-agreles/nuvem/blob/main/app/README.md</url>
+  <url type="homepage">https://github.com/fabio-agreles/BrisaSync</url>
+  <url type="bugtracker">https://github.com/fabio-agreles/BrisaSync/issues</url>
+  <url type="vcs-browser">https://github.com/fabio-agreles/BrisaSync</url>
+  <url type="contribute">https://github.com/fabio-agreles/BrisaSync/blob/main/app/README.md</url>
 
   <screenshots>
     <screenshot type="default">
       <caption>Visão geral: estado das pastas, velocidade e contas conectadas</caption>
-      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/nuvem/main/app/docs/previews/preview-dashboard.png</image>
+      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/BrisaSync/main/app/docs/previews/preview-dashboard.png</image>
     </screenshot>
     <screenshot>
       <caption>Pastas: cada pasta da nuvem com o par local e o estado da sincronização</caption>
-      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/nuvem/main/app/docs/previews/preview-folders.png</image>
+      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/BrisaSync/main/app/docs/previews/preview-folders.png</image>
     </screenshot>
     <screenshot>
       <caption>Arquivos: navegue pela nuvem sem baixar nada e envie arquivos avulsos</caption>
-      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/nuvem/main/app/docs/previews/preview-files.png</image>
+      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/BrisaSync/main/app/docs/previews/preview-files.png</image>
     </screenshot>
     <screenshot>
       <caption>Conflitos: escolha a versão da nuvem, a local ou fique com as duas</caption>
-      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/nuvem/main/app/docs/previews/preview-conflicts.png</image>
+      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/BrisaSync/main/app/docs/previews/preview-conflicts.png</image>
     </screenshot>
     <screenshot>
       <caption>Ajustes: comportamento, credenciais próprias do Google e início automático</caption>
-      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/nuvem/main/app/docs/previews/preview-settings-advanced.png</image>
+      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/BrisaSync/main/app/docs/previews/preview-settings-advanced.png</image>
     </screenshot>
     <screenshot>
       <caption>Tema escuro em toda a interface</caption>
-      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/nuvem/main/app/docs/previews/preview-dark.png</image>
+      <image type="source" width="2480" height="1800">https://raw.githubusercontent.com/fabio-agreles/BrisaSync/main/app/docs/previews/preview-dark.png</image>
     </screenshot>
   </screenshots>
 

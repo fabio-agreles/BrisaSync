@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Projeto OAuth do Google para o Nuvem.
+# Projeto OAuth do Google para o BrisaSync.
 #
 # O Google cobra a cota de requisições por minuto no *projeto OAuth* usado na
 # autorização. O projeto compartilhado do rclone vive estourado; com um projeto
-# só do Nuvem a fila é do aplicativo. O usuário ainda pode colar o projeto dele
+# só do BrisaSync a fila é do aplicativo. O usuário ainda pode colar o projeto dele
 # em Ajustes → Avançado, e aí o dele ganha.
 #
 # Uso:
@@ -12,7 +12,7 @@
 #   scripts/oauth-google.sh --salvar           # grava .env.oauth (0600)
 #   scripts/oauth-google.sh --build [args…]    # valida e roda `tauri build`
 #
-# O par vem de NUVEM_GOOGLE_CLIENT_ID e NUVEM_GOOGLE_CLIENT_SECRET, ou do
+# O par vem de BRISASYNC_GOOGLE_CLIENT_ID e BRISASYNC_GOOGLE_CLIENT_SECRET, ou do
 # arquivo app/.env.oauth (não versionado).
 set -euo pipefail
 
@@ -22,14 +22,14 @@ sufixo=".apps.googleusercontent.com"
 
 passos() {
   cat <<'TXT'
-Projeto OAuth do Nuvem — o que fazer no console
-===============================================
+Projeto OAuth do BrisaSync — o que fazer no console
+===================================================
 
 Só a pessoa com acesso à conta Google pode fazer estes cliques. Leva ~10 min.
 
 1. Projeto
    https://console.cloud.google.com/projectcreate
-   Nome: "Nuvem" · Organização: nenhuma (pessoal).
+   Nome: "BrisaSync" · Organização: nenhuma (pessoal).
 
 2. Drive API
    https://console.cloud.google.com/apis/library/drive.googleapis.com
@@ -37,13 +37,13 @@ Só a pessoa com acesso à conta Google pode fazer estes cliques. Leva ~10 min.
 
 3. Tela de consentimento (Google Auth Platform → Branding)
    https://console.cloud.google.com/auth/branding
-   - Nome do app: Nuvem
+   - Nome do app: BrisaSync
    - E-mail de suporte e e-mail do desenvolvedor: o seu
    - Público: **Externo** (usuários com qualquer conta Google)
    - Logotipo: app/src-tauri/icons/128x128.png (opcional por enquanto)
    - Domínio autorizado: deixe vazio (app instalado não tem site)
    - Link da política de privacidade:
-     https://github.com/fabio-agreles/nuvem/blob/main/PRIVACIDADE.md
+     https://github.com/fabio-agreles/BrisaSync/blob/main/PRIVACIDADE.md
      (o arquivo já existe; o link só responde quando o repositório for público)
 
 4. Escopos (Google Auth Platform → Data Access)
@@ -57,10 +57,10 @@ Só a pessoa com acesso à conta Google pode fazer estes cliques. Leva ~10 min.
 5. Cliente OAuth (Google Auth Platform → Clients)
    https://console.cloud.google.com/auth/clients
    → "Criar cliente" → Tipo: **App para computador** (Desktop app)
-   Nome: "Nuvem desktop"
+   Nome: "BrisaSync desktop"
    Copie o client_id (termina em .apps.googleusercontent.com) e o client_secret.
    *Não* precisa de URI de redirecionamento: app instalado usa o laço local
-   http://127.0.0.1:53682/ que o rclone abre sozinho.
+   http://127.0.0.1:53682/ que o BrisaSync abre sozinho.
 
 6. Publicar (Google Auth Platform → Audience)
    https://console.cloud.google.com/auth/audience
@@ -69,16 +69,16 @@ Só a pessoa com acesso à conta Google pode fazer estes cliques. Leva ~10 min.
    token — expira em 7 dias e a sincronização para de funcionar toda semana.
 
 7. Embutir no build
-   export NUVEM_GOOGLE_CLIENT_ID='....apps.googleusercontent.com'
-   export NUVEM_GOOGLE_CLIENT_SECRET='GOCSPX-...'
+   export BRISASYNC_GOOGLE_CLIENT_ID='....apps.googleusercontent.com'
+   export BRISASYNC_GOOGLE_CLIENT_SECRET='GOCSPX-...'
    scripts/oauth-google.sh --conferir
    scripts/oauth-google.sh --build          # ou use os segredos no CI
 
    Sem recompilar, dá para testar com variável de ambiente em tempo de execução:
-   NUVEM_GOOGLE_CLIENT_ID=... NUVEM_GOOGLE_CLIENT_SECRET=... nuvem
-   No Flatpak: flatpak override --user --env=NUVEM_GOOGLE_CLIENT_ID=...
+   BRISASYNC_GOOGLE_CLIENT_ID=... BRISASYNC_GOOGLE_CLIENT_SECRET=... brisasync
+   No Flatpak: flatpak override --user --env=BRISASYNC_GOOGLE_CLIENT_ID=...
 
-Depois disso, Ajustes → Avançado mostra "projeto do Nuvem" e o client_id em uso.
+Depois disso, Ajustes → Avançado mostra "projeto do BrisaSync" e o client_id em uso.
 
 Verificação do Google (para distribuir de verdade)
 --------------------------------------------------
@@ -86,7 +86,7 @@ Enquanto o app não passa pela verificação, quem autoriza vê a tela
 "O Google não verificou este aplicativo" e o projeto tem um teto **de 100
 usuários novos, para sempre** (não dá para zerar). Para o público em geral é
 preciso enviar o app para verificação: marca, escopos, vídeo de demonstração e,
-se houver servidor, avaliação de segurança CASA anual. O Nuvem não tem servidor
+se houver servidor, avaliação de segurança CASA anual. O BrisaSync não tem servidor
 (tokens ficam na máquina do usuário), então a avaliação CASA não se aplica —
 mas a verificação de escopo restrito, sim. Detalhes em docs/oauth-google.md.
 TXT
@@ -100,9 +100,10 @@ ler_arquivo() {
 }
 
 conferir() {
-  local id="${NUVEM_GOOGLE_CLIENT_ID:-}" segredo="${NUVEM_GOOGLE_CLIENT_SECRET:-}"
+  local id="${BRISASYNC_GOOGLE_CLIENT_ID:-}"
+  local segredo="${BRISASYNC_GOOGLE_CLIENT_SECRET:-}"
   if [[ -z "$id" && -z "$segredo" ]]; then
-    echo "oauth-google: nenhum par definido (NUVEM_GOOGLE_CLIENT_ID/_SECRET)." >&2
+    echo "oauth-google: nenhum par definido (BRISASYNC_GOOGLE_CLIENT_ID/_SECRET)." >&2
     echo "  O build sai com o projeto compartilhado do rclone." >&2
     return 1
   fi
@@ -123,10 +124,10 @@ salvar() {
   conferir
   umask 077
   {
-    printf '# Projeto OAuth do Google usado no build do Nuvem.\n'
+    printf '# Projeto OAuth do Google usado no build do BrisaSync.\n'
     printf '# Não versionado: entra no .gitignore.\n'
-    printf 'export NUVEM_GOOGLE_CLIENT_ID=%q\n' "${NUVEM_GOOGLE_CLIENT_ID}"
-    printf 'export NUVEM_GOOGLE_CLIENT_SECRET=%q\n' "${NUVEM_GOOGLE_CLIENT_SECRET}"
+    printf 'export BRISASYNC_GOOGLE_CLIENT_ID=%q\n' "${BRISASYNC_GOOGLE_CLIENT_ID}"
+    printf 'export BRISASYNC_GOOGLE_CLIENT_SECRET=%q\n' "${BRISASYNC_GOOGLE_CLIENT_SECRET}"
   } > "$arquivo"
   chmod 600 "$arquivo"
   echo "oauth-google: gravado em $arquivo (0600)"
@@ -140,9 +141,9 @@ build() {
     return 1
   fi
   cd "$raiz"
-  echo "oauth-google: compilando com o projeto do Nuvem embutido…"
-  NUVEM_GOOGLE_CLIENT_ID="$NUVEM_GOOGLE_CLIENT_ID" \
-  NUVEM_GOOGLE_CLIENT_SECRET="$NUVEM_GOOGLE_CLIENT_SECRET" \
+  echo "oauth-google: compilando com o projeto do BrisaSync embutido…"
+  BRISASYNC_GOOGLE_CLIENT_ID="$BRISASYNC_GOOGLE_CLIENT_ID" \
+  BRISASYNC_GOOGLE_CLIENT_SECRET="$BRISASYNC_GOOGLE_CLIENT_SECRET" \
     npx tauri build "$@"
 }
 

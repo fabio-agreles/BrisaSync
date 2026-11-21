@@ -42,7 +42,7 @@ fn credenciais() -> AppResult<(String, String)> {
         ))
     })?;
     let senha = bytes.iter().map(|byte| format!("{byte:02x}")).collect();
-    Ok(("nuvem".to_string(), senha))
+    Ok(("brisasync".to_string(), senha))
 }
 
 /// Nome do executável do rclone. No Windows o sufixo `.exe` faz parte do nome —
@@ -129,7 +129,7 @@ impl Rclone {
     /// Localiza o rclone: variável de ambiente, cópia embutida no pacote, PATH e
     /// caminhos do Flatpak/usuário.
     pub fn find_binary() -> Option<PathBuf> {
-        if let Ok(configured) = std::env::var("NUVEM_RCLONE") {
+        if let Ok(configured) = std::env::var("BRISASYNC_RCLONE") {
             let candidate = PathBuf::from(configured);
             if candidate.is_file() {
                 return Some(candidate);
@@ -146,7 +146,7 @@ impl Rclone {
                 // pasta de origem ao lado do executável.
                 candidates.push(dir.join("resources").join(RCLONE));
                 if let Some(prefix) = dir.parent() {
-                    for product in ["BrisaSync", "Nuvem", "nuvem-sync", "nuvem"] {
+                    for product in ["BrisaSync", "brisasync"] {
                         candidates.push(prefix.join("lib").join(product).join(RCLONE));
                     }
                 }
@@ -166,11 +166,10 @@ impl Rclone {
         }
         #[cfg(windows)]
         {
-            // O instalador do Windows põe o `rclone.exe` ao lado do `Nuvem.exe`
-            // (resources do NSIS). Os nomes antigos ficam porque a 1.2.x instalava
-            // em `Nuvem` e quem atualiza mantém a pasta até desinstalar.
+            // O instalador do Windows põe o `rclone.exe` ao lado do `BrisaSync.exe`
+            // (resources do NSIS).
             if let Some(local) = std::env::var_os("LOCALAPPDATA") {
-                for produto in ["BrisaSync", "Nuvem"] {
+                for produto in ["BrisaSync"] {
                     candidates.push(PathBuf::from(&local).join(produto).join(RCLONE));
                     candidates.push(PathBuf::from(&local).join("Programs").join(produto).join(RCLONE));
                 }
@@ -183,7 +182,7 @@ impl Rclone {
     pub async fn binary(&self) -> AppResult<PathBuf> {
         Self::find_binary().ok_or_else(|| {
             AppError::new(
-                "rclone não encontrado. Instale o rclone ou defina NUVEM_RCLONE com o caminho do executável.",
+                "rclone não encontrado. Instale o rclone ou defina BRISASYNC_RCLONE com o caminho do executável.",
             )
         })
     }
@@ -387,7 +386,7 @@ mod tests {
     #[test]
     fn credenciais_sao_aleatorias() {
         let (usuario, senha) = credenciais().expect("credenciais");
-        assert_eq!(usuario, "nuvem");
+        assert_eq!(usuario, "brisasync");
         assert_eq!(senha.len(), 48);
         assert!(senha.chars().all(|c| c.is_ascii_hexdigit()));
 
@@ -417,14 +416,14 @@ mod tests {
 
         let rclone = Rclone::new();
         let _ = rclone
-            .call_at(port, "nuvem", "segredo", "core/version", json!({}), Duration::from_secs(5))
+            .call_at(port, "brisasync", "segredo", "core/version", json!({}), Duration::from_secs(5))
             .await;
         let requisicao = servidor.await.expect("servidor");
 
-        // base64("nuvem:segredo")
+        // base64("brisasync:segredo")
         assert!(
-            requisicao.contains("authorization: Basic bnV2ZW06c2VncmVkbw==")
-                || requisicao.contains("Authorization: Basic bnV2ZW06c2VncmVkbw=="),
+            requisicao.contains("authorization: Basic YnJpc2FzeW5jOnNlZ3JlZG8=")
+                || requisicao.contains("Authorization: Basic YnJpc2FzeW5jOnNlZ3JlZG8="),
             "requisição sem HTTP Basic: {requisicao}"
         );
     }

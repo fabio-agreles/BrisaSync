@@ -316,7 +316,7 @@ const EN: Record<string, string> = {
   "Entrar em {pasta}": "Open {pasta}",
   "Entrar": "Open",
   "Pasta local": "Local folder",
-  "/home/você/Nuvem/Projetos": "/home/you/Cloud/Projects",
+  "/home/você/BrisaSync/Projetos": "/home/you/BrisaSync/Projects",
   "A pasta é criada se não existir.": "The folder is created if it does not exist.",
 
   // ---- pastas -----------------------------------------------------------
@@ -467,7 +467,7 @@ const EN: Record<string, string> = {
   "cota própria": "own quota",
   "Autorizada com o projeto OAuth do BrisaSync":
     "Authorized with the BrisaSync OAuth project",
-  "cota do Nuvem": "Nuvem quota",
+  "cota do BrisaSync": "BrisaSync quota",
   "Autorizada no projeto OAuth compartilhado do rclone, de antes desta versão: reconecte a conta (em Avançado) para usar a cota do BrisaSync.":
     "Authorized on rclone's shared OAuth project, from before this version: reconnect the account (under Advanced) to use the BrisaSync quota.",
   "projeto antigo · reconectar": "old project · reconnect",
@@ -479,7 +479,7 @@ const EN: Record<string, string> = {
     "Two-way, with automatic resync when paths change.",
   ativo: "active",
   "Você está no modo demonstração (navegador).": "You are in demo mode (browser).",
-  "Instale o rclone ou defina NUVEM_RCLONE.": "Install rclone or set NUVEM_RCLONE.",
+  "Instale o rclone ou defina BRISASYNC_RCLONE.": "Install rclone or set BRISASYNC_RCLONE.",
   "Banda e regras": "Bandwidth and rules",
   "Limite de envio": "Upload limit",
   "Vazio = sem limite. Ex.: 5M, 800k.": "Empty = no limit. E.g.: 5M, 800k.",

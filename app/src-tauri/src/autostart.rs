@@ -57,7 +57,7 @@ fn ativo(text: &str) -> bool {
 
 fn pedir_ao_portal(enable: bool) -> AppResult<()> {
     let reason = "Mantém as pastas sincronizadas mesmo com a janela do BrisaSync fechada.";
-    let token = format!("nuvem_autostart_{}", if enable { "on" } else { "off" });
+    let token = format!("brisasync_autostart_{}", if enable { "on" } else { "off" });
 
     let connection = zbus::blocking::Connection::session()
         .map_err(|error| AppError::new(format!("sem acesso ao barramento da sessão: {error}")))?;

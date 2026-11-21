@@ -50,6 +50,7 @@ const PRAZO_DO_NAVEGADOR: Duration = Duration::from_secs(600);
 /// Autoriza uma conta Microsoft e devolve o token no formato que o
 /// `rclone.conf` guarda (o mesmo JSON que o `rclone authorize` produziria).
 pub async fn autorizar() -> AppResult<Value> {
+    crate::login_google::limpar_cancelamento();
     let estado = sorteio(16)?;
     let ouvintes = abrir_porta().await?;
     let endereco = endereco_de_autorizacao(&estado);

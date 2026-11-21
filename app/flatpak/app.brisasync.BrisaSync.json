@@ -58,7 +58,7 @@
       ]
     },
     {
-      "name": "nuvem",
+      "name": "brisasync",
       "buildsystem": "simple",
       "build-options": {
         "append-path": "/usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/node22/bin",

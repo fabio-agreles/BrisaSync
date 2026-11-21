@@ -67,7 +67,7 @@ fn pasta_dos_icones() -> PathBuf {
         // Windows não tem XDG: `%LOCALAPPDATA%` é o equivalente de cache.
         .or_else(|| std::env::var_os("LOCALAPPDATA").map(PathBuf::from))
         .unwrap_or_else(std::env::temp_dir);
-    let dir = base.join("nuvem").join("bandeja");
+    let dir = base.join("brisasync").join("bandeja");
     let _ = std::fs::create_dir_all(&dir);
     dir
 }

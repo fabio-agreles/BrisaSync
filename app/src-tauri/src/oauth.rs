@@ -8,8 +8,8 @@
 //! Precedência: usuário > projeto do BrisaSync > projeto do rclone.
 //!
 //! De onde vêm as credenciais do build, em ordem:
-//! 1. variável de ambiente em tempo de execução (`NUVEM_GOOGLE_CLIENT_ID` e
-//!    `NUVEM_GOOGLE_CLIENT_SECRET`) — permite testar sem recompilar;
+//! 1. variável de ambiente em tempo de execução (`BRISASYNC_GOOGLE_CLIENT_ID` e
+//!    `BRISASYNC_GOOGLE_CLIENT_SECRET`) — permite testar sem recompilar;
 //! 2. variável de ambiente no momento da compilação (mesmos nomes), que é como
 //!    o CI injeta o par a partir dos segredos do repositório.
 //!
@@ -26,7 +26,7 @@ pub enum Fonte {
     /// O usuário colou o par dele em Ajustes → Avançado.
     Usuario,
     /// Projeto OAuth embutido no build (o do próprio BrisaSync).
-    Nuvem,
+    BrisaSync,
     /// Projeto compartilhado do rclone (sem `client_id` nenhum).
     Rclone,
 }
@@ -36,7 +36,7 @@ impl Fonte {
     pub fn id(self) -> &'static str {
         match self {
             Fonte::Usuario => "usuario",
-            Fonte::Nuvem => "nuvem",
+            Fonte::BrisaSync => "brisasync",
             Fonte::Rclone => "rclone",
         }
     }
@@ -45,7 +45,7 @@ impl Fonte {
     pub fn descricao(self) -> &'static str {
         match self {
             Fonte::Usuario => "credenciais próprias do usuário",
-            Fonte::Nuvem => "projeto do BrisaSync",
+            Fonte::BrisaSync => "projeto do BrisaSync",
             Fonte::Rclone => "projeto compartilhado do rclone",
         }
     }
@@ -96,12 +96,12 @@ fn primeiro_valido(
 /// Credenciais do projeto embutidas no build (ou no ambiente de execução).
 pub fn do_build() -> Option<(String, String)> {
     let ambiente = par_valido(
-        &std::env::var("NUVEM_GOOGLE_CLIENT_ID").unwrap_or_default(),
-        &std::env::var("NUVEM_GOOGLE_CLIENT_SECRET").unwrap_or_default(),
+        &std::env::var("BRISASYNC_GOOGLE_CLIENT_ID").unwrap_or_default(),
+        &std::env::var("BRISASYNC_GOOGLE_CLIENT_SECRET").unwrap_or_default(),
     );
     let compilado = match (
-        option_env!("NUVEM_GOOGLE_CLIENT_ID"),
-        option_env!("NUVEM_GOOGLE_CLIENT_SECRET"),
+        option_env!("BRISASYNC_GOOGLE_CLIENT_ID"),
+        option_env!("BRISASYNC_GOOGLE_CLIENT_SECRET"),
     ) {
         (Some(id), Some(secret)) => par_valido(id, secret),
         _ => None,
@@ -115,7 +115,7 @@ pub fn fonte_da_conta(client_id: Option<&str>, do_build: Option<&str>) -> Fonte 
     match client_id.map(str::trim) {
         Some(id) if !id.is_empty() => {
             if Some(id) == do_build.map(str::trim) {
-                Fonte::Nuvem
+                Fonte::BrisaSync
             } else {
                 Fonte::Usuario
             }
@@ -140,7 +140,7 @@ fn com(do_usuario: (&str, &str), do_build_par: Option<(String, String)>) -> Cred
             fonte: if usuario.is_some() {
                 Fonte::Usuario
             } else {
-                Fonte::Nuvem
+                Fonte::BrisaSync
             },
         },
         None => Credenciais {
@@ -168,14 +168,14 @@ mod testes {
         );
     }
 
-    /// Roda de verdade quando NUVEM_GOOGLE_CLIENT_ID/_SECRET estão no ambiente
+    /// Roda de verdade quando BRISASYNC_GOOGLE_CLIENT_ID/_SECRET estão no ambiente
     /// (é o teste que prova o par real do projeto do BrisaSync); em CI, sem as
     /// variáveis, ele não tem o que conferir e passa sem fazer nada.
     #[test]
-    fn ambiente_com_o_par_do_projeto_vira_fonte_nuvem() {
+    fn ambiente_com_o_par_do_projeto_vira_fonte_brisasync() {
         let (Ok(id), Ok(segredo)) = (
-            std::env::var("NUVEM_GOOGLE_CLIENT_ID"),
-            std::env::var("NUVEM_GOOGLE_CLIENT_SECRET"),
+            std::env::var("BRISASYNC_GOOGLE_CLIENT_ID"),
+            std::env::var("BRISASYNC_GOOGLE_CLIENT_SECRET"),
         ) else {
             return;
         };
@@ -183,7 +183,7 @@ mod testes {
             return;
         }
         let credenciais = efetivas(("", ""));
-        assert_eq!(credenciais.fonte, Fonte::Nuvem);
+        assert_eq!(credenciais.fonte, Fonte::BrisaSync);
         assert_eq!(credenciais.client_id.as_deref(), Some(id.trim()));
         assert_eq!(credenciais.como_json()["client_secret"], segredo.trim());
         // E o par do usuário continua ganhando, como manda a precedência.
@@ -222,9 +222,9 @@ mod testes {
 
     #[test]
     fn projeto_embutido_no_build_vale_quando_o_usuario_nao_preencheu() {
-        let do_build_par = Some((BOM.to_string(), "GOCSPX-do-nuvem".to_string()));
+        let do_build_par = Some((BOM.to_string(), "GOCSPX-do-brisasync".to_string()));
         let credenciais = com(("", ""), do_build_par.clone());
-        assert_eq!(credenciais.fonte, Fonte::Nuvem);
+        assert_eq!(credenciais.fonte, Fonte::BrisaSync);
         assert_eq!(credenciais.como_json()["client_id"], BOM);
 
         // E o do usuário continua ganhando dele.
@@ -237,7 +237,7 @@ mod testes {
     fn origem_da_conta_conectada() {
         assert_eq!(fonte_da_conta(None, Some(BOM)), Fonte::Rclone);
         assert_eq!(fonte_da_conta(Some("   "), Some(BOM)), Fonte::Rclone);
-        assert_eq!(fonte_da_conta(Some(BOM), Some(BOM)), Fonte::Nuvem);
+        assert_eq!(fonte_da_conta(Some(BOM), Some(BOM)), Fonte::BrisaSync);
         assert_eq!(fonte_da_conta(Some(BOM), None), Fonte::Usuario);
         assert_eq!(
             fonte_da_conta(Some("999-outro.apps.googleusercontent.com"), Some(BOM)),
