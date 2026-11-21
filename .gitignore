@@ -23,6 +23,7 @@
 # Caches locais e arquivos de sessões
 .om/
 **/.om/
+graphify-out/
 
 # Bundle de arquivo único gerado por `flatpak build-bundle`
 /*.flatpak
