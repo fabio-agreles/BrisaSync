@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="brisasync.png">
 <link rel="canonical" href="https://brisasync.com.br/">
-<title>BrisaSync — Sincronização bidirecional para Linux e Windows</title>
-<meta name="description" content="BrisaSync 1.0.0: aplicativo desktop de código aberto que mantém suas pastas em sincronização bidirecional com Google Drive, OneDrive, Dropbox e Nextcloud.">
+<title>BrisaSync — Two-way cloud sync for Linux and Windows</title>
+<meta name="description" content="BrisaSync 1.0.0: open-source desktop application that keeps your folders in two-way sync with Google Drive, OneDrive, Dropbox, and Nextcloud.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://brisasync.com.br/">
-<meta property="og:title" content="BrisaSync — Sincronização bidirecional para Linux e Windows">
-<meta property="og:description" content="Sincronize Google Drive, OneDrive, Dropbox e Nextcloud no Linux e Windows com código aberto, zero telemetria e conexão direta.">
+<meta property="og:title" content="BrisaSync — Two-way cloud sync for Linux and Windows">
+<meta property="og:description" content="Sync Google Drive, OneDrive, Dropbox, and Nextcloud on Linux and Windows with open-source code, zero telemetry, and direct connection.">
 <meta property="og:image" content="https://brisasync.com.br/brisasync.png">
 <style>
   :root {
@@ -54,7 +54,7 @@
     padding: 0 24px;
   }
 
-  /* Faixa de abertura */
+  /* Opening band */
   .hero-band {
     position: relative;
     overflow: hidden;
@@ -110,7 +110,7 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 22px;
+    gap: 20px;
     font-size: 0.94rem;
   }
   nav a {
@@ -120,6 +120,33 @@
   nav a:hover {
     color: #ffffff;
     text-decoration: none;
+  }
+
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    padding: 2px;
+    gap: 2px;
+  }
+  .lang-btn {
+    border: 0;
+    background: transparent;
+    color: rgba(232, 242, 255, 0.78);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .lang-btn:hover { color: #ffffff; }
+  .lang-btn.active {
+    background: var(--mint);
+    color: #03221d;
   }
 
   .hero {
@@ -212,7 +239,7 @@
     font-weight: 500;
   }
 
-  /* Painel de sincronização no Hero */
+  /* Hero sync panel */
   .sync-panel {
     background: rgba(10, 34, 71, 0.86);
     border: 1px solid rgba(148, 197, 255, 0.22);
@@ -301,7 +328,7 @@
     white-space: nowrap;
   }
 
-  /* Seções principais */
+  /* Main sections */
   main section {
     padding: 72px 0;
     border-bottom: 1px solid var(--line);
@@ -323,7 +350,7 @@
     font-size: 1.02rem;
   }
 
-  /* Novidades (layout dividido) */
+  /* What's new (split layout) */
   .split-section {
     display: grid;
     grid-template-columns: 0.85fr 1.15fr;
@@ -353,7 +380,7 @@
     font-size: 0.95rem;
   }
 
-  /* Recursos (grade tipográfica limpa) */
+  /* Features */
   .feature-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -374,7 +401,7 @@
     font-size: 0.94rem;
   }
 
-  /* Capturas */
+  /* Screenshots */
   .tabs {
     display: flex;
     flex-wrap: wrap;
@@ -527,7 +554,7 @@
     color: var(--mint-ink);
   }
 
-  /* Rodapé */
+  /* Footer */
   footer {
     padding: 32px 0 48px;
     border-top: 1px solid var(--line);
@@ -596,30 +623,35 @@
         <span>BrisaSync</span>
         <span class="ver-pill">1.0.0</span>
       </a>
-      <nav aria-label="Navegação principal">
-        <a href="#novidades">Novidades</a>
-        <a href="#recursos">Recursos</a>
-        <a href="#telas">Telas</a>
-        <a href="#baixar">Baixar</a>
-        <a href="#apoie">Apoie</a>
+      <nav aria-label="Main navigation">
+        <a href="#novidades" data-i18n="nav_whats_new">What's new</a>
+        <a href="#recursos" data-i18n="nav_features">Features</a>
+        <a href="#telas" data-i18n="nav_screenshots">Screenshots</a>
+        <a href="#baixar" data-i18n="nav_download">Download</a>
+        <a href="#apoie" data-i18n="nav_support">Support</a>
+        <a href="privacidade.html" data-i18n="nav_privacy">Privacy</a>
         <a href="https://github.com/fabio-agreles/BrisaSync">GitHub</a>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-btn active" data-set-lang="en">EN</button>
+          <button type="button" class="lang-btn" data-set-lang="pt">PT-BR</button>
+        </div>
       </nav>
     </header>
 
     <section class="hero">
       <div>
-        <h1>Sincronização bidirecional leve para suas pastas na nuvem</h1>
-        <p class="hero-lead">
-          O BrisaSync mantém diretórios do Linux e do Windows em sincronia contínua com
-          Google Drive, OneDrive, Dropbox e Nextcloud — direto do seu computador, sem
-          servidor intermediário e sem telemetria.
+        <h1 data-i18n="hero_title">Lightweight two-way sync for your cloud folders</h1>
+        <p class="hero-lead" data-i18n="hero_lead">
+          BrisaSync keeps Linux and Windows directories in continuous sync with
+          Google Drive, OneDrive, Dropbox, and Nextcloud — directly from your computer,
+          with no intermediary server and zero telemetry.
         </p>
         <div class="actions">
-          <a class="btn btn-hero-primary" href="#baixar">Baixar BrisaSync 1.0.0</a>
-          <a class="btn btn-hero-secondary" href="https://github.com/fabio-agreles/BrisaSync">Ver código no GitHub</a>
+          <a class="btn btn-hero-primary" href="#baixar" data-i18n="hero_cta_dl">Download BrisaSync 1.0.0</a>
+          <a class="btn btn-hero-secondary" href="https://github.com/fabio-agreles/BrisaSync" data-i18n="hero_cta_gh">View source on GitHub</a>
         </div>
         <div class="provider-strip">
-          <span>Provedores:</span>
+          <span data-i18n="hero_providers">Providers:</span>
           <span class="provider-chip">Google Drive</span>
           <span class="provider-chip">OneDrive</span>
           <span class="provider-chip">Dropbox</span>
@@ -627,7 +659,7 @@
         </div>
       </div>
 
-      <div class="sync-panel" aria-label="Resumo da interface do BrisaSync">
+      <div class="sync-panel" aria-label="BrisaSync interface summary">
         <div class="sync-panel-bar">
           <div class="win-dots"><span></span><span></span><span></span></div>
           <span>BrisaSync 1.0.0 · rclone bisync</span>
@@ -635,32 +667,32 @@
         <div class="sync-panel-body">
           <div class="sync-status-card">
             <div>
-              <strong>Tudo em dia</strong>
-              <span>4 provedores suportados · detecção rápida ativa</span>
+              <strong data-i18n="panel_status_title">All up to date</strong>
+              <span data-i18n="panel_status_sub">4 supported providers · fast change detection active</span>
             </div>
             <span class="pulse-dot" aria-hidden="true"></span>
           </div>
           <div class="pair-list">
             <div class="pair-row">
               <div>
-                <strong>Documentos</strong>
-                <small>Google Drive · /Trabalho</small>
+                <strong data-i18n="panel_row1_title">Documents</strong>
+                <small data-i18n="panel_row1_sub">Google Drive · /Work</small>
               </div>
-              <span class="pair-state">Sincronizado</span>
+              <span class="pair-state" data-i18n="panel_synced">Synced</span>
             </div>
             <div class="pair-row">
               <div>
-                <strong>Projetos</strong>
-                <small>OneDrive · /Projetos</small>
+                <strong data-i18n="panel_row2_title">Projects</strong>
+                <small data-i18n="panel_row2_sub">OneDrive · /Projects</small>
               </div>
-              <span class="pair-state">Sincronizado</span>
+              <span class="pair-state" data-i18n="panel_synced">Synced</span>
             </div>
             <div class="pair-row">
               <div>
-                <strong>Fotos</strong>
-                <small>Nextcloud · /Camera</small>
+                <strong data-i18n="panel_row3_title">Photos</strong>
+                <small data-i18n="panel_row3_sub">Nextcloud · /Camera</small>
               </div>
-              <span class="pair-state">Sincronizado</span>
+              <span class="pair-state" data-i18n="panel_synced">Synced</span>
             </div>
           </div>
         </div>
@@ -672,148 +704,148 @@
 <main class="wrap">
   <section id="novidades" class="split-section">
     <div>
-      <h2>O que há de novo na versão 1.0.0</h2>
-      <p class="section-lead">
-        Construído em Rust e Tauri 2 com o motor bisync do rclone embutido em todos os pacotes.
+      <h2 data-i18n="new_title">What's new in version 1.0.0</h2>
+      <p class="section-lead" data-i18n="new_lead">
+        Built in Rust and Tauri 2 with the rclone bisync engine bundled in every package.
       </p>
     </div>
     <ul class="release-items">
       <li>
-        <strong>Quatro provedores integrados</strong>
-        <p>Conecte contas do Google Drive, OneDrive, Dropbox e Nextcloud no mesmo lugar, com suporte a credenciais OAuth próprias no Google.</p>
+        <strong data-i18n="new_1_t">Four built-in providers</strong>
+        <p data-i18n="new_1_p">Connect Google Drive, OneDrive, Dropbox, and Nextcloud accounts in one place, with support for custom Google OAuth credentials.</p>
       </li>
       <li>
-        <strong>Detecção rápida na nuvem</strong>
-        <p>Consulta leve às APIs de alterações do Google Drive e OneDrive a cada 30 segundos, evitando varreduras pesadas quando nada mudou.</p>
+        <strong data-i18n="new_2_t">Fast cloud change detection</strong>
+        <p data-i18n="new_2_p">Lightweight polling of Google Drive and OneDrive changes APIs every 30 seconds, avoiding heavy scans when nothing changed.</p>
       </li>
       <li>
-        <strong>Sincronização seletiva visual</strong>
-        <p>Escolha quais subpastas da nuvem sincronizar ou ignorar em cada perfil sem precisar editar regras de filtro manualmente.</p>
+        <strong data-i18n="new_3_t">Visual selective sync</strong>
+        <p data-i18n="new_3_p">Choose which cloud subfolders to sync or ignore per profile without manually editing filter rules.</p>
       </li>
       <li>
-        <strong>Envio múltiplo por arrastar e soltar</strong>
-        <p>Arraste arquivos e pastas inteiras direto para o navegador de arquivos da nuvem ou baixe itens avulsos sob demanda.</p>
+        <strong data-i18n="new_4_t">Drag-and-drop multi-file upload</strong>
+        <p data-i18n="new_4_p">Drag files and entire folders straight into the cloud file browser or download individual items on demand.</p>
       </li>
       <li>
-        <strong>Bandeja com progresso e atualizador integrado</strong>
-        <p>Acompanhe velocidade e andamento na bandeja do sistema e instale novas versões pelo próprio aplicativo.</p>
+        <strong data-i18n="new_5_t">System tray progress and built-in updater</strong>
+        <p data-i18n="new_5_p">Track transfer speed and progress from the system tray and install new releases directly from the app.</p>
       </li>
     </ul>
   </section>
 
   <section id="recursos">
-    <h2>Projetado para uso diário sem surpresas</h2>
-    <p class="section-lead">Cada detalhe prioriza a integridade dos seus arquivos e o baixo consumo de memória.</p>
+    <h2 data-i18n="feat_title">Designed for daily use without surprises</h2>
+    <p class="section-lead" data-i18n="feat_lead">Every detail prioritizes file integrity and low memory usage.</p>
     <div class="feature-grid">
       <div class="feature-col">
-        <h3>Sincronização bidirecional real</h3>
-        <p>Alterações locais são detectadas na hora pelo observador do sistema e enviadas com conferência de integridade pelo motor rclone bisync.</p>
+        <h3 data-i18n="feat_1_t">True two-way sync</h3>
+        <p data-i18n="feat_1_p">Local changes are detected immediately by the OS file watcher and synced with integrity checks via rclone bisync.</p>
       </div>
       <div class="feature-col">
-        <h3>Conflitos resolvidos lado a lado</h3>
-        <p>Quando um arquivo muda nos dois lados ao mesmo tempo, você compara e escolhe qual versão manter — e a sincronização retoma imediatamente.</p>
+        <h3 data-i18n="feat_2_t">Side-by-side conflict resolution</h3>
+        <p data-i18n="feat_2_p">When a file changes on both sides at once, compare and pick which version to keep — and sync resumes right away.</p>
       </div>
       <div class="feature-col">
-        <h3>Trava contra exclusões em massa</h3>
-        <p>Se uma pasta esvaziar de repente por erro ou desmontagem de disco, o BrisaSync interrompe o ciclo antes de apagar o outro lado.</p>
+        <h3 data-i18n="feat_3_t">Mass-deletion safety lock</h3>
+        <p data-i18n="feat_3_p">If a folder suddenly empties due to an error or unmounted drive, BrisaSync halts the cycle before deleting the other side.</p>
       </div>
       <div class="feature-col">
-        <h3>Navegador de arquivos sob demanda</h3>
-        <p>Explore pastas remotas, baixe itens avulsos ou envie novos arquivos sem precisar espelhar toda a sua nuvem no disco.</p>
+        <h3 data-i18n="feat_4_t">On-demand file browser</h3>
+        <p data-i18n="feat_4_p">Browse remote folders, download individual items, or upload new files without mirroring your entire cloud to disk.</p>
       </div>
       <div class="feature-col">
-        <h3>Controle de banda e comportamento</h3>
-        <p>Defina limites de upload e download, inicialização automática com o sistema e fechamento discreto para a bandeja.</p>
+        <h3 data-i18n="feat_5_t">Bandwidth and behavior controls</h3>
+        <p data-i18n="feat_5_p">Set upload and download speed limits, launch on system startup, and minimize quietly to the system tray.</p>
       </div>
       <div class="feature-col">
-        <h3>Código aberto e zero telemetria</h3>
-        <p>Licença MIT, sem anúncios e sem servidor próprio: seus dados trafegam diretamente entre o seu computador e o provedor escolhido.</p>
+        <h3 data-i18n="feat_6_t">Open source and zero telemetry</h3>
+        <p data-i18n="feat_6_p">MIT licensed, no ads, and no server of our own: your data travels directly between your computer and your chosen provider.</p>
       </div>
     </div>
   </section>
 
   <section id="telas">
-    <h2>Capturas do aplicativo</h2>
-    <p class="section-lead">Interface adaptativa com temas claro e escuro para Linux e Windows.</p>
-    <div class="tabs" role="tablist" aria-label="Telas do BrisaSync">
-      <button class="tab active" type="button" data-src="assets/images/visao-geral.png" data-cap="Visão geral: status das pastas, fila de transferência, contas conectadas e armazenamento.">Visão geral</button>
-      <button class="tab" type="button" data-src="assets/images/pastas.png" data-cap="Pastas: pares de sincronização bidirecional e seleção visual de subpastas.">Pastas</button>
-      <button class="tab" type="button" data-src="assets/images/arquivos.png" data-cap="Arquivos: navegue pela nuvem sem baixar tudo e envie arquivos por arrastar e soltar.">Arquivos</button>
-      <button class="tab" type="button" data-src="assets/images/ajustes.png" data-cap="Ajustes: limites de banda, comportamento na bandeja, idioma e atualizações.">Ajustes</button>
-      <button class="tab" type="button" data-src="assets/images/tema-escuro.png" data-cap="Tema escuro: interface adaptada para uso noturno no Linux e Windows.">Tema escuro</button>
+    <h2 data-i18n="shots_title">App screenshots</h2>
+    <p class="section-lead" data-i18n="shots_lead">Adaptive interface with light and dark themes for Linux and Windows.</p>
+    <div class="tabs" role="tablist" aria-label="BrisaSync screenshots">
+      <button class="tab active" type="button" data-tab="overview" data-src="assets/images/visao-geral.png" data-i18n="tab_overview">Overview</button>
+      <button class="tab" type="button" data-tab="folders" data-src="assets/images/pastas.png" data-i18n="tab_folders">Folders</button>
+      <button class="tab" type="button" data-tab="files" data-src="assets/images/arquivos.png" data-i18n="tab_files">Files</button>
+      <button class="tab" type="button" data-tab="settings" data-src="assets/images/ajustes.png" data-i18n="tab_settings">Settings</button>
+      <button class="tab" type="button" data-tab="dark" data-src="assets/images/tema-escuro.png" data-i18n="tab_dark">Dark theme</button>
     </div>
     <div class="stage">
-      <img id="stage-img" src="assets/images/visao-geral.png" alt="Captura de tela do BrisaSync">
-      <div id="stage-cap" class="stage-cap">Visão geral: status das pastas, fila de transferência, contas conectadas e armazenamento.</div>
+      <img id="stage-img" src="assets/images/visao-geral.png" alt="BrisaSync screenshot">
+      <div id="stage-cap" class="stage-cap">Overview: folder status, transfer queue, connected accounts, and storage quota.</div>
     </div>
   </section>
 
   <section id="baixar">
-    <h2>Baixar para Linux e Windows</h2>
-    <p class="section-lead">Escolha o pacote adequado para o seu sistema na release v1.0.0. O rclone já vai embutido.</p>
+    <h2 data-i18n="dl_title">Download for Linux and Windows</h2>
+    <p class="section-lead" data-i18n="dl_lead">Pick the package for your system from release v1.0.0. rclone is already bundled.</p>
     <div class="dl-grid">
       <div class="dl-card">
         <div>
           <h3>Debian, Ubuntu, Mint</h3>
-          <p>Pacote nativo <code>.deb</code> com integração à bandeja.</p>
+          <p data-i18n="dl_deb_p">Native <code>.deb</code> package with system tray integration.</p>
         </div>
         <div class="dl-actions">
-          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync_1.0.0_amd64.deb">Baixar .deb</a>
+          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync_1.0.0_amd64.deb" data-i18n="dl_deb_btn">Download .deb</a>
         </div>
         <code class="cmd">sudo apt install ./BrisaSync_1.0.0_amd64.deb</code>
       </div>
       <div class="dl-card">
         <div>
-          <h3>Qualquer Linux</h3>
-          <p><code>AppImage</code> portátil, pronto para executar.</p>
+          <h3 data-i18n="dl_app_t">Any Linux</h3>
+          <p data-i18n="dl_app_p">Portable <code>AppImage</code>, ready to run.</p>
         </div>
         <div class="dl-actions">
-          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync_1.0.0_amd64.AppImage">Baixar AppImage</a>
+          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync_1.0.0_amd64.AppImage" data-i18n="dl_app_btn">Download AppImage</a>
         </div>
         <code class="cmd">chmod +x BrisaSync_1.0.0_amd64.AppImage &amp;&amp; ./BrisaSync_1.0.0_amd64.AppImage</code>
       </div>
       <div class="dl-card">
         <div>
           <h3>Flatpak</h3>
-          <p>Pacote isolado (<code>app.brisasync.BrisaSync</code>).</p>
+          <p data-i18n="dl_flat_p">Sandboxed package (<code>app.brisasync.BrisaSync</code>).</p>
         </div>
         <div class="dl-actions">
-          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync-1.0.0-x86_64.flatpak">Baixar .flatpak</a>
+          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync-1.0.0-x86_64.flatpak" data-i18n="dl_flat_btn">Download .flatpak</a>
         </div>
         <code class="cmd">flatpak install BrisaSync-1.0.0-x86_64.flatpak</code>
       </div>
       <div class="dl-card">
         <div>
           <h3>Windows 10 / 11</h3>
-          <p>Versão portátil <code>.zip</code> (extrair e executar <code>BrisaSync.exe</code>).</p>
+          <p data-i18n="dl_win_p">Portable <code>.zip</code> build (extract and run <code>BrisaSync.exe</code>).</p>
         </div>
         <div class="dl-actions">
-          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync-1.0.0-windows-x64.zip">Baixar .zip (Windows)</a>
+          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync-1.0.0-windows-x64.zip" data-i18n="dl_win_btn">Download .zip (Windows)</a>
         </div>
         <code class="cmd">BrisaSync-1.0.0-windows-x64.zip</code>
       </div>
     </div>
 
-    <div class="notice">
-      <strong>Sobre o aviso do Google ao conectar:</strong> o projeto OAuth padrão ainda não passou pela verificação do Google e possui teto de 100 contas.
-      Se atingir o limite, você pode cadastrar suas próprias credenciais do Google Cloud em <strong>Ajustes → Avançado</strong>.
+    <div class="notice" data-i18n="dl_notice">
+      <strong>About the Google warning when connecting:</strong> the default OAuth project is currently undergoing Google verification and has a 100-account cap.
+      If you hit the limit, you can enter your own Google Cloud credentials under <strong>Settings → Advanced</strong>.
     </div>
   </section>
 
   <section id="apoie">
-    <h2>Apoie o projeto via Pix</h2>
-    <p class="section-lead">O BrisaSync é gratuito e de código aberto. Se ele ajuda no seu dia a dia, considere apoiar o desenvolvimento.</p>
+    <h2 data-i18n="pix_title">Support the project via Pix</h2>
+    <p class="section-lead" data-i18n="pix_lead">BrisaSync is free and open source. If it helps your daily workflow, consider supporting development.</p>
     <div class="pix-panel">
       <div class="pix-qr-wrap">
-        <img src="pix-qr.svg" alt="QR Code Pix para apoiar o BrisaSync">
+        <img src="pix-qr.svg" alt="Pix QR Code to support BrisaSync">
       </div>
       <div class="pix-meta">
-        <h3>Contribuição voluntária</h3>
-        <p>Escaneie o QR Code no aplicativo do seu banco ou copie o código abaixo. Beneficiário: <strong style="color: var(--ink);">Fábio Agreles Bezerra</strong>.</p>
+        <h3 data-i18n="pix_sub">Voluntary contribution</h3>
+        <p data-i18n="pix_desc">Scan the QR Code in your banking app or copy the code below. Recipient: <strong style="color: var(--ink);">Fábio Agreles Bezerra</strong>.</p>
         <div class="pix-key-box" id="pix-key">e4bf0532-8016-42bf-bf2a-fd81326b6621</div>
         <div class="pix-actions">
-          <button class="btn btn-primary" id="copy-brcode" type="button">Copiar Pix Copia e Cola</button>
-          <button class="btn btn-secondary" id="copy-pix" type="button">Copiar chave Pix</button>
+          <button class="btn btn-primary" id="copy-brcode" type="button" data-i18n="pix_btn_code">Copy Pix Copy &amp; Paste</button>
+          <button class="btn btn-secondary" id="copy-pix" type="button" data-i18n="pix_btn_key">Copy Pix key</button>
           <span class="pix-feedback" id="pix-msg" role="status" aria-live="polite"></span>
         </div>
       </div>
@@ -823,12 +855,12 @@
 
 <div class="wrap">
   <footer>
-    <span>BrisaSync é software livre sob licença MIT. Google Drive, OneDrive, Dropbox e Nextcloud pertencem aos seus respectivos donos.</span>
+    <span data-i18n="footer_copy">BrisaSync is free software under the MIT license. Google Drive, OneDrive, Dropbox, and Nextcloud belong to their respective owners.</span>
     <div class="footer-links">
       <a href="https://github.com/fabio-agreles/BrisaSync">GitHub</a>
-      <a href="https://github.com/fabio-agreles/BrisaSync/releases">Lançamentos</a>
-      <a href="privacidade.html">Privacidade</a>
-      <a href="https://github.com/fabio-agreles/BrisaSync/blob/main/SECURITY.md">Segurança</a>
+      <a href="https://github.com/fabio-agreles/BrisaSync/releases" data-i18n="footer_releases">Releases</a>
+      <a href="privacidade.html" data-i18n="footer_privacy">Privacy</a>
+      <a href="https://github.com/fabio-agreles/BrisaSync/blob/main/SECURITY.md" data-i18n="footer_security">Security</a>
     </div>
   </footer>
 </div>
@@ -836,12 +868,222 @@
 <script>
   const PIX_BRCODE = "00020126580014br.gov.bcb.pix0136e4bf0532-8016-42bf-bf2a-fd81326b66215204000053039865802BR5921FABIO AGRELES BEZERRA6009SAO PAULO62070503***63044F7C";
 
+  const I18N = {
+    en: {
+      _htmlLang: 'en',
+      _title: 'BrisaSync — Two-way cloud sync for Linux and Windows',
+      nav_whats_new: "What's new",
+      nav_features: 'Features',
+      nav_screenshots: 'Screenshots',
+      nav_download: 'Download',
+      nav_support: 'Support',
+      nav_privacy: 'Privacy',
+      hero_title: 'Lightweight two-way sync for your cloud folders',
+      hero_lead: 'BrisaSync keeps Linux and Windows directories in continuous sync with Google Drive, OneDrive, Dropbox, and Nextcloud — directly from your computer, with no intermediary server and zero telemetry.',
+      hero_cta_dl: 'Download BrisaSync 1.0.0',
+      hero_cta_gh: 'View source on GitHub',
+      hero_providers: 'Providers:',
+      panel_status_title: 'All up to date',
+      panel_status_sub: '4 supported providers · fast change detection active',
+      panel_row1_title: 'Documents',
+      panel_row1_sub: 'Google Drive · /Work',
+      panel_row2_title: 'Projects',
+      panel_row2_sub: 'OneDrive · /Projects',
+      panel_row3_title: 'Photos',
+      panel_row3_sub: 'Nextcloud · /Camera',
+      panel_synced: 'Synced',
+      new_title: "What's new in version 1.0.0",
+      new_lead: 'Built in Rust and Tauri 2 with the rclone bisync engine bundled in every package.',
+      new_1_t: 'Four built-in providers',
+      new_1_p: 'Connect Google Drive, OneDrive, Dropbox, and Nextcloud accounts in one place, with support for custom Google OAuth credentials.',
+      new_2_t: 'Fast cloud change detection',
+      new_2_p: 'Lightweight polling of Google Drive and OneDrive changes APIs every 30 seconds, avoiding heavy scans when nothing changed.',
+      new_3_t: 'Visual selective sync',
+      new_3_p: 'Choose which cloud subfolders to sync or ignore per profile without manually editing filter rules.',
+      new_4_t: 'Drag-and-drop multi-file upload',
+      new_4_p: 'Drag files and entire folders straight into the cloud file browser or download individual items on demand.',
+      new_5_t: 'System tray progress and built-in updater',
+      new_5_p: 'Track transfer speed and progress from the system tray and install new releases directly from the app.',
+      feat_title: 'Designed for daily use without surprises',
+      feat_lead: 'Every detail prioritizes file integrity and low memory usage.',
+      feat_1_t: 'True two-way sync',
+      feat_1_p: 'Local changes are detected immediately by the OS file watcher and synced with integrity checks via rclone bisync.',
+      feat_2_t: 'Side-by-side conflict resolution',
+      feat_2_p: 'When a file changes on both sides at once, compare and pick which version to keep — and sync resumes right away.',
+      feat_3_t: 'Mass-deletion safety lock',
+      feat_3_p: 'If a folder suddenly empties due to an error or unmounted drive, BrisaSync halts the cycle before deleting the other side.',
+      feat_4_t: 'On-demand file browser',
+      feat_4_p: 'Browse remote folders, download individual items, or upload new files without mirroring your entire cloud to disk.',
+      feat_5_t: 'Bandwidth and behavior controls',
+      feat_5_p: 'Set upload and download speed limits, launch on system startup, and minimize quietly to the system tray.',
+      feat_6_t: 'Open source and zero telemetry',
+      feat_6_p: 'MIT licensed, no ads, and no server of our own: your data travels directly between your computer and your chosen provider.',
+      shots_title: 'App screenshots',
+      shots_lead: 'Adaptive interface with light and dark themes for Linux and Windows.',
+      tab_overview: 'Overview',
+      tab_folders: 'Folders',
+      tab_files: 'Files',
+      tab_settings: 'Settings',
+      tab_dark: 'Dark theme',
+      cap_overview: 'Overview: folder status, transfer queue, connected accounts, and storage quota.',
+      cap_folders: 'Folders: two-way sync pairs and visual subfolder selection.',
+      cap_files: 'Files: browse the cloud without downloading everything and upload via drag and drop.',
+      cap_settings: 'Settings: bandwidth limits, tray behavior, language, and updates.',
+      cap_dark: 'Dark theme: interface adapted for night use on Linux and Windows.',
+      dl_title: 'Download for Linux and Windows',
+      dl_lead: 'Pick the package for your system from release v1.0.0. rclone is already bundled.',
+      dl_deb_p: 'Native <code>.deb</code> package with system tray integration.',
+      dl_deb_btn: 'Download .deb',
+      dl_app_t: 'Any Linux',
+      dl_app_p: 'Portable <code>AppImage</code>, ready to run.',
+      dl_app_btn: 'Download AppImage',
+      dl_flat_p: 'Sandboxed package (<code>app.brisasync.BrisaSync</code>).',
+      dl_flat_btn: 'Download .flatpak',
+      dl_win_p: 'Portable <code>.zip</code> build (extract and run <code>BrisaSync.exe</code>).',
+      dl_win_btn: 'Download .zip (Windows)',
+      dl_notice: '<strong>About the Google warning when connecting:</strong> the default OAuth project is currently undergoing Google verification and has a 100-account cap. If you hit the limit, you can enter your own Google Cloud credentials under <strong>Settings → Advanced</strong>.',
+      pix_title: 'Support the project via Pix',
+      pix_lead: 'BrisaSync is free and open source. If it helps your daily workflow, consider supporting development.',
+      pix_sub: 'Voluntary contribution',
+      pix_desc: 'Scan the QR Code in your banking app or copy the code below. Recipient: <strong style="color: var(--ink);">Fábio Agreles Bezerra</strong>.',
+      pix_btn_code: 'Copy Pix Copy & Paste',
+      pix_btn_key: 'Copy Pix key',
+      pix_copied_code: 'Pix Copy & Paste copied!',
+      pix_copied_key: 'Pix key copied!',
+      footer_copy: 'BrisaSync is free software under the MIT license. Google Drive, OneDrive, Dropbox, and Nextcloud belong to their respective owners.',
+      footer_releases: 'Releases',
+      footer_privacy: 'Privacy',
+      footer_security: 'Security'
+    },
+    pt: {
+      _htmlLang: 'pt-BR',
+      _title: 'BrisaSync — Sincronização bidirecional para Linux e Windows',
+      nav_whats_new: 'Novidades',
+      nav_features: 'Recursos',
+      nav_screenshots: 'Telas',
+      nav_download: 'Baixar',
+      nav_support: 'Apoie',
+      nav_privacy: 'Privacidade',
+      hero_title: 'Sincronização bidirecional leve para suas pastas na nuvem',
+      hero_lead: 'O BrisaSync mantém diretórios do Linux e do Windows em sincronia contínua com Google Drive, OneDrive, Dropbox e Nextcloud — direto do seu computador, sem servidor intermediário e sem telemetria.',
+      hero_cta_dl: 'Baixar BrisaSync 1.0.0',
+      hero_cta_gh: 'Ver código no GitHub',
+      hero_providers: 'Provedores:',
+      panel_status_title: 'Tudo em dia',
+      panel_status_sub: '4 provedores suportados · detecção rápida ativa',
+      panel_row1_title: 'Documentos',
+      panel_row1_sub: 'Google Drive · /Trabalho',
+      panel_row2_title: 'Projetos',
+      panel_row2_sub: 'OneDrive · /Projetos',
+      panel_row3_title: 'Fotos',
+      panel_row3_sub: 'Nextcloud · /Camera',
+      panel_synced: 'Sincronizado',
+      new_title: 'O que há de novo na versão 1.0.0',
+      new_lead: 'Construído em Rust e Tauri 2 com o motor bisync do rclone embutido em todos os pacotes.',
+      new_1_t: 'Quatro provedores integrados',
+      new_1_p: 'Conecte contas do Google Drive, OneDrive, Dropbox e Nextcloud no mesmo lugar, com suporte a credenciais OAuth próprias no Google.',
+      new_2_t: 'Detecção rápida na nuvem',
+      new_2_p: 'Consulta leve às APIs de alterações do Google Drive e OneDrive a cada 30 segundos, evitando varreduras pesadas quando nada mudou.',
+      new_3_t: 'Sincronização seletiva visual',
+      new_3_p: 'Escolha quais subpastas da nuvem sincronizar ou ignorar em cada perfil sem precisar editar regras de filtro manualmente.',
+      new_4_t: 'Envio múltiplo por arrastar e soltar',
+      new_4_p: 'Arraste arquivos e pastas inteiras direto para o navegador de arquivos da nuvem ou baixe itens avulsos sob demanda.',
+      new_5_t: 'Bandeja com progresso e atualizador integrado',
+      new_5_p: 'Acompanhe velocidade e andamento na bandeja do sistema e instale novas versões pelo próprio aplicativo.',
+      feat_title: 'Projetado para uso diário sem surpresas',
+      feat_lead: 'Cada detalhe prioriza a integridade dos seus arquivos e o baixo consumo de memória.',
+      feat_1_t: 'Sincronização bidirecional real',
+      feat_1_p: 'Alterações locais são detectadas na hora pelo observador do sistema e enviadas com conferência de integridade pelo motor rclone bisync.',
+      feat_2_t: 'Conflitos resolvidos lado a lado',
+      feat_2_p: 'Quando um arquivo muda nos dois lados ao mesmo tempo, você compara e escolhe qual versão manter — e a sincronização retoma imediatamente.',
+      feat_3_t: 'Trava contra exclusões em massa',
+      feat_3_p: 'Se uma pasta esvaziar de repente por erro ou desmontagem de disco, o BrisaSync interrompe o ciclo antes de apagar o outro lado.',
+      feat_4_t: 'Navegador de arquivos sob demanda',
+      feat_4_p: 'Explore pastas remotas, baixe itens avulsos ou envie novos arquivos sem precisar espelhar toda a sua nuvem no disco.',
+      feat_5_t: 'Controle de banda e comportamento',
+      feat_5_p: 'Defina limites de upload e download, inicialização automática com o sistema e fechamento discreto para a bandeja.',
+      feat_6_t: 'Código aberto e zero telemetria',
+      feat_6_p: 'Licença MIT, sem anúncios e sem servidor próprio: seus dados trafegam diretamente entre o seu computador e o provedor escolhido.',
+      shots_title: 'Capturas do aplicativo',
+      shots_lead: 'Interface adaptativa com temas claro e escuro para Linux e Windows.',
+      tab_overview: 'Visão geral',
+      tab_folders: 'Pastas',
+      tab_files: 'Arquivos',
+      tab_settings: 'Ajustes',
+      tab_dark: 'Tema escuro',
+      cap_overview: 'Visão geral: status das pastas, fila de transferência, contas conectadas e armazenamento.',
+      cap_folders: 'Pastas: pares de sincronização bidirecional e seleção visual de subpastas.',
+      cap_files: 'Arquivos: navegue pela nuvem sem baixar tudo e envie arquivos por arrastar e soltar.',
+      cap_settings: 'Ajustes: limites de banda, comportamento na bandeja, idioma e atualizações.',
+      cap_dark: 'Tema escuro: interface adaptada para uso noturno no Linux e Windows.',
+      dl_title: 'Baixar para Linux e Windows',
+      dl_lead: 'Escolha o pacote adequado para o seu sistema na release v1.0.0. O rclone já vai embutido.',
+      dl_deb_p: 'Pacote nativo <code>.deb</code> com integração à bandeja.',
+      dl_deb_btn: 'Baixar .deb',
+      dl_app_t: 'Qualquer Linux',
+      dl_app_p: '<code>AppImage</code> portátil, pronto para executar.',
+      dl_app_btn: 'Baixar AppImage',
+      dl_flat_p: 'Pacote isolado (<code>app.brisasync.BrisaSync</code>).',
+      dl_flat_btn: 'Baixar .flatpak',
+      dl_win_p: 'Versão portátil <code>.zip</code> (extrair e executar <code>BrisaSync.exe</code>).',
+      dl_win_btn: 'Baixar .zip (Windows)',
+      dl_notice: '<strong>Sobre o aviso do Google ao conectar:</strong> o projeto OAuth padrão ainda não passou pela verificação do Google e possui teto de 100 contas. Se atingir o limite, você pode cadastrar suas próprias credenciais do Google Cloud em <strong>Ajustes → Avançado</strong>.',
+      pix_title: 'Apoie o projeto via Pix',
+      pix_lead: 'O BrisaSync é gratuito e de código aberto. Se ele ajuda no seu dia a dia, considere apoiar o desenvolvimento.',
+      pix_sub: 'Contribuição voluntária',
+      pix_desc: 'Escaneie o QR Code no aplicativo do seu banco ou copie o código abaixo. Beneficiário: <strong style="color: var(--ink);">Fábio Agreles Bezerra</strong>.',
+      pix_btn_code: 'Copiar Pix Copia e Cola',
+      pix_btn_key: 'Copiar chave Pix',
+      pix_copied_code: 'Pix Copia e Cola copiado!',
+      pix_copied_key: 'Chave Pix copiada!',
+      footer_copy: 'BrisaSync é software livre sob licença MIT. Google Drive, OneDrive, Dropbox e Nextcloud pertencem aos seus respectivos donos.',
+      footer_releases: 'Lançamentos',
+      footer_privacy: 'Privacidade',
+      footer_security: 'Segurança'
+    }
+  };
+
+  let currentLang = 'en';
+
+  function updateStageCaption() {
+    const activeTab = document.querySelector('.tab.active');
+    if (!activeTab) return;
+    const capKey = 'cap_' + activeTab.dataset.tab;
+    document.getElementById('stage-cap').textContent = I18N[currentLang][capKey] || '';
+  }
+
+  function applyLang(lang) {
+    currentLang = lang === 'pt' ? 'pt' : 'en';
+    const dict = I18N[currentLang];
+    document.documentElement.lang = dict._htmlLang;
+    document.title = dict._title;
+
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      const key = el.dataset.i18n;
+      if (dict[key] !== undefined) {
+        el.innerHTML = dict[key];
+      }
+    });
+
+    document.querySelectorAll('[data-set-lang]').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.setLang === currentLang);
+    });
+
+    updateStageCaption();
+    document.getElementById('pix-msg').textContent = '';
+    try { localStorage.setItem('brisasync_site_lang', currentLang); } catch {}
+  }
+
+  document.querySelectorAll('[data-set-lang]').forEach((btn) => {
+    btn.addEventListener('click', () => applyLang(btn.dataset.setLang));
+  });
+
   document.querySelectorAll('.tab').forEach((btn) => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById('stage-img').src = btn.dataset.src;
-      document.getElementById('stage-cap').textContent = btn.dataset.cap;
+      updateStageCaption();
     });
   });
 
@@ -865,13 +1107,27 @@
   }
 
   document.getElementById('copy-brcode').addEventListener('click', () => {
-    copyText(PIX_BRCODE, 'Pix Copia e Cola copiado!');
+    copyText(PIX_BRCODE, I18N[currentLang].pix_copied_code);
   });
 
   document.getElementById('copy-pix').addEventListener('click', () => {
     const key = document.getElementById('pix-key').textContent.trim();
-    copyText(key, 'Chave Pix copiada!');
+    copyText(key, I18N[currentLang].pix_copied_key);
   });
+
+  const params = new URLSearchParams(window.location.search);
+  const urlLang = params.get('lang');
+  let saved = null;
+  try { saved = localStorage.getItem('brisasync_site_lang'); } catch {}
+  if (urlLang === 'pt' || urlLang === 'pt-br' || urlLang === 'pt-BR') {
+    applyLang('pt');
+  } else if (urlLang === 'en') {
+    applyLang('en');
+  } else if (saved === 'pt') {
+    applyLang('pt');
+  } else {
+    applyLang('en');
+  }
 </script>
 </body>
 </html>
