@@ -126,3 +126,21 @@ with zipfile.ZipFile(alvo, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
             z.write(caminho, pathlib.Path(raiz) / caminho.relative_to(origem))
 PY
 ls -lh "$destino.zip"
+
+# Instalador NSIS (.exe) — gerado nativamente no Linux quando `makensis` está instalado.
+nsi_script="$root/scripts/brisasync-installer.nsi"
+icon_ico="$root/src-tauri/icons/icon.ico"
+instalador="$saida/bundle/windows-portatil/$produto-setup.exe"
+if command -v makensis >/dev/null; then
+  echo "build-windows: gerando instalador NSIS…"
+  makensis -V2 \
+    -DVERSION="$versao" \
+    -DSRC_DIR="$destino" \
+    -DICON_FILE="$icon_ico" \
+    -DOUT_FILE="$instalador" \
+    "$nsi_script"
+  ls -lh "$instalador"
+else
+  echo "build-windows: 'makensis' não encontrado — instalador .exe não gerado." >&2
+  echo "  Para gerar o instalador no Linux: sudo pacman -S nsis (Manjaro/Arch) ou sudo apt install nsis (Debian/Ubuntu)" >&2
+fi
