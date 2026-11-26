@@ -38,6 +38,28 @@ const PORTA: u16 = 53682;
 const RETORNO: &str = "http://localhost:53682/";
 
 const URL_AUTORIZACAO: &str = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize";
+
+/// Troca o `refresh_token` do OneDrive por um `access_token` novo.
+pub async fn renovar_token(token: &Value, client_id: Option<&str>) -> Option<String> {
+    let refresh = token.get("refresh_token").and_then(Value::as_str)?;
+    let cliente = client_id.filter(|s| !s.is_empty()).unwrap_or(CLIENTE);
+    let resposta = reqwest::Client::new()
+        .post(URL_TOKEN)
+        .form(&[
+            ("client_id", cliente),
+            ("refresh_token", refresh),
+            ("grant_type", "refresh_token"),
+        ])
+        .timeout(Duration::from_secs(30))
+        .send()
+        .await
+        .ok()?;
+    let corpo: Value = resposta.json().await.ok()?;
+    corpo
+        .get("access_token")
+        .and_then(Value::as_str)
+        .map(str::to_string)
+}
 const URL_TOKEN: &str = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
 
 /// `Files.ReadWrite.All` é o que o rclone pede (ler e gravar os arquivos do
@@ -345,10 +367,7 @@ mod testes {
     #![allow(clippy::await_holding_lock)]
 
     use super::*;
-    use std::sync::Mutex;
     use tokio::io::{AsyncReadExt, AsyncWriteExt};
-
-    static TRAVA: Mutex<()> = Mutex::new(());
 
     /// Microsoft de mentira: responde ao POST do token com o corpo combinado.
     async fn microsoft_de_mentira(codigo_http: u16, corpo: &'static str) -> String {
@@ -408,7 +427,7 @@ mod testes {
 
     #[tokio::test]
     async fn troca_do_codigo_vira_token_no_formato_do_rclone() {
-        let _trava = TRAVA.lock().unwrap_or_else(|erro| erro.into_inner());
+        let _trava = crate::idioma::TRAVA.lock().unwrap_or_else(|erro| erro.into_inner());
         let endereco = microsoft_de_mentira(
             200,
             r#"{"access_token":"EwB.teste","token_type":"Bearer","expires_in":3599,"refresh_token":"M.R3_BAY.teste","scope":"Files.ReadWrite.All User.Read"}"#,
@@ -428,7 +447,7 @@ mod testes {
 
     #[tokio::test]
     async fn token_sem_renovacao_vira_erro_explicado() {
-        let _trava = TRAVA.lock().unwrap_or_else(|erro| erro.into_inner());
+        let _trava = crate::idioma::TRAVA.lock().unwrap_or_else(|erro| erro.into_inner());
         crate::idioma::definir("pt");
         let endereco = microsoft_de_mentira(
             200,
@@ -446,7 +465,7 @@ mod testes {
 
     #[tokio::test]
     async fn recusa_da_microsoft_mostra_o_codigo_e_a_descricao() {
-        let _trava = TRAVA.lock().unwrap_or_else(|erro| erro.into_inner());
+        let _trava = crate::idioma::TRAVA.lock().unwrap_or_else(|erro| erro.into_inner());
         crate::idioma::definir("pt");
         let endereco = microsoft_de_mentira(
             400,

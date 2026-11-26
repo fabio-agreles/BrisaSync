@@ -1,10 +1,11 @@
 {
   "name": "brisasync",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "i18n": "node scripts/checar-i18n.mjs",
+    "i18n:check": "node scripts/checar-i18n.mjs --falhar",
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
@@ -12,6 +13,7 @@
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build && bash scripts/fix-deb.sh",
     "check": "tsc --noEmit",
+    "test": "vitest run",
     "deb:fix": "bash scripts/fix-deb.sh"
   },
   "dependencies": {
@@ -23,10 +25,14 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.12.4",
+    "@testing-library/jest-dom": "^8.0.0",
+    "@testing-library/react": "^16.3.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "jsdom": "^31.0.1",
     "typescript": "~5.9.3",
-    "vite": "^8.3.5"
+    "vite": "^8.3.5",
+    "vitest": "^5.1.2"
   }
 }

@@ -178,6 +178,27 @@ export function Folders({
                 >
                   <Icon name="folder-open" size={15} />
                 </button>
+                <select
+                  className="input"
+                  style={{ width: "auto", padding: "4px 8px", fontSize: 12 }}
+                  title={t("Intervalo desta pasta")}
+                  aria-label={t("Intervalo desta pasta")}
+                  value={profile.syncIntervalMin ?? ""}
+                  onChange={(event) => {
+                    const val = event.target.value;
+                    onUpdate({
+                      ...profile,
+                      syncIntervalMin: val ? Number(val) : null,
+                    });
+                  }}
+                >
+                  <option value="">{t("Padrão")}</option>
+                  <option value="1">{t("1 min")}</option>
+                  <option value="5">{t("5 min")}</option>
+                  <option value="15">{t("15 min")}</option>
+                  <option value="30">{t("30 min")}</option>
+                  <option value="60">{t("60 min")}</option>
+                </select>
                 <button
                   className="tiny-btn"
                   title={t("Sincronizar agora")}

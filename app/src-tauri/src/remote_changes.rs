@@ -5,7 +5,8 @@
 //! um arquivo mudou na nuvem, consultamos apenas o token de alterações a cada
 //! 30 segundos. Se não houver novidade, nenhuma tarefa `bisync` é disparada.
 
-use crate::{commands::dump_da_configuracao, state::AppState};
+use crate::{commands::dump_da_configuracao, oauth, state::AppState};
+use reqwest::StatusCode;
 use serde_json::Value;
 use std::{
     collections::{HashMap, HashSet},
@@ -18,6 +19,8 @@ const REMOTE_POLL_INTERVAL: Duration = Duration::from_secs(30);
 pub struct RemoteWatcher {
     /// Último `pageToken` (Drive) ou `@odata.deltaLink` (OneDrive) por conta.
     tokens: HashMap<String, String>,
+    /// `access_token` renovado em memória quando o token do `rclone.conf` expira (401).
+    refreshed_tokens: HashMap<String, String>,
     last_check: Option<Instant>,
 }
 
@@ -52,6 +55,8 @@ impl RemoteWatcher {
             return changed;
         };
 
+        let (id_do_app, segredo_do_app) = oauth::do_build().unwrap_or_default();
+
         for account in active_accounts {
             let Some(config) = dump.get(account) else {
                 continue;
@@ -60,16 +65,44 @@ impl RemoteWatcher {
                 .get("type")
                 .and_then(Value::as_str)
                 .unwrap_or_default();
-            if provider != "drive" && provider != "onedrive" {
+            if provider == "webdav" {
+                if self.check_nextcloud(state, account).await {
+                    changed.insert(account.clone());
+                }
                 continue;
             }
-            let Some(access_token) = extract_access_token(config) else {
+            if provider != "drive" && provider != "onedrive" && provider != "dropbox" {
+                continue;
+            }
+            let Some(access_token) = self
+                .refreshed_tokens
+                .get(account)
+                .cloned()
+                .or_else(|| extract_access_token(config))
+            else {
                 continue;
             };
 
             let has_changes = match provider {
-                "drive" => self.check_drive(&client, account, &access_token).await,
-                "onedrive" => self.check_onedrive(&client, account, &access_token).await,
+                "drive" => {
+                    self.check_drive(
+                        &client,
+                        account,
+                        &access_token,
+                        config,
+                        &id_do_app,
+                        &segredo_do_app,
+                    )
+                    .await
+                }
+                "onedrive" => {
+                    self.check_onedrive(&client, account, &access_token, config)
+                        .await
+                }
+                "dropbox" => {
+                    self.check_dropbox(&client, account, &access_token, config)
+                        .await
+                }
                 _ => false,
             };
             if has_changes {
@@ -80,24 +113,75 @@ impl RemoteWatcher {
         changed
     }
 
+    async fn refresh_for_account(
+        &mut self,
+        account: &str,
+        provider: &str,
+        config: &Value,
+        id_do_app: &str,
+        segredo_do_app: &str,
+    ) -> Option<String> {
+        let raw = config.get("token").and_then(Value::as_str)?;
+        let token: Value = serde_json::from_str(raw).ok()?;
+        let novo = match provider {
+            "drive" => {
+                let client_id = config
+                    .get("client_id")
+                    .and_then(Value::as_str)
+                    .filter(|s| !s.is_empty())
+                    .unwrap_or(id_do_app);
+                let client_secret = config
+                    .get("client_secret")
+                    .and_then(Value::as_str)
+                    .filter(|s| !s.is_empty())
+                    .unwrap_or(segredo_do_app);
+                crate::login_google::renovar_token(&token, client_id, client_secret).await
+            }
+            "onedrive" => {
+                let client_id = config.get("client_id").and_then(Value::as_str);
+                crate::login_microsoft::renovar_token(&token, client_id).await
+            }
+            "dropbox" => {
+                let client_id = config.get("client_id").and_then(Value::as_str);
+                let client_secret = config.get("client_secret").and_then(Value::as_str);
+                crate::login_dropbox::renovar_token(&token, client_id, client_secret).await
+            }
+            _ => None,
+        }?;
+        self.refreshed_tokens
+            .insert(account.to_string(), novo.clone());
+        Some(novo)
+    }
+
     async fn check_drive(
         &mut self,
         client: &reqwest::Client,
         account: &str,
         access_token: &str,
+        config: &Value,
+        id_do_app: &str,
+        segredo_do_app: &str,
     ) -> bool {
         let Some(current_token) = self.tokens.get(account).cloned() else {
-            if let Ok(resp) = client
-                .get("https://www.googleapis.com/drive/v3/changes/startPageToken")
-                .bearer_auth(access_token)
-                .send()
-                .await
-            {
-                if resp.status().is_success() {
-                    if let Ok(body) = resp.json::<Value>().await {
-                        if let Some(token) = body.get("startPageToken").and_then(Value::as_str) {
-                            self.tokens.insert(account.to_string(), token.to_string());
-                        }
+            let url = "https://www.googleapis.com/drive/v3/changes/startPageToken";
+            let mut resp = match client.get(url).bearer_auth(access_token).send().await {
+                Ok(r) => r,
+                Err(_) => return false,
+            };
+            if resp.status() == StatusCode::UNAUTHORIZED {
+                if let Some(novo) = self
+                    .refresh_for_account(account, "drive", config, id_do_app, segredo_do_app)
+                    .await
+                {
+                    if let Ok(r) = client.get(url).bearer_auth(&novo).send().await {
+                        resp = r;
+                    }
+                }
+            }
+            if resp.status().is_success() {
+                if let Ok(body) = resp.json::<Value>().await {
+                    if let Some(token) = body.get("startPageToken").and_then(Value::as_str) {
+                        self.tokens.insert(account.to_string(), token.to_string());
                     }
                 }
             }
@@ -107,9 +191,20 @@ impl RemoteWatcher {
         let url = format!(
             "https://www.googleapis.com/drive/v3/changes?pageToken={current_token}&fields=newStartPageToken,nextPageToken,changes(fileId)&pageSize=10"
         );
-        let Ok(resp) = client.get(&url).bearer_auth(access_token).send().await else {
-            return false;
+        let mut resp = match client.get(&url).bearer_auth(access_token).send().await {
+            Ok(r) => r,
+            Err(_) => return false,
         };
+        if resp.status() == StatusCode::UNAUTHORIZED {
+            if let Some(novo) = self
+                .refresh_for_account(account, "drive", config, id_do_app, segredo_do_app)
+                .await
+            {
+                if let Ok(r) = client.get(&url).bearer_auth(&novo).send().await {
+                    resp = r;
+                }
+            }
+        }
         if !resp.status().is_success() {
             return false;
         }
@@ -129,33 +224,48 @@ impl RemoteWatcher {
         client: &reqwest::Client,
         account: &str,
         access_token: &str,
+        config: &Value,
     ) -> bool {
         let Some(delta_link) = self.tokens.get(account).cloned() else {
-            if let Ok(resp) = client
-                .get("https://graph.microsoft.com/v1.0/me/drive/root/delta?token=latest")
-                .bearer_auth(access_token)
-                .send()
-                .await
-            {
-                if resp.status().is_success() {
-                    if let Ok(body) = resp.json::<Value>().await {
-                        if let Some(link) = body.get("@odata.deltaLink").and_then(Value::as_str) {
-                            self.tokens.insert(account.to_string(), link.to_string());
-                        }
+            let url = "https://graph.microsoft.com/v1.0/me/drive/root/delta?token=latest";
+            let mut resp = match client.get(url).bearer_auth(access_token).send().await {
+                Ok(r) => r,
+                Err(_) => return false,
+            };
+            if resp.status() == StatusCode::UNAUTHORIZED {
+                if let Some(novo) = self
+                    .refresh_for_account(account, "onedrive", config, "", "")
+                    .await
+                {
+                    if let Ok(r) = client.get(url).bearer_auth(&novo).send().await {
+                        resp = r;
+                    }
+                }
+            }
+            if resp.status().is_success() {
+                if let Ok(body) = resp.json::<Value>().await {
+                    if let Some(link) = body.get("@odata.deltaLink").and_then(Value::as_str) {
+                        self.tokens.insert(account.to_string(), link.to_string());
                     }
                 }
             }
             return false;
         };
 
-        let Ok(resp) = client
-            .get(&delta_link)
-            .bearer_auth(access_token)
-            .send()
-            .await
-        else {
-            return false;
+        let mut resp = match client.get(&delta_link).bearer_auth(access_token).send().await {
+            Ok(r) => r,
+            Err(_) => return false,
         };
+        if resp.status() == StatusCode::UNAUTHORIZED {
+            if let Some(novo) = self
+                .refresh_for_account(account, "onedrive", config, "", "")
+                .await
+            {
+                if let Ok(r) = client.get(&delta_link).bearer_auth(&novo).send().await {
+                    resp = r;
+                }
+            }
+        }
         if !resp.status().is_success() {
             return false;
         }
@@ -168,6 +278,134 @@ impl RemoteWatcher {
             self.tokens.insert(account.to_string(), link);
         }
         has_changes
+    }
+
+    async fn check_dropbox(
+        &mut self,
+        client: &reqwest::Client,
+        account: &str,
+        access_token: &str,
+        config: &Value,
+    ) -> bool {
+        let Some(cursor) = self.tokens.get(account).cloned() else {
+            let url = "https://api.dropboxapi.com/2/files/list_folder/get_latest_cursor";
+            let payload = serde_json::json!({ "path": "", "recursive": true });
+            let mut resp = match client
+                .post(url)
+                .bearer_auth(access_token)
+                .json(&payload)
+                .send()
+                .await
+            {
+                Ok(r) => r,
+                Err(_) => return false,
+            };
+            if resp.status() == StatusCode::UNAUTHORIZED {
+                if let Some(novo) = self
+                    .refresh_for_account(account, "dropbox", config, "", "")
+                    .await
+                {
+                    if let Ok(r) = client
+                        .post(url)
+                        .bearer_auth(&novo)
+                        .json(&payload)
+                        .send()
+                        .await
+                    {
+                        resp = r;
+                    }
+                }
+            }
+            if resp.status().is_success() {
+                if let Ok(body) = resp.json::<Value>().await {
+                    if let Some(c) = body.get("cursor").and_then(Value::as_str) {
+                        self.tokens.insert(account.to_string(), c.to_string());
+                    }
+                }
+            }
+            return false;
+        };
+
+        let url = "https://api.dropboxapi.com/2/files/list_folder/continue";
+        let payload = serde_json::json!({ "cursor": cursor });
+        let mut resp = match client
+            .post(url)
+            .bearer_auth(access_token)
+            .json(&payload)
+            .send()
+            .await
+        {
+            Ok(r) => r,
+            Err(_) => return false,
+        };
+        if resp.status() == StatusCode::UNAUTHORIZED {
+            if let Some(novo) = self
+                .refresh_for_account(account, "dropbox", config, "", "")
+                .await
+            {
+                if let Ok(r) = client
+                    .post(url)
+                    .bearer_auth(&novo)
+                    .json(&payload)
+                    .send()
+                    .await
+                {
+                    resp = r;
+                }
+            }
+        }
+        if !resp.status().is_success() {
+            return false;
+        }
+        let Ok(body) = resp.json::<Value>().await else {
+            return false;
+        };
+        if let Some(next_cursor) = body.get("cursor").and_then(Value::as_str) {
+            self.tokens
+                .insert(account.to_string(), next_cursor.to_string());
+        }
+        body.get("entries")
+            .and_then(Value::as_array)
+            .map(|entries| !entries.is_empty())
+            .unwrap_or(false)
+    }
+
+    async fn check_nextcloud(&mut self, state: &AppState, account: &str) -> bool {
+        let Ok(resp) = state
+            .rclone
+            .call(
+                "operations/list",
+                serde_json::json!({ "fs": format!("{account}:"), "remote": "" }),
+                Duration::from_secs(10),
+            )
+            .await
+        else {
+            return false;
+        };
+        let Some(list) = resp.get("list").and_then(Value::as_array) else {
+            return false;
+        };
+        let mut fingerprint = String::new();
+        for item in list {
+            let name = item.get("Name").and_then(Value::as_str).unwrap_or_default();
+            let mod_time = item
+                .get("ModTime")
+                .and_then(Value::as_str)
+                .unwrap_or_default();
+            let size = item.get("Size").and_then(Value::as_i64).unwrap_or(0);
+            fingerprint.push_str(&format!("{name}|{mod_time}|{size};"));
+        }
+        match self.tokens.get(account) {
+            None => {
+                self.tokens.insert(account.to_string(), fingerprint);
+                false
+            }
+            Some(prev) if prev == &fingerprint => false,
+            Some(_) => {
+                self.tokens.insert(account.to_string(), fingerprint);
+                true
+            }
+        }
     }
 }
 

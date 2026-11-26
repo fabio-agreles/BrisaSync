@@ -68,6 +68,19 @@
   </screenshots>
 
   <releases>
+    <release version="1.1.0" date="2026-11-26">
+      <description>
+        <p>Lixeira com histórico de 30 dias, política de conflitos, pausa temporizada e novos idiomas.</p>
+        <ul>
+          <li>Lixeira local com retenção de 30 dias e restauração pela aba Conflitos.</li>
+          <li>Política de conflito configurável (perguntar, mais recente, nuvem ou local).</li>
+          <li>Pausa temporizada (15 min, 1 hora ou até amanhã) e intervalo de sincronização por pasta.</li>
+          <li>Detecção rápida de alterações remotas também para Dropbox e Nextcloud, com renovação automática de token.</li>
+          <li>Tema "Sistema" reativo, proxy aplicado ao motor, download múltiplo e busca na Atividade.</li>
+          <li>Suporte inicial a Espanhol, Francês e Alemão.</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.0.0" date="2026-11-20">
       <description>
         <p>Novos provedores, sincronização seletiva visual, detecção rápida na nuvem e atualizações no app.</p>

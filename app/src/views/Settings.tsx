@@ -26,13 +26,13 @@ export function Settings({
   notify,
 }: {
   settings: SettingsModel;
-  theme: "light" | "dark";
+  theme: "light" | "dark" | "system";
   engine: EngineStatus | null;
   accounts: Account[];
   autostart: boolean;
   autostartBusy: boolean;
   onUpdate: (patch: Partial<SettingsModel>) => void;
-  onTheme: (theme: "light" | "dark") => void;
+  onTheme: (theme: "light" | "dark" | "system") => void;
   onAutostart: (enabled: boolean) => void;
   onAddAccount: () => void;
   notify: (message: string, kind?: "info" | "ok" | "error") => void;
@@ -353,6 +353,39 @@ export function Settings({
               >
                 {t("Escuro")}
               </button>
+              <button
+                className={`chip ${theme === "system" ? "active" : ""}`}
+                onClick={() => onTheme("system")}
+              >
+                {t("Sistema")}
+              </button>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="row-text">
+              <div className="row-title">{t("Em caso de conflito")}</div>
+              <div className="row-desc">
+                {t("O que fazer quando o mesmo arquivo muda nos dois lados.")}
+              </div>
+            </div>
+            <div className="row-control">
+              {(
+                [
+                  ["ask", "Perguntar"],
+                  ["newer", "Mais recente"],
+                  ["remote", "Nuvem"],
+                  ["local", "Local"],
+                ] as const
+              ).map(([value, label]) => (
+                <button
+                  key={value}
+                  className={`chip ${(settings.conflictPolicy ?? "ask") === value ? "active" : ""}`}
+                  onClick={() => onUpdate({ conflictPolicy: value })}
+                >
+                  {t(label)}
+                </button>
+              ))}
             </div>
           </div>
 

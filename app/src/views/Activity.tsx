@@ -46,18 +46,26 @@ export function Activity({
 }) {
   const t = useT();
   const [filter, setFilter] = useState("all");
+  const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
   const [limpando, setLimpando] = useState(false);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     setExpanded(null);
-  }, [filter]);
+  }, [filter, query]);
 
-  const filtered = useMemo(
-    () => (filter === "all" ? entries : entries.filter((entry) => entry.kind === filter)),
-    [entries, filter],
-  );
+  const filtered = useMemo(() => {
+    const byKind = filter === "all" ? entries : entries.filter((entry) => entry.kind === filter);
+    const q = query.trim().toLowerCase();
+    if (!q) return byKind;
+    return byKind.filter((entry) => {
+      if (entry.title.toLowerCase().includes(q)) return true;
+      if (entry.detail?.toLowerCase().includes(q)) return true;
+      if (entry.files?.some((f) => f.name.toLowerCase().includes(q))) return true;
+      return false;
+    });
+  }, [entries, filter, query]);
 
   const groups = useMemo(() => {
     const buckets: { label: string; items: ActivityEntry[] }[] = [];
@@ -90,6 +98,17 @@ export function Activity({
             ) : null}
           </button>
         ))}
+        {entries.length > 0 ? (
+          <input
+            type="search"
+            className="input"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t("Buscar na atividade...")}
+            aria-label={t("Buscar na atividade...")}
+            style={{ maxWidth: 240, marginLeft: "auto", padding: "6px 10px", fontSize: 13 }}
+          />
+        ) : null}
         {entries.length > 0 ? (
           <button className="chip clear" onClick={() => setLimpando(true)} title={t("Apagar todo o histórico")}>
             <Icon name="trash" size={13} />

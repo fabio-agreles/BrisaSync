@@ -5,7 +5,7 @@ use serde::Serialize;
 use std::{
     collections::{HashMap, HashSet},
     path::{Path, PathBuf},
-    sync::atomic::{AtomicBool, Ordering},
+    sync::atomic::{AtomicBool, AtomicU64, Ordering},
 };
 use tokio::sync::Mutex;
 
@@ -35,6 +35,8 @@ pub struct AppState {
     pub usage: Mutex<HashMap<String, AccountUsage>>,
     pub settings: Mutex<Settings>,
     pub paused: AtomicBool,
+    /// Timestamp (epoch ms) para reativação automática da pausa temporizada (0 = sem limite).
+    pub pause_until: AtomicU64,
     /// Cópia do ajuste "fechar a janela encerra o app". O fechamento da janela
     /// chega por um retorno de chamada síncrono, que não pode esperar o
     /// `Mutex` dos ajustes — e um `try_lock` que falhasse esconderia a janela
@@ -72,9 +74,11 @@ impl AppState {
         // Lido antes de o `settings` ir para o `Mutex`: o fechamento da janela
         // consulta só a cópia atômica.
         let close_quits = settings.close_quits;
+        let rclone = Rclone::new();
+        rclone.set_proxy(&settings.proxy);
 
         Self {
-            rclone: Rclone::new(),
+            rclone,
             dir,
             profiles: Mutex::new(profiles),
             jobs: Mutex::new(HashMap::new()),
@@ -82,6 +86,7 @@ impl AppState {
             usage: Mutex::new(HashMap::new()),
             settings: Mutex::new(settings),
             paused: AtomicBool::new(false),
+            pause_until: AtomicU64::new(0),
             close_quits: AtomicBool::new(close_quits),
             attempts: Mutex::new(HashMap::new()),
             starting: Mutex::new(HashSet::new()),

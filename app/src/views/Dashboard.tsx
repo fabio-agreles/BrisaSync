@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Icon } from "../components/Icons";
 import { Modal } from "../components/Modal";
 import { resumoTexto } from "../lib/files";
-import { formatBytes, formatEta, formatSpeed, relativeTime } from "../lib/format";
+import { clock, formatBytes, formatEta, formatSpeed, relativeTime } from "../lib/format";
 import { useT } from "../lib/i18n";
 import type { Account, AccountUsage, ActivityEntry, Profile, Snapshot } from "../lib/types";
 
@@ -35,6 +35,7 @@ export function Dashboard({
   onRefreshUsage,
   onSyncAll,
   onTogglePause,
+  onPauseFor,
   onAddAccount,
   onOpenActivity,
   onOpenFolders,
@@ -50,6 +51,7 @@ export function Dashboard({
   onRefreshUsage: () => void;
   onSyncAll: () => void;
   onTogglePause: () => void;
+  onPauseFor?: (minutes: number) => void;
   onAddAccount: () => void;
   onOpenActivity: () => void;
   onOpenFolders: () => void;
@@ -75,7 +77,9 @@ export function Dashboard({
       ? t("Sincronizando agora")
       : t("Tudo em dia");
   const subtitle = snapshot.paused
-    ? t("Nada foi perdido: retome quando quiser.")
+    ? snapshot.pauseUntil
+      ? t("Retoma automaticamente às {hora}.", { hora: clock(snapshot.pauseUntil) })
+      : t("Nada foi perdido: retome quando quiser.")
     : snapshot.running
       ? `${t(
           snapshot.jobs === 1 ? "{n} tarefa em andamento" : "{n} tarefas em andamento",
@@ -111,6 +115,32 @@ export function Dashboard({
               <Icon name={snapshot.paused ? "play" : "pause"} size={15} />
               {snapshot.paused ? t("Retomar") : t("Pausar tudo")}
             </button>
+            {!snapshot.paused && onPauseFor ? (
+              <select
+                className="btn on-hero"
+                aria-label={t("Pausar por tempo")}
+                value=""
+                onChange={(event) => {
+                  const val = event.target.value;
+                  if (!val) return;
+                  if (val === "tomorrow") {
+                    const now = new Date();
+                    const tomorrow = new Date(now);
+                    tomorrow.setDate(now.getDate() + 1);
+                    tomorrow.setHours(8, 0, 0, 0);
+                    const mins = Math.max(1, Math.round((tomorrow.getTime() - now.getTime()) / 60_000));
+                    onPauseFor(mins);
+                  } else {
+                    onPauseFor(Number(val));
+                  }
+                }}
+              >
+                <option value="">{t("Pausar por…")}</option>
+                <option value="15">{t("15 min")}</option>
+                <option value="60">{t("1 hora")}</option>
+                <option value="tomorrow">{t("Até amanhã")}</option>
+              </select>
+            ) : null}
           </div>
         </div>
 

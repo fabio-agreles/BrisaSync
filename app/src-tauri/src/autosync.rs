@@ -269,11 +269,16 @@ async fn supervise<W: Watcher + ?Sized>(
             continue;
         }
 
+        let profile_interval = profile
+            .sync_interval_min
+            .map(|m| Duration::from_secs(m.max(1) * 60))
+            .unwrap_or(interval);
+
         // Perfil nunca sincronizado conta como "muito tempo atrás".
         let since_sync = profile
             .last_sync
             .map(|at| Duration::from_millis(now_ms().saturating_sub(at)))
-            .unwrap_or(interval);
+            .unwrap_or(profile_interval);
 
         // Referência: o que aconteceu por último — a conclusão da sincronização ou
         // o pedido anterior do agendador. Evita repetir a cada tique quando a
@@ -283,7 +288,7 @@ async fn supervise<W: Watcher + ?Sized>(
             None => since_sync,
         };
 
-        let por_intervalo = ocioso >= interval;
+        let por_intervalo = ocioso >= profile_interval;
         let por_mudanca = shared
             .dirty_for(&profile.id)
             .map(|parado| parado >= QUIET && ocioso >= COOLDOWN)

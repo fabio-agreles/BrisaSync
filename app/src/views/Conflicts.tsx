@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
+import { open } from "@tauri-apps/plugin-dialog";
 import { Icon } from "../components/Icons";
 import { Modal } from "../components/Modal";
-import { api, errorMessage } from "../lib/bridge";
+import { api, errorMessage, isDesktop } from "../lib/bridge";
 import { formatBytes, relativeTime } from "../lib/format";
 import { useT } from "../lib/i18n";
-import type { Conflict } from "../lib/types";
+import type { Conflict, TrashItem } from "../lib/types";
 
 type Resolution = "remote" | "local" | "both";
 
@@ -48,6 +49,51 @@ export function Conflicts({
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<{ conflict: Conflict; action: Resolution } | null>(null);
   const [busy, setBusy] = useState(false);
+  const [trash, setTrash] = useState<TrashItem[]>([]);
+
+  const loadTrash = useCallback(async () => {
+    try {
+      setTrash(await api.listTrash());
+    } catch {
+      setTrash([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadTrash();
+  }, [loadTrash]);
+
+  const restoreItem = useCallback(
+    async (item: TrashItem) => {
+      let dest = "/tmp/demonstracao";
+      if (isDesktop) {
+        const picked = await open({
+          directory: true,
+          title: t("Escolha a pasta para restaurar"),
+        });
+        if (typeof picked !== "string") return;
+        dest = picked;
+      }
+      try {
+        const restored = await api.restoreTrashItem(item.id, dest);
+        notify(t("Restaurado para {caminho}", { caminho: restored }), "ok");
+        await loadTrash();
+      } catch (cause) {
+        notify(errorMessage(cause), "error");
+      }
+    },
+    [loadTrash, notify, t],
+  );
+
+  const clearTrash = useCallback(async () => {
+    try {
+      await api.emptyTrash();
+      setTrash([]);
+      notify(t("Lixeira esvaziada."), "ok");
+    } catch (cause) {
+      notify(errorMessage(cause), "error");
+    }
+  }, [notify, t]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -205,6 +251,58 @@ export function Conflicts({
           </article>
         ))
       )}
+
+      <section className="card" style={{ marginTop: 20, padding: 18 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 10 }}>
+          <div>
+            <h3 style={{ margin: 0, fontSize: 15 }}>{t("Lixeira e versões anteriores")}</h3>
+            <p style={{ margin: "4px 0 0", fontSize: 12.5, color: "var(--muted)" }}>
+              {t("Arquivos sobrescritos ou apagados ficam guardados por 30 dias.")}
+            </p>
+          </div>
+          {trash.length > 0 ? (
+            <button className="btn sm ghost" onClick={() => void clearTrash()}>
+              <Icon name="trash" size={14} />
+              {t("Esvaziar lixeira")}
+            </button>
+          ) : null}
+        </div>
+        {trash.length === 0 ? (
+          <p style={{ margin: 0, fontSize: 13, color: "var(--muted)" }}>
+            {t("Nenhum arquivo na lixeira.")}
+          </p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {trash.map((item) => (
+              <div
+                key={item.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  padding: "8px 10px",
+                  borderRadius: 8,
+                  background: "var(--surface-2, rgba(0,0,0,0.03))",
+                }}
+              >
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {item.name}
+                  </div>
+                  <div style={{ fontSize: 11.5, color: "var(--muted)" }}>
+                    {formatBytes(item.size)} · {relativeTime(item.deletedAt)}
+                  </div>
+                </div>
+                <button className="btn sm ghost" onClick={() => void restoreItem(item)}>
+                  <Icon name="download" size={13} />
+                  {t("Restaurar")}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
       {pending ? (
         <Modal

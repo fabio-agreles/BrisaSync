@@ -7,18 +7,19 @@ import {
 import { CommandPalette, type PaletteAction } from "./components/CommandPalette";
 import { Icon, type IconName } from "./components/Icons";
 import { Modal } from "./components/Modal";
+import { OnboardingModal } from "./components/OnboardingModal";
 import { Sidebar } from "./components/Sidebar";
 import { Toasts, type ToastItem, type ToastKind } from "./components/Toasts";
 import { TopBar } from "./components/TopBar";
+import { useActivity } from "./hooks/useActivity";
+import { useEngineStatus } from "./hooks/useEngineStatus";
+import { useProfiles } from "./hooks/useProfiles";
+import { useUsage } from "./hooks/useUsage";
 import { api, errorMessage, isDesktop, subscribe } from "./lib/bridge";
 import { definirIdioma, locale, t as tr, useIdioma, useT } from "./lib/i18n";
 import { parentPath } from "./lib/format";
 import type {
   Account,
-  AccountUsage,
-  ActivityEntry,
-  EngineStatus,
-  Profile,
   Settings,
   RemoteEntry,
   Snapshot,
@@ -30,18 +31,6 @@ import { Dashboard } from "./views/Dashboard";
 import { Files } from "./views/Files";
 import { Folders } from "./views/Folders";
 import { Settings as SettingsView } from "./views/Settings";
-
-const EMPTY_SNAPSHOT: Snapshot = {
-  engineReady: false,
-  paused: false,
-  running: false,
-  speed: 0,
-  bytes: 0,
-  totalBytes: 0,
-  errors: 0,
-  transfers: [],
-  jobs: 0,
-};
 
 const DEFAULT_SETTINGS: Settings = {
   theme: "system",
@@ -59,6 +48,7 @@ const DEFAULT_SETTINGS: Settings = {
   driveClientSecret: "",
   language: "pt",
   closeQuits: false,
+  conflictPolicy: "ask",
 };
 
 const TITLES: Record<ViewId, { title: string; subtitle: string }> = {
@@ -70,33 +60,39 @@ const TITLES: Record<ViewId, { title: string; subtitle: string }> = {
   settings: { title: "Ajustes", subtitle: "Contas, banda e comportamento do app" },
 };
 
-function initialTheme(): "light" | "dark" {
+type ThemePreference = "light" | "dark" | "system";
+
+function initialThemePreference(): ThemePreference {
   const stored = localStorage.getItem("brisasync.theme");
-  if (stored === "light" || stored === "dark") return stored;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  if (stored === "light" || stored === "dark" || stored === "system") return stored;
+  return "system";
 }
 
 export default function App() {
   const [view, setView] = useState<ViewId>("dashboard");
-  const [theme, setTheme] = useState<"light" | "dark">(initialTheme);
-  const [engine, setEngine] = useState<EngineStatus | null>(null);
+  const [themePreference, setThemePreference] = useState<ThemePreference>(initialThemePreference);
+  const [systemDark, setSystemDark] = useState<boolean>(
+    () => window.matchMedia("(prefers-color-scheme: dark)").matches,
+  );
+  const resolvedTheme: "light" | "dark" =
+    themePreference === "system" ? (systemDark ? "dark" : "light") : themePreference;
   const [accounts, setAccounts] = useState<Account[]>([]);
-  const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [activity, setActivity] = useState<ActivityEntry[]>([]);
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
-  const [snapshot, setSnapshot] = useState<Snapshot>(EMPTY_SNAPSHOT);
   const [filesAccount, setFilesAccount] = useState("");
   const [filesPath, setFilesPath] = useState("");
   const [autostart, setAutostart] = useState(false);
   const [autostartBusy, setAutostartBusy] = useState(false);
   const [conflictCount, setConflictCount] = useState(0);
-  const [usage, setUsage] = useState<AccountUsage[]>([]);
   // Nome da conta → e-mail. Vazio quando não dá para descobrir (OneDrive, conta
   // sem token): o cartão cai para o nome do provedor.
   const [emails, setEmails] = useState<Record<string, string>>({});
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [addAccountOpen, setAddAccountOpen] = useState(false);
   const [addFolderOpen, setAddFolderOpen] = useState(false);
+  const [initialLoaded, setInitialLoaded] = useState(false);
+  const [onboardingDismissed, setOnboardingDismissed] = useState(
+    () => localStorage.getItem("brisasync.onboardingDismissed") === "1",
+  );
   // Pedido de saída vindo da bandeja (ou de Ajustes) com tarefa rodando:
   // `hidden` diz se a janela estava escondida — ao "continuar em segundo plano"
   // ela volta a sumir em vez de ficar aberta à toa.
@@ -119,50 +115,61 @@ export default function App() {
     setToasts((items) => items.filter((item) => item.id !== id));
   }, []);
 
-  const refreshProfiles = useCallback(async () => {
-    setProfiles(await api.listProfiles());
-  }, []);
+  const { activity, setActivity, refreshActivity, clearActivity } = useActivity(notify);
+  const { usage, setUsage, refreshUsage } = useUsage();
+  const [profilesState, setProfilesState] = useState<import("./lib/types").Profile[]>([]);
+  const {
+    engine,
+    setEngine,
+    snapshot,
+    setSnapshot,
+    syncAll,
+    togglePause,
+    pauseFor,
+  } = useEngineStatus(profilesState, notify);
+  const {
+    profiles,
+    setProfiles,
+    refreshProfiles,
+    syncProfile,
+    updateProfile,
+    deleteProfile,
+    addFolder,
+  } = useProfiles(notify, setSnapshot);
 
-  const refreshActivity = useCallback(async () => {
-    setActivity(await api.recentActivity());
-  }, []);
-
-  const clearActivity = useCallback(async () => {
-    try {
-      await api.clearActivity();
-      setActivity([]);
-      notify(tr("Histórico de atividade limpo."), "ok");
-    } catch (cause) {
-      notify(errorMessage(cause), "error");
-      void refreshActivity();
-    }
-  }, [notify, refreshActivity]);
+  useEffect(() => {
+    setProfilesState(profiles);
+  }, [profiles]);
 
   // Idioma: a preferência vem dos ajustes (padrão "pt"). O efeito cobre tanto a
   // carga inicial quanto a troca em Ajustes, inclusive quando o backend avisa.
   useEffect(() => {
-    definirIdioma(settings.language === "en" ? "en" : "pt");
+    const lang = settings.language;
+    definirIdioma(
+      lang === "en" || lang === "es" || lang === "fr" || lang === "de" ? lang : "pt",
+    );
   }, [settings.language]);
 
-  // A bandeja acompanha o tema do sistema operacional (painel do desktop):
+  // A bandeja e o tema "system" acompanham o tema do sistema operacional:
   // se o sistema for escuro, o ícone na bandeja deve ser claro.
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const updateTray = (sistemaEscuro: boolean) => {
+    const updateSystemTheme = (sistemaEscuro: boolean) => {
+      setSystemDark(sistemaEscuro);
       void api.setTrayTheme(sistemaEscuro).catch(() => undefined);
     };
 
-    updateTray(mediaQuery.matches);
+    updateSystemTheme(mediaQuery.matches);
 
-    const listener = (event: MediaQueryListEvent) => updateTray(event.matches);
+    const listener = (event: MediaQueryListEvent) => updateSystemTheme(event.matches);
     mediaQuery.addEventListener("change", listener);
     return () => mediaQuery.removeEventListener("change", listener);
   }, []);
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    localStorage.setItem("brisasync.theme", theme);
-  }, [theme]);
+    document.documentElement.dataset.theme = resolvedTheme;
+    localStorage.setItem("brisasync.theme", themePreference);
+  }, [resolvedTheme, themePreference]);
 
   useEffect(() => {
     let cancelled = false;
@@ -183,13 +190,22 @@ export default function App() {
           accountList.some((item) => item.name === atual) ? atual : accountList[0]?.name ?? "",
         );
         setProfiles(profileList);
-        setSettings({ ...DEFAULT_SETTINGS, ...info });
+        const mergedSettings = { ...DEFAULT_SETTINGS, ...info };
+        if (
+          mergedSettings.theme === "light" ||
+          mergedSettings.theme === "dark" ||
+          mergedSettings.theme === "system"
+        ) {
+          setThemePreference(mergedSettings.theme);
+        }
+        setSettings(mergedSettings);
         setAutostart(await api.autostartEnabled().catch(() => false));
         setActivity(await api.recentActivity());
         setSnapshot(await api.syncStatus());
         setConflictCount((await api.scanConflicts().catch(() => [])).length);
         void api.accountUsage().then(setUsage).catch(() => undefined);
         void api.accountEmails().then(setEmails).catch(() => undefined);
+        setInitialLoaded(true);
       } catch (cause) {
         if (!cancelled) notify(errorMessage(cause), "error");
       }
@@ -198,35 +214,6 @@ export default function App() {
       cancelled = true;
     };
   }, [notify]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      void api
-        .syncStatus()
-        .then(setSnapshot)
-        .catch(() => undefined);
-    }, 2000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const refreshUsage = useCallback(async () => {
-    try {
-      setUsage(await api.accountUsage());
-    } catch {
-      // Silencioso: o cartão de armazenamento segue com o que já foi lido.
-    }
-  }, []);
-
-  useEffect(() => {
-    // A primeira leitura pode cair no momento em que o rclone está subindo: uma
-    // segunda tentativa logo depois evita o cartão vazio por até um minuto.
-    const primeira = setTimeout(() => void refreshUsage(), 3000);
-    const timer = setInterval(() => void refreshUsage(), 30_000);
-    return () => {
-      clearTimeout(primeira);
-      clearInterval(timer);
-    };
-  }, [refreshUsage]);
 
   useEffect(() => {
     if (!isDesktop || !settings.notifications) return;
@@ -274,90 +261,9 @@ export default function App() {
     return () => disposers.forEach((dispose) => dispose());
   }, [refreshActivity, refreshProfiles]);
 
-  const syncAll = useCallback(async () => {
-    if (snapshot.paused) {
-      try {
-        setSnapshot(await api.setPaused(false));
-        notify(tr("Sincronização retomada."), "ok");
-      } catch (cause) {
-        notify(errorMessage(cause), "error");
-      }
-      return;
-    }
-    const targets = profiles.filter((profile) => profile.enabled);
-    if (targets.length === 0) {
-      notify(tr("Adicione uma pasta antes de sincronizar."), "info");
-      return;
-    }
-    const results = await Promise.allSettled(
-      targets.map((profile) => api.startSync(profile.id, profile.resyncNeeded)),
-    );
-    const failure = results.find((result) => result.status === "rejected");
-    if (failure && failure.status === "rejected") {
-      notify(errorMessage(failure.reason), "error");
-    } else {
-      notify(tr("Sincronização iniciada."), "ok");
-    }
-  }, [notify, profiles, snapshot.paused]);
-
   useEffect(() => {
     syncAllRef.current = syncAll;
   }, [syncAll]);
-
-  const togglePause = useCallback(async () => {
-    try {
-      setSnapshot(await api.setPaused(!snapshot.paused));
-      notify(
-        snapshot.paused ? tr("Sincronização retomada.") : tr("Sincronização pausada."),
-        "ok",
-      );
-    } catch (cause) {
-      notify(errorMessage(cause), "error");
-    }
-  }, [notify, snapshot.paused]);
-
-  const syncProfile = useCallback(
-    async (id: string, resync = false) => {
-      try {
-        setSnapshot(await api.startSync(id, resync));
-        notify(tr("Sincronização iniciada."), "ok");
-      } catch (cause) {
-        notify(errorMessage(cause), "error");
-      }
-    },
-    [notify],
-  );
-
-  const updateProfile = useCallback(
-    async (profile: Profile) => {
-      try {
-        const updated = await api.updateProfile(profile);
-        setProfiles((items) =>
-          items.map((item) => (item.id === updated.id ? updated : item)),
-        );
-        notify(
-          updated.enabled ? tr("Pasta ativada.") : tr("Pasta desativada."),
-          "ok",
-        );
-      } catch (cause) {
-        notify(errorMessage(cause), "error");
-      }
-    },
-    [notify],
-  );
-
-  const deleteProfile = useCallback(
-    async (id: string) => {
-      try {
-        await api.deleteProfile(id);
-        await refreshProfiles();
-        notify(tr("Pasta removida."), "ok");
-      } catch (cause) {
-        notify(errorMessage(cause), "error");
-      }
-    },
-    [notify, refreshProfiles],
-  );
 
   const updateSettings = useCallback(
     (patch: Partial<Settings>) => {
@@ -368,6 +274,14 @@ export default function App() {
       });
     },
     [notify],
+  );
+
+  const changeTheme = useCallback(
+    (next: ThemePreference) => {
+      setThemePreference(next);
+      updateSettings({ theme: next });
+    },
+    [updateSettings],
   );
 
   const changeAutostart = useCallback(
@@ -427,16 +341,6 @@ export default function App() {
       notify(tr("Conta “{nome}” conectada.", { nome: account.name }), "ok");
     },
     [notify],
-  );
-
-  const addFolder = useCallback(
-    async (input: { account: string; remotePath: string; localPath: string }) => {
-      const profile = await api.createProfile({ ...input, enabled: true });
-      setProfiles((items) => [...items, profile]);
-      notify(tr("Pasta adicionada. Sincronizando pela primeira vez…"), "ok");
-      void syncProfile(profile.id, true);
-    },
-    [notify, syncProfile],
   );
 
   useEffect(() => {
@@ -529,10 +433,10 @@ export default function App() {
       },
       {
         id: "theme",
-        label: theme === "light" ? tr("Ativar tema escuro") : tr("Ativar tema claro"),
+        label: resolvedTheme === "light" ? tr("Ativar tema escuro") : tr("Ativar tema claro"),
         group: tr("Sistema"),
-        icon: theme === "light" ? "moon" : "sun",
-        run: () => setTheme(theme === "light" ? "dark" : "light"),
+        icon: resolvedTheme === "light" ? "moon" : "sun",
+        run: () => changeTheme(resolvedTheme === "light" ? "dark" : "light"),
       },
       {
         id: "quit",
@@ -544,9 +448,27 @@ export default function App() {
     ];
 
     return [...nav, ...actions];
-  }, [idioma, snapshot.paused, syncAll, theme, togglePause]);
+  }, [idioma, snapshot.paused, syncAll, resolvedTheme, togglePause, changeTheme]);
 
   const meta = TITLES[view];
+
+  const dismissOnboarding = useCallback(() => {
+    localStorage.setItem("brisasync.onboardingDismissed", "1");
+    setOnboardingDismissed(true);
+  }, []);
+
+  useEffect(() => {
+    if (profiles.length > 0 && !onboardingDismissed) {
+      dismissOnboarding();
+    }
+  }, [profiles.length, onboardingDismissed, dismissOnboarding]);
+
+  const showOnboarding =
+    initialLoaded &&
+    !onboardingDismissed &&
+    !addAccountOpen &&
+    !addFolderOpen &&
+    profiles.length === 0;
 
   return (
     <div className="app">
@@ -563,8 +485,8 @@ export default function App() {
           title={tr(meta.title)}
           subtitle={tr(meta.subtitle)}
           snapshot={snapshot}
-          theme={theme}
-          onToggleTheme={() => setTheme(theme === "light" ? "dark" : "light")}
+          theme={resolvedTheme}
+          onToggleTheme={() => changeTheme(resolvedTheme === "light" ? "dark" : "light")}
           onOpenPalette={() => setPaletteOpen(true)}
           onStatusClick={() => setView("dashboard")}
         />
@@ -581,6 +503,7 @@ export default function App() {
               onRefreshUsage={() => void refreshUsage()}
               onSyncAll={() => void syncAll()}
               onTogglePause={() => void togglePause()}
+              onPauseFor={(mins) => void pauseFor(mins)}
               onAddAccount={() => setAddAccountOpen(true)}
               onOpenActivity={() => setView("activity")}
               onOpenFolders={() => setView("folders")}
@@ -622,13 +545,13 @@ export default function App() {
           {view === "settings" ? (
             <SettingsView
               settings={settings}
-              theme={theme}
+              theme={themePreference}
               engine={engine}
               accounts={accounts}
               autostart={autostart}
               autostartBusy={autostartBusy}
               onUpdate={updateSettings}
-              onTheme={setTheme}
+              onTheme={changeTheme}
               onAutostart={(enabled) => void changeAutostart(enabled)}
               onAddAccount={() => setAddAccountOpen(true)}
               notify={notify}
@@ -642,6 +565,15 @@ export default function App() {
         onClose={() => setPaletteOpen(false)}
         actions={paletteActions}
       />
+
+      {showOnboarding ? (
+        <OnboardingModal
+          hasAccount={accounts.length > 0}
+          onConnectAccount={() => setAddAccountOpen(true)}
+          onAddFolder={() => setAddFolderOpen(true)}
+          onDismiss={dismissOnboarding}
+        />
+      ) : null}
 
       {addAccountOpen ? (
         <AddAccountModal

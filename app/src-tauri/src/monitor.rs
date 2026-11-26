@@ -24,8 +24,27 @@ pub fn spawn(app: AppHandle) {
 async fn tick(app: &AppHandle) {
     let state = app.state::<AppState>();
     if state.paused.load(Ordering::SeqCst) {
-        set_status(app, Estado::Pausado, crate::idioma::texto("pausado", "paused"));
-        return;
+        let until = state.pause_until.load(Ordering::SeqCst);
+        if until > 0 && now_ms() >= until {
+            state.paused.store(false, Ordering::SeqCst);
+            state.pause_until.store(0, Ordering::SeqCst);
+            state
+                .push_activity(
+                    "info",
+                    crate::idioma::texto("Pausa temporizada encerrada", "Timed pause ended"),
+                    crate::idioma::texto(
+                        "A sincronização automática foi retomada.",
+                        "Automatic sync has resumed.",
+                    ),
+                    None,
+                )
+                .await;
+            let _ = app.emit("sync://snapshot", snapshot(&state).await);
+            let _ = app.emit("sync://changed", ());
+        } else {
+            set_status(app, Estado::Pausado, crate::idioma::texto("pausado", "paused"));
+            return;
+        }
     }
     if !state.rclone.is_running().await {
         set_status(app, Estado::Offline, crate::idioma::texto("motor parado", "engine stopped"));

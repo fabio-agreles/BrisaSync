@@ -27,6 +27,7 @@ use tauri::{Emitter, Manager};
 
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
         // Primeiro plugin da lista: se já existe um BrisaSync rodando, esta instância
         // avisa a outra e termina em vez de abrir um segundo motor de sincronização.
         .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
@@ -130,6 +131,9 @@ pub fn run() {
             commands::download_file,
             commands::scan_conflicts,
             commands::resolve_conflict,
+            commands::list_trash,
+            commands::restore_trash_item,
+            commands::empty_trash,
             commands::cancel_authorization,
             commands::account_emails,
             commands::account_usage,

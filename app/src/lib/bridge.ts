@@ -34,7 +34,7 @@ export type Backend = {
   deleteProfile(id: string): Promise<void>;
   deleteAccount(account: string): Promise<void>;
   startSync(id: string, resync?: boolean): Promise<Snapshot>;
-  setPaused(paused: boolean): Promise<Snapshot>;
+  setPaused(paused: boolean, durationMin?: number): Promise<Snapshot>;
   stopAll(): Promise<Snapshot>;
   syncStatus(): Promise<Snapshot>;
   recentActivity(): Promise<ActivityEntry[]>;
@@ -53,6 +53,9 @@ export type Backend = {
     action: "remote" | "local" | "both",
     conflict: Conflict,
   ): Promise<Conflict[]>;
+  listTrash(): Promise<import("./types").TrashItem[]>;
+  restoreTrashItem(id: string, destinationDir: string): Promise<string>;
+  emptyTrash(): Promise<void>;
   accountUsage(): Promise<AccountUsage[]>;
   // E-mail de cada conta (só as que dão para descobrir): a janela mostra o
   // endereço embaixo do nome, para não confundir "Google Drive 1" com "2".
@@ -92,7 +95,7 @@ const desktop: Backend = {
   deleteProfile: (id) => invoke("delete_profile", { id }),
   deleteAccount: (account) => invoke("delete_account", { account }),
   startSync: (id, resync) => invoke("start_sync", { id, resync }),
-  setPaused: (paused) => invoke("set_paused", { paused }),
+  setPaused: (paused, durationMin) => invoke("set_paused", { paused, durationMin }),
   stopAll: () => invoke("stop_all"),
   syncStatus: () => invoke("sync_status"),
   recentActivity: () => invoke("recent_activity"),
@@ -117,6 +120,9 @@ const desktop: Backend = {
       path1: conflict.path1,
       path2: conflict.path2,
     }),
+  listTrash: () => invoke("list_trash"),
+  restoreTrashItem: (id, destinationDir) => invoke("restore_trash_item", { id, destinationDir }),
+  emptyTrash: () => invoke("empty_trash"),
   accountUsage: () => invoke("account_usage"),
   accountEmails: () => invoke("account_emails"),
   cancelAuthorization: () => invoke("cancel_authorization"),
@@ -142,7 +148,7 @@ const demo: Backend = {
   deleteProfile: (id) => demoBackend.deleteProfile(id),
   deleteAccount: (account) => demoBackend.deleteAccount(account),
   startSync: (id, resync) => demoBackend.startSync(id, resync),
-  setPaused: (paused) => demoBackend.setPaused(paused),
+  setPaused: (paused, durationMin) => demoBackend.setPaused(paused, durationMin),
   stopAll: () => demoBackend.stopAll(),
   syncStatus: () => demoBackend.syncStatus(),
   recentActivity: () => demoBackend.recentActivity(),
@@ -160,6 +166,9 @@ const demo: Backend = {
     demoBackend.downloadFile(account, remotePath, localDir),
   scanConflicts: () => demoBackend.scanConflicts(),
   resolveConflict: (action, conflict) => demoBackend.resolveConflict(action, conflict),
+  listTrash: () => demoBackend.listTrash(),
+  restoreTrashItem: (id, destinationDir) => demoBackend.restoreTrashItem(id, destinationDir),
+  emptyTrash: () => demoBackend.emptyTrash(),
   accountUsage: () => demoBackend.accountUsage(),
   accountEmails: () => demoBackend.accountEmails(),
   cancelAuthorization: async () => {},

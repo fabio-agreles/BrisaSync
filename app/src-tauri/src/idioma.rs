@@ -45,12 +45,11 @@ pub fn escolhe(pt: String, en: String) -> String {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::{definir, escolhe, ingles, texto};
-    use std::sync::Mutex;
+pub(crate) static TRAVA: std::sync::Mutex<()> = std::sync::Mutex::new(());
 
-    // O idioma é global: os testes que o trocam não podem rodar ao mesmo tempo.
-    static TRAVA: Mutex<()> = Mutex::new(());
+#[cfg(test)]
+mod tests {
+    use super::{definir, escolhe, ingles, texto, TRAVA};
 
     #[test]
     fn portugues_e_o_padrao() {

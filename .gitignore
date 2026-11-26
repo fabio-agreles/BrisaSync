@@ -28,6 +28,9 @@ graphify-out/
 # Bundle de arquivo único gerado por `flatpak build-bundle`
 /*.flatpak
 
+# Vídeos promocionais locais
+*.mp4
+
 # Ferramenta de apoio (clone raso) para regenerar flatpak/cargo-sources.json
 /app/flatpak-builder-tools/
 

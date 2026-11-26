@@ -36,6 +36,7 @@ export function Files({
     null,
   );
   const [dragging, setDragging] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const load = useCallback(async () => {
     if (!account) return;
@@ -181,6 +182,7 @@ export function Files({
   );
 
   useEffect(() => {
+    setSelected(new Set());
     void load();
   }, [load]);
 
@@ -189,6 +191,69 @@ export function Files({
     if (!needle) return entries;
     return entries.filter((entry) => entry.name.toLowerCase().includes(needle));
   }, [entries, query]);
+
+  const selectableFiles = useMemo(
+    () => filtered.filter((entry) => !entry.isDir),
+    [filtered],
+  );
+
+  const allSelected =
+    selectableFiles.length > 0 && selectableFiles.every((entry) => selected.has(entry.path));
+
+  const toggleSelect = useCallback((entryPath: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(entryPath)) next.delete(entryPath);
+      else next.add(entryPath);
+      return next;
+    });
+  }, []);
+
+  const toggleSelectAll = useCallback(() => {
+    setSelected((prev) => {
+      if (selectableFiles.length > 0 && selectableFiles.every((e) => prev.has(e.path))) {
+        return new Set();
+      }
+      return new Set(selectableFiles.map((e) => e.path));
+    });
+  }, [selectableFiles]);
+
+  const downloadSelected = useCallback(async () => {
+    if (!account || selected.size === 0) return;
+    const targets = entries.filter((e) => !e.isDir && selected.has(e.path));
+    if (targets.length === 0) return;
+
+    let folder = "/tmp/demonstracao";
+    if (isDesktop) {
+      const picked = await open({
+        directory: true,
+        title: t("Escolha a pasta para baixar"),
+      });
+      if (typeof picked !== "string") return;
+      folder = picked;
+    }
+
+    let okCount = 0;
+    for (const entry of targets) {
+      setBusy(entry.path);
+      try {
+        await api.downloadFile(account, entry.path, folder);
+        okCount += 1;
+      } catch (cause) {
+        notify(errorMessage(cause), "error");
+      }
+    }
+    setBusy(null);
+    if (okCount > 0) {
+      setSelected(new Set());
+      notify(
+        okCount === 1
+          ? t("1 arquivo baixado para {caminho}", { caminho: folder })
+          : t("{n} arquivos baixados para {caminho}", { n: okCount, caminho: folder }),
+        "ok",
+      );
+    }
+  }, [account, entries, notify, selected]);
 
   const segments = path.split("/").filter(Boolean);
 
@@ -341,6 +406,26 @@ export function Files({
               : ""}
           </span>
         ) : null}
+        {selected.size > 0 ? (
+          <span style={{ marginLeft: "auto", display: "flex", gap: 8, alignItems: "center" }}>
+            <button
+              className="btn primary"
+              style={{ padding: "4px 10px", fontSize: 12 }}
+              disabled={busy !== null}
+              onClick={() => void downloadSelected()}
+            >
+              <Icon name="download" size={13} />
+              {t("Baixar selecionados ({n})", { n: selected.size })}
+            </button>
+            <button
+              className="btn"
+              style={{ padding: "4px 10px", fontSize: 12 }}
+              onClick={() => setSelected(new Set())}
+            >
+              {t("Limpar seleção")}
+            </button>
+          </span>
+        ) : null}
       </div>
 
       {error ? (
@@ -375,6 +460,16 @@ export function Files({
           <table className="file-table">
             <thead>
               <tr>
+                <th style={{ width: 32 }}>
+                  {selectableFiles.length > 0 ? (
+                    <input
+                      type="checkbox"
+                      checked={allSelected}
+                      onChange={toggleSelectAll}
+                      aria-label={t("Selecionar todos os arquivos")}
+                    />
+                  ) : null}
+                </th>
                 <th>{t("Nome")}</th>
                 <th>{t("Tamanho")}</th>
                 <th>{t("Modificado")}</th>
@@ -401,6 +496,17 @@ export function Files({
                     }
                   }}
                 >
+                  <td>
+                    {!entry.isDir ? (
+                      <input
+                        type="checkbox"
+                        checked={selected.has(entry.path)}
+                        onChange={() => toggleSelect(entry.path)}
+                        onClick={(event) => event.stopPropagation()}
+                        aria-label={t("Selecionar {nome}", { nome: entry.name })}
+                      />
+                    ) : null}
+                  </td>
                   <td>
                     <div className="file-cell">
                       <span className={`file-ico ${entry.isDir ? "dir" : ""}`}>

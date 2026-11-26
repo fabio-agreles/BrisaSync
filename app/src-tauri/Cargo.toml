@@ -1,6 +1,6 @@
 [package]
 name = "brisasync"
-version = "1.0.0"
+version = "1.1.0"
 description = "Sincronização visual de Google Drive, OneDrive, Dropbox e Nextcloud"
 authors = ["BrisaSync contributors"]
 license = "MIT"
@@ -28,6 +28,7 @@ tauri-plugin-autostart = "2.7"
 tauri-plugin-dialog = "2.8"
 tauri-plugin-notification = "2.8"
 tauri-plugin-single-instance = "2"
+tauri-plugin-updater = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 # `rustls-tls` (e não `default-tls`) porque as raízes de confiança viajam

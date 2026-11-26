@@ -12,11 +12,14 @@
 // tradução, para isso não passar batido.
 import { useSyncExternalStore } from "react";
 
-export type Lang = "pt" | "en";
+export type Lang = "pt" | "en" | "es" | "fr" | "de";
 
 export const IDIOMAS: { id: Lang; nome: string; nomeNativo: string }[] = [
   { id: "pt", nome: "Português (Brasil)", nomeNativo: "Português" },
   { id: "en", nome: "Inglês", nomeNativo: "English" },
+  { id: "es", nome: "Espanhol", nomeNativo: "Español" },
+  { id: "fr", nome: "Francês", nomeNativo: "Français" },
+  { id: "de", nome: "Alemão", nomeNativo: "Deutsch" },
 ];
 
 let idioma: Lang = "pt";
@@ -26,13 +29,24 @@ export function idiomaAtual(): Lang {
   return idioma;
 }
 
-/** Valor para o atributo `lang` do <html>: "pt-BR" ou "en". */
+/** Valor para o atributo `lang` do <html>. */
 export function idiomaDoDocumento(lang: Lang): string {
-  return lang === "en" ? "en" : "pt-BR";
+  switch (lang) {
+    case "en":
+      return "en";
+    case "es":
+      return "es";
+    case "fr":
+      return "fr";
+    case "de":
+      return "de";
+    default:
+      return "pt-BR";
+  }
 }
 
 export function definirIdioma(novo: Lang) {
-  if (novo !== "pt" && novo !== "en") return;
+  if (novo !== "pt" && novo !== "en" && novo !== "es" && novo !== "fr" && novo !== "de") return;
   if (novo === idioma) return;
   idioma = novo;
   if (typeof document !== "undefined") {
@@ -54,7 +68,17 @@ export function traduzir(
   texto: string,
   valores?: Record<string, string | number>,
 ): string {
-  const base = lang === "en" ? EN[texto] ?? texto : texto;
+  const dict =
+    lang === "en"
+      ? EN
+      : lang === "es"
+        ? ES
+        : lang === "fr"
+          ? FR
+          : lang === "de"
+            ? DE
+            : null;
+  const base = dict ? dict[texto] ?? EN[texto] ?? texto : texto;
   if (!valores) return base;
   return base.replace(/\{(\w+)\}/g, (bruto, nome: string) =>
     nome in valores ? String(valores[nome]) : bruto,
@@ -80,7 +104,18 @@ export function useT() {
 
 /** Locale para Intl/`toLocaleDateString`. */
 export function locale(lang: Lang = idioma): string {
-  return lang === "en" ? "en-US" : "pt-BR";
+  switch (lang) {
+    case "en":
+      return "en-US";
+    case "es":
+      return "es-ES";
+    case "fr":
+      return "fr-FR";
+    case "de":
+      return "de-DE";
+    default:
+      return "pt-BR";
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -115,6 +150,37 @@ const EN: Record<string, string> = {
   "Nenhuma ação encontrada.": "No actions found.",
   "Dispensar aviso": "Dismiss notification",
   "Algo deu errado.": "Something went wrong.",
+  "Escolha a pasta para restaurar": "Choose folder to restore to",
+  "Restaurado para {caminho}": "Restored to {caminho}",
+  "Lixeira esvaziada.": "Trash emptied.",
+  "Lixeira e versões anteriores": "Trash and previous versions",
+  "Arquivos sobrescritos ou apagados ficam guardados por 30 dias.":
+    "Overwritten or deleted files are kept for 30 days.",
+  "Esvaziar lixeira": "Empty trash",
+  "Nenhum arquivo na lixeira.": "No files in trash.",
+  "Restaurar": "Restore",
+  "Intervalo desta pasta": "Folder sync interval",
+  "Padrão": "Default",
+  "1 min": "1 min",
+  "5 min": "5 min",
+  "30 min": "30 min",
+  "60 min": "60 min",
+  "Retoma automaticamente às {hora}.": "Resumes automatically at {hora}.",
+  "Pausar por tempo": "Timed pause",
+  "Pausar por…": "Pause for…",
+  "15 min": "15 min",
+  "Até amanhã": "Until tomorrow",
+  "Em caso de conflito": "On conflict",
+  "O que fazer quando o mesmo arquivo muda nos dois lados.":
+    "What to do when the same file changes on both sides.",
+  "Perguntar": "Ask",
+  "Mais recente": "Newer",
+  "Nuvem": "Cloud",
+  "Local": "Local",
+  "Buscar na atividade...": "Search activity...",
+  "Ocorreu um erro inesperado na interface. Você pode recarregar a janela para continuar.":
+    "An unexpected interface error occurred. You can reload the window to continue.",
+  "Recarregar": "Reload",
   "rclone conectado": "rclone connected",
   "Motor indisponível": "Engine unavailable",
   "versão desconhecida": "unknown version",
@@ -371,6 +437,12 @@ const EN: Record<string, string> = {
   "Demonstração: {caminho} entrou na lista.": "Demo: {caminho} was added to the list.",
   "Escolha a pasta para baixar": "Choose the folder to download to",
   "Baixado para {caminho}": "Downloaded to {caminho}",
+  "1 arquivo baixado para {caminho}": "1 file downloaded to {caminho}",
+  "{n} arquivos baixados para {caminho}": "{n} files downloaded to {caminho}",
+  "Baixar selecionados ({n})": "Download selected ({n})",
+  "Limpar seleção": "Clear selection",
+  "Selecionar todos os arquivos": "Select all files",
+  "Selecionar {nome}": "Select {nome}",
   "Conecte uma conta para navegar": "Connect an account to browse",
   "Seus arquivos aparecem aqui sem precisar baixar nada antes.":
     "Your files show up here without downloading anything first.",
@@ -613,6 +685,130 @@ const EN: Record<string, string> = {
   "3 arquivos enviados": "3 files uploaded",
   "Conflito detectado": "Conflict detected",
   "Todas as pastas ativas estão em dia.": "All active folders are up to date.",
+  // onboarding
+  "Bem-vindo ao BrisaSync": "Welcome to BrisaSync",
+  "Quase pronto para sincronizar": "Almost ready to sync",
+  "Configurar depois": "Set up later",
+  "Escolher primeira pasta": "Choose first folder",
+  "Conectar primeira conta": "Connect first account",
+  "Sua conta já está conectada. Agora escolha uma pasta deste computador para manter em sincronização bidirecional com a nuvem.":
+    "Your account is connected. Now choose a folder on this computer to keep in two-way sync with the cloud.",
+  "Mantenha suas pastas em sincronização bidirecional com Google Drive, OneDrive, Dropbox ou Nextcloud em dois passos simples.":
+    "Keep your folders in two-way sync with Google Drive, OneDrive, Dropbox, or Nextcloud in two simple steps.",
+  "Conectar uma conta na nuvem": "Connect a cloud account",
+  "Google Drive, OneDrive, Dropbox ou Nextcloud via login direto.":
+    "Google Drive, OneDrive, Dropbox, or Nextcloud via direct sign-in.",
+  "Escolher a primeira pasta": "Choose the first folder",
+  "Defina a pasta local e a pasta remota que ficarão iguais nos dois lados.":
+    "Pick the local folder and remote folder to keep identical on both sides.",
+};
+
+const ES: Record<string, string> = {
+  Fechar: "Cerrar",
+  Cancelar: "Cancelar",
+  Salvar: "Guardar",
+  "Visão geral": "Resumen",
+  Pastas: "Carpetas",
+  Arquivos: "Archivos",
+  Atividade: "Actividad",
+  Conflitos: "Conflictos",
+  Ajustes: "Ajustes",
+  "Sincronizar agora": "Sincronizar ahora",
+  "Pausar tudo": "Pausar todo",
+  Retomar: "Reanudar",
+  "Tudo em dia": "Todo al día",
+  "Sincronizando agora": "Sincronizando ahora",
+  "Sincronização pausada": "Sincronización en pausa",
+  "Conectar conta": "Conectar cuenta",
+  "Adicionar pasta": "Añadir carpeta",
+  Tema: "Tema",
+  Claro: "Claro",
+  Escuro: "Oscuro",
+  Sistema: "Sistema",
+  Idioma: "Idioma",
+  Notificações: "Notificaciones",
+  "Em caso de conflito": "En caso de conflicto",
+  Perguntar: "Preguntar",
+  "Mais recente": "Más reciente",
+  Nuvem: "Nube",
+  Local: "Local",
+  "Lixeira e versões anteriores": "Papelera y versiones anteriores",
+  "Esvaziar lixeira": "Vaciar papelera",
+  Restaurar: "Restaurar",
+  Recarregar: "Recargar",
+  "Algo deu errado.": "Algo salió mal.",
+};
+
+const FR: Record<string, string> = {
+  Fechar: "Fermer",
+  Cancelar: "Annuler",
+  Salvar: "Enregistrer",
+  "Visão geral": "Vue d'ensemble",
+  Pastas: "Dossiers",
+  Arquivos: "Fichiers",
+  Atividade: "Activité",
+  Conflitos: "Conflits",
+  Ajustes: "Paramètres",
+  "Sincronizar agora": "Synchroniser maintenant",
+  "Pausar tudo": "Tout mettre en pause",
+  Retomar: "Reprendre",
+  "Tudo em dia": "Tout est à jour",
+  "Sincronizando agora": "Synchronisation en cours",
+  "Sincronização pausada": "Synchronisation en pause",
+  "Conectar conta": "Connecter un compte",
+  "Adicionar pasta": "Ajouter un dossier",
+  Tema: "Thème",
+  Claro: "Clair",
+  Escuro: "Sombre",
+  Sistema: "Système",
+  Idioma: "Langue",
+  Notificações: "Notifications",
+  "Em caso de conflito": "En cas de conflit",
+  Perguntar: "Demander",
+  "Mais recente": "Plus récent",
+  Nuvem: "Nuage",
+  Local: "Local",
+  "Lixeira e versões anteriores": "Corbeille et versions précédentes",
+  "Esvaziar lixeira": "Vider la corbeille",
+  Restaurar: "Restaurer",
+  Recarregar: "Recharger",
+  "Algo deu errado.": "Une erreur est survenue.",
+};
+
+const DE: Record<string, string> = {
+  Fechar: "Schließen",
+  Cancelar: "Abbrechen",
+  Salvar: "Speichern",
+  "Visão geral": "Übersicht",
+  Pastas: "Ordner",
+  Arquivos: "Dateien",
+  Atividade: "Aktivität",
+  Conflitos: "Konflikte",
+  Ajustes: "Einstellungen",
+  "Sincronizar agora": "Jetzt synchronisieren",
+  "Pausar tudo": "Alles pausieren",
+  Retomar: "Fortsetzen",
+  "Tudo em dia": "Alles aktuell",
+  "Sincronizando agora": "Synchronisierung läuft",
+  "Sincronização pausada": "Synchronisierung pausiert",
+  "Conectar conta": "Konto verbinden",
+  "Adicionar pasta": "Ordner hinzufügen",
+  Tema: "Design",
+  Claro: "Hell",
+  Escuro: "Dunkel",
+  Sistema: "System",
+  Idioma: "Sprache",
+  Notificações: "Benachrichtigungen",
+  "Em caso de conflito": "Bei Konflikt",
+  Perguntar: "Fragen",
+  "Mais recente": "Neueste",
+  Nuvem: "Cloud",
+  Local: "Lokal",
+  "Lixeira e versões anteriores": "Papierkorb und frühere Versionen",
+  "Esvaziar lixeira": "Papierkorb leeren",
+  Restaurar: "Wiederherstellen",
+  Recarregar: "Neu laden",
+  "Algo deu errado.": "Etwas ist schiefgelaufen.",
 };
 
 export type ChaveDeTraducao = keyof typeof EN;

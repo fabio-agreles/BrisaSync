@@ -171,9 +171,11 @@ class DemoBackend {
     driveClientSecret: "",
     language: "pt",
     closeQuits: false,
+    conflictPolicy: "ask",
   };
 
   private paused = false;
+  private pauseUntil: number | null = null;
   private running = true;
   private transfers: Transfer[] = initialTransfers.map((item) => ({ ...item }));
   private bytes = initialTransfers.reduce((sum, item) => sum + item.bytes, 0);
@@ -284,9 +286,11 @@ class DemoBackend {
     return this.snapshot();
   }
 
-  async setPaused(paused: boolean) {
+  async setPaused(paused: boolean, durationMin?: number) {
     await delay(150);
     this.paused = paused;
+    this.pauseUntil =
+      paused && durationMin && durationMin > 0 ? Date.now() + durationMin * 60_000 : null;
     this.running = false;
     this.pushActivity(
       "info",
@@ -433,6 +437,18 @@ class DemoBackend {
     return { pessoal: "ana.silva@gmail.com" };
   }
 
+  async listTrash(): Promise<import("./types").TrashItem[]> {
+    return [];
+  }
+
+  async restoreTrashItem(_id: string, destinationDir: string): Promise<string> {
+    return `${destinationDir}/restaurado`;
+  }
+
+  async emptyTrash(): Promise<void> {
+    return;
+  }
+
   async accountUsage() {
     await delay(120);
     return [
@@ -537,6 +553,7 @@ class DemoBackend {
     return {
       engineReady: true,
       paused: this.paused,
+      pauseUntil: this.pauseUntil,
       running: this.running && !this.paused,
       speed: this.running && !this.paused ? speed : 0,
       bytes: this.bytes,

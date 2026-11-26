@@ -689,7 +689,7 @@ async fn email_em(endereco: &str, acesso: &str) -> AppResult<Option<String>> {
 }
 
 /// Troca o `refresh_token` por um `access_token` novo.
-async fn renovar_token(
+pub async fn renovar_token(
     token: &Value,
     client_id: &str,
     client_secret: &str,
@@ -1001,6 +1001,7 @@ mod testes {
             )
         };
 
+        let _trava = crate::idioma::TRAVA.lock().unwrap_or_else(|erro| erro.into_inner());
         crate::idioma::definir("pt");
         let portugues = falhar().await.unwrap_err().to_string();
         assert!(

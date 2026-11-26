@@ -45,7 +45,9 @@ function semAspas(literal) {
 }
 
 const i18n = readFileSync(join(fonte, "lib", "i18n.ts"), "utf8");
-const blocoEn = i18n.slice(i18n.indexOf("const EN: Record<string, string> = {"));
+const inicioEn = i18n.indexOf("const EN: Record<string, string> = {");
+const fimEn = i18n.indexOf("\n};", inicioEn);
+const blocoEn = i18n.slice(inicioEn, fimEn === -1 ? undefined : fimEn + 3);
 const traduzidas = new Set();
 for (const achado of blocoEn.matchAll(ENTRADA)) {
   traduzidas.add((achado[1] ?? achado[2]).replace(/\\(["'`\\])/g, "$1"));

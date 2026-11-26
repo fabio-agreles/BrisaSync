@@ -18,6 +18,7 @@ export type Profile = {
   lastError: string | null;
   lastBytes: number;
   excludedFolders?: string[];
+  syncIntervalMin?: number | null;
 };
 
 export type NewProfile = {
@@ -40,6 +41,7 @@ export type Transfer = {
 export type Snapshot = {
   engineReady: boolean;
   paused: boolean;
+  pauseUntil?: number | null;
   running: boolean;
   speed: number;
   bytes: number;
@@ -91,6 +93,8 @@ export type Settings = {
   language: string;
   /** Fechar a janela encerra o app (padrão: vai para a bandeja). */
   closeQuits: boolean;
+  /** Política de conflito: "ask" (padrão), "newer", "remote" ou "local". */
+  conflictPolicy: "ask" | "newer" | "remote" | "local";
 };
 
 export type FolderSize = {
@@ -118,6 +122,15 @@ export type Conflict = {
   path2Size: number | null;
   path1Modified: number | null;
   path2Modified: number | null;
+};
+
+export type TrashItem = {
+  id: string;
+  name: string;
+  relativePath: string;
+  size: number;
+  deletedAt: number;
+  profileId: string | null;
 };
 
 export type AccountUsage = {

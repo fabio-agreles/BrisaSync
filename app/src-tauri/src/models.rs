@@ -29,6 +29,9 @@ pub struct Profile {
     pub last_bytes: u64,
     #[serde(default)]
     pub excluded_folders: Vec<String>,
+    /// Intervalo próprio desta pasta em minutos (`None` = usa o ajuste global).
+    #[serde(default)]
+    pub sync_interval_min: Option<u64>,
 }
 
 impl Profile {
@@ -70,6 +73,7 @@ pub struct Transfer {
 pub struct Snapshot {
     pub engine_ready: bool,
     pub paused: bool,
+    pub pause_until: Option<u64>,
     pub running: bool,
     pub speed: f64,
     pub bytes: u64,
@@ -84,6 +88,7 @@ impl Snapshot {
         Self {
             engine_ready: false,
             paused,
+            pause_until: None,
             running: false,
             speed: 0.0,
             bytes: 0,
@@ -118,6 +123,17 @@ pub struct Conflict {
     pub path2_size: Option<u64>,
     pub path1_modified: Option<u64>,
     pub path2_modified: Option<u64>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TrashItem {
+    pub id: String,
+    pub name: String,
+    pub relative_path: String,
+    pub size: u64,
+    pub deleted_at: u64,
+    pub profile_id: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -233,6 +249,13 @@ pub struct Settings {
     /// continua na bandeja e a sincronização não é interrompida.
     #[serde(default)]
     pub close_quits: bool,
+    /// Política de conflito: "ask" (padrão), "newer", "remote" ou "local".
+    #[serde(default = "default_conflict_policy")]
+    pub conflict_policy: String,
+}
+
+fn default_conflict_policy() -> String {
+    "ask".to_string()
 }
 
 fn default_theme() -> String {
@@ -269,6 +292,7 @@ impl Default for Settings {
             drive_client_secret: String::new(),
             language: default_language(),
             close_quits: false,
+            conflict_policy: default_conflict_policy(),
         }
     }
 }

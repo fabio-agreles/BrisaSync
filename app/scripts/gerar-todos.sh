@@ -7,7 +7,7 @@ raiz="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$raiz"
 
 echo "============================================="
-echo "   Iniciando compilação do BrisaSync v1.0.0"
+echo "   Iniciando compilação do BrisaSync v1.1.0"
 echo "============================================="
 
 # 1. Compilar Frontend

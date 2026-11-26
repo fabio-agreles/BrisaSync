@@ -109,6 +109,7 @@ pub struct Rclone {
 struct Inner {
     daemon: Mutex<Option<Daemon>>,
     client: reqwest::Client,
+    proxy: std::sync::Mutex<String>,
 }
 
 impl Rclone {
@@ -122,8 +123,44 @@ impl Rclone {
             inner: Arc::new(Inner {
                 daemon: Mutex::new(None),
                 client,
+                proxy: std::sync::Mutex::new(String::new()),
             }),
         }
+    }
+
+    /// Atualiza o proxy usado pelo daemon `rclone rcd`. Devolve `true` se o valor mudou.
+    pub fn set_proxy(&self, proxy: &str) -> bool {
+        let normalized = proxy.trim().to_string();
+        let mut guard = self.inner.proxy.lock().expect("proxy mutex");
+        if *guard == normalized {
+            return false;
+        }
+        *guard = normalized;
+        true
+    }
+
+    fn current_proxy(&self) -> String {
+        self.inner.proxy.lock().expect("proxy mutex").clone()
+    }
+
+    /// Verifica se o candidato é um executável válido e seguro (arquivo regular,
+    /// não vazio e, no Unix, executável e sem permissão de escrita para outros).
+    fn is_valid_binary(candidate: &Path) -> bool {
+        let Ok(meta) = std::fs::metadata(candidate) else {
+            return false;
+        };
+        if !meta.is_file() || meta.len() == 0 {
+            return false;
+        }
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt as _;
+            let mode = meta.permissions().mode();
+            if mode & 0o111 == 0 || mode & 0o002 != 0 {
+                return false;
+            }
+        }
+        true
     }
 
     /// Localiza o rclone: variável de ambiente, cópia embutida no pacote, PATH e
@@ -131,7 +168,7 @@ impl Rclone {
     pub fn find_binary() -> Option<PathBuf> {
         if let Ok(configured) = std::env::var("BRISASYNC_RCLONE") {
             let candidate = PathBuf::from(configured);
-            if candidate.is_file() {
+            if Self::is_valid_binary(&candidate) {
                 return Some(candidate);
             }
         }
@@ -176,7 +213,9 @@ impl Rclone {
             }
         }
 
-        candidates.into_iter().find(|candidate| candidate.is_file())
+        candidates
+            .into_iter()
+            .find(|candidate| Self::is_valid_binary(candidate))
     }
 
     pub async fn binary(&self) -> AppResult<PathBuf> {
@@ -238,11 +277,11 @@ impl Rclone {
             .arg("--rc-addr")
             .arg(format!("127.0.0.1:{port}"))
             // Sem `--rc-no-auth`: o painel exige HTTP Basic e a senha muda a cada
-            // execução (ver `credenciais`).
+            // execução (ver `credenciais`). A senha vai por variável de ambiente
+            // (`RCLONE_RC_PASS`) para não aparecer em `ps` / `/proc/<pid>/cmdline`.
             .arg("--rc-user")
             .arg(&usuario)
-            .arg("--rc-pass")
-            .arg(&senha)
+            .env("RCLONE_RC_PASS", &senha)
             .arg("--log-level")
             // INFO (e não ERROR) para que cada tarefa devolva o log da execução:
             // é dele que sai o resumo "No changes found" usado para não avisar
@@ -277,6 +316,18 @@ impl Rclone {
             .stdout(Stdio::null())
             .stderr(Stdio::null())
             .kill_on_drop(true);
+        let proxy = self.current_proxy();
+        if !proxy.is_empty() {
+            command
+                .env("HTTP_PROXY", &proxy)
+                .env("HTTPS_PROXY", &proxy)
+                .env("ALL_PROXY", &proxy)
+                .env("http_proxy", &proxy)
+                .env("https_proxy", &proxy)
+                .env("all_proxy", &proxy)
+                .env("NO_PROXY", "127.0.0.1,localhost")
+                .env("no_proxy", "127.0.0.1,localhost");
+        }
         // Sem console piscando no Windows (o rclone roda escondido a vida toda).
         command.sem_console();
         let mut child = command
