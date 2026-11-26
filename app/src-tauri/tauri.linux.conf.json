@@ -1,0 +1,8 @@
+{
+  "bundle": {
+    "targets": ["deb", "appimage"],
+    "resources": {
+      "resources/rclone": "rclone"
+    }
+  }
+}
