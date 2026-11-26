@@ -12,14 +12,11 @@
 // tradução, para isso não passar batido.
 import { useSyncExternalStore } from "react";
 
-export type Lang = "pt" | "en" | "es" | "fr" | "de";
+export type Lang = "pt" | "en";
 
 export const IDIOMAS: { id: Lang; nome: string; nomeNativo: string }[] = [
   { id: "pt", nome: "Português (Brasil)", nomeNativo: "Português" },
   { id: "en", nome: "Inglês", nomeNativo: "English" },
-  { id: "es", nome: "Espanhol", nomeNativo: "Español" },
-  { id: "fr", nome: "Francês", nomeNativo: "Français" },
-  { id: "de", nome: "Alemão", nomeNativo: "Deutsch" },
 ];
 
 let idioma: Lang = "pt";
@@ -29,24 +26,13 @@ export function idiomaAtual(): Lang {
   return idioma;
 }
 
-/** Valor para o atributo `lang` do <html>. */
+/** Valor para o atributo `lang` do <html>: "pt-BR" ou "en". */
 export function idiomaDoDocumento(lang: Lang): string {
-  switch (lang) {
-    case "en":
-      return "en";
-    case "es":
-      return "es";
-    case "fr":
-      return "fr";
-    case "de":
-      return "de";
-    default:
-      return "pt-BR";
-  }
+  return lang === "en" ? "en" : "pt-BR";
 }
 
 export function definirIdioma(novo: Lang) {
-  if (novo !== "pt" && novo !== "en" && novo !== "es" && novo !== "fr" && novo !== "de") return;
+  if (novo !== "pt" && novo !== "en") return;
   if (novo === idioma) return;
   idioma = novo;
   if (typeof document !== "undefined") {
@@ -68,17 +54,7 @@ export function traduzir(
   texto: string,
   valores?: Record<string, string | number>,
 ): string {
-  const dict =
-    lang === "en"
-      ? EN
-      : lang === "es"
-        ? ES
-        : lang === "fr"
-          ? FR
-          : lang === "de"
-            ? DE
-            : null;
-  const base = dict ? dict[texto] ?? EN[texto] ?? texto : texto;
+  const base = lang === "en" ? EN[texto] ?? texto : texto;
   if (!valores) return base;
   return base.replace(/\{(\w+)\}/g, (bruto, nome: string) =>
     nome in valores ? String(valores[nome]) : bruto,
@@ -104,18 +80,7 @@ export function useT() {
 
 /** Locale para Intl/`toLocaleDateString`. */
 export function locale(lang: Lang = idioma): string {
-  switch (lang) {
-    case "en":
-      return "en-US";
-    case "es":
-      return "es-ES";
-    case "fr":
-      return "fr-FR";
-    case "de":
-      return "de-DE";
-    default:
-      return "pt-BR";
-  }
+  return lang === "en" ? "en-US" : "pt-BR";
 }
 
 // ---------------------------------------------------------------------------
@@ -701,114 +666,6 @@ const EN: Record<string, string> = {
   "Escolher a primeira pasta": "Choose the first folder",
   "Defina a pasta local e a pasta remota que ficarão iguais nos dois lados.":
     "Pick the local folder and remote folder to keep identical on both sides.",
-};
-
-const ES: Record<string, string> = {
-  Fechar: "Cerrar",
-  Cancelar: "Cancelar",
-  Salvar: "Guardar",
-  "Visão geral": "Resumen",
-  Pastas: "Carpetas",
-  Arquivos: "Archivos",
-  Atividade: "Actividad",
-  Conflitos: "Conflictos",
-  Ajustes: "Ajustes",
-  "Sincronizar agora": "Sincronizar ahora",
-  "Pausar tudo": "Pausar todo",
-  Retomar: "Reanudar",
-  "Tudo em dia": "Todo al día",
-  "Sincronizando agora": "Sincronizando ahora",
-  "Sincronização pausada": "Sincronización en pausa",
-  "Conectar conta": "Conectar cuenta",
-  "Adicionar pasta": "Añadir carpeta",
-  Tema: "Tema",
-  Claro: "Claro",
-  Escuro: "Oscuro",
-  Sistema: "Sistema",
-  Idioma: "Idioma",
-  Notificações: "Notificaciones",
-  "Em caso de conflito": "En caso de conflicto",
-  Perguntar: "Preguntar",
-  "Mais recente": "Más reciente",
-  Nuvem: "Nube",
-  Local: "Local",
-  "Lixeira e versões anteriores": "Papelera y versiones anteriores",
-  "Esvaziar lixeira": "Vaciar papelera",
-  Restaurar: "Restaurar",
-  Recarregar: "Recargar",
-  "Algo deu errado.": "Algo salió mal.",
-};
-
-const FR: Record<string, string> = {
-  Fechar: "Fermer",
-  Cancelar: "Annuler",
-  Salvar: "Enregistrer",
-  "Visão geral": "Vue d'ensemble",
-  Pastas: "Dossiers",
-  Arquivos: "Fichiers",
-  Atividade: "Activité",
-  Conflitos: "Conflits",
-  Ajustes: "Paramètres",
-  "Sincronizar agora": "Synchroniser maintenant",
-  "Pausar tudo": "Tout mettre en pause",
-  Retomar: "Reprendre",
-  "Tudo em dia": "Tout est à jour",
-  "Sincronizando agora": "Synchronisation en cours",
-  "Sincronização pausada": "Synchronisation en pause",
-  "Conectar conta": "Connecter un compte",
-  "Adicionar pasta": "Ajouter un dossier",
-  Tema: "Thème",
-  Claro: "Clair",
-  Escuro: "Sombre",
-  Sistema: "Système",
-  Idioma: "Langue",
-  Notificações: "Notifications",
-  "Em caso de conflito": "En cas de conflit",
-  Perguntar: "Demander",
-  "Mais recente": "Plus récent",
-  Nuvem: "Nuage",
-  Local: "Local",
-  "Lixeira e versões anteriores": "Corbeille et versions précédentes",
-  "Esvaziar lixeira": "Vider la corbeille",
-  Restaurar: "Restaurer",
-  Recarregar: "Recharger",
-  "Algo deu errado.": "Une erreur est survenue.",
-};
-
-const DE: Record<string, string> = {
-  Fechar: "Schließen",
-  Cancelar: "Abbrechen",
-  Salvar: "Speichern",
-  "Visão geral": "Übersicht",
-  Pastas: "Ordner",
-  Arquivos: "Dateien",
-  Atividade: "Aktivität",
-  Conflitos: "Konflikte",
-  Ajustes: "Einstellungen",
-  "Sincronizar agora": "Jetzt synchronisieren",
-  "Pausar tudo": "Alles pausieren",
-  Retomar: "Fortsetzen",
-  "Tudo em dia": "Alles aktuell",
-  "Sincronizando agora": "Synchronisierung läuft",
-  "Sincronização pausada": "Synchronisierung pausiert",
-  "Conectar conta": "Konto verbinden",
-  "Adicionar pasta": "Ordner hinzufügen",
-  Tema: "Design",
-  Claro: "Hell",
-  Escuro: "Dunkel",
-  Sistema: "System",
-  Idioma: "Sprache",
-  Notificações: "Benachrichtigungen",
-  "Em caso de conflito": "Bei Konflikt",
-  Perguntar: "Fragen",
-  "Mais recente": "Neueste",
-  Nuvem: "Cloud",
-  Local: "Lokal",
-  "Lixeira e versões anteriores": "Papierkorb und frühere Versionen",
-  "Esvaziar lixeira": "Papierkorb leeren",
-  Restaurar: "Wiederherstellen",
-  Recarregar: "Neu laden",
-  "Algo deu errado.": "Etwas ist schiefgelaufen.",
 };
 
 export type ChaveDeTraducao = keyof typeof EN;

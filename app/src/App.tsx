@@ -144,10 +144,7 @@ export default function App() {
   // Idioma: a preferência vem dos ajustes (padrão "pt"). O efeito cobre tanto a
   // carga inicial quanto a troca em Ajustes, inclusive quando o backend avisa.
   useEffect(() => {
-    const lang = settings.language;
-    definirIdioma(
-      lang === "en" || lang === "es" || lang === "fr" || lang === "de" ? lang : "pt",
-    );
+    definirIdioma(settings.language === "en" ? "en" : "pt");
   }, [settings.language]);
 
   // A bandeja e o tema "system" acompanham o tema do sistema operacional:
