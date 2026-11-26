@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="brisasync.png">
+<link rel="canonical" href="https://brisasync.com.br/guia-oauth.html">
+<title>BrisaSync — Guia OAuth do Google Drive</title>
+<meta name="description" content="Passo a passo ilustrado para criar seu próprio projeto OAuth no Google Cloud e usar sua cota exclusiva no BrisaSync.">
+<style>
+  :root {
+    --abyss: #04152f;
+    --abyss-elevated: #0a2247;
+    --abyss-line: rgba(148, 197, 255, 0.16);
+    --paper: #f6f9fc;
+    --surface: #ffffff;
+    --surface-soft: #edf3fa;
+    --line: #d6e2ef;
+    --ink: #0b1b33;
+    --muted: #4b627d;
+    --breeze: #0077cc;
+    --breeze-bright: #00a8e8;
+    --mint: #2ce6c1;
+    --mint-ink: #055e4e;
+    --warn-bg: #fff9ec;
+    --warn-line: #ebd094;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Cantarell, "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--breeze); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .hero-band {
+    background: radial-gradient(circle at 80% 10%, rgba(0, 168, 232, 0.22), transparent 55%), var(--abyss);
+    color: #f0f6ff;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--abyss-line);
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 0;
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+  }
+  .brand img { width: 32px; height: 32px; border-radius: 8px; }
+  .brand:hover { text-decoration: none; }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  nav a { color: rgba(240, 246, 255, 0.85); font-size: 14px; font-weight: 500; }
+  nav a:hover { color: #fff; text-decoration: none; }
+
+  .lang-switch {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--abyss-line);
+    border-radius: 999px;
+    padding: 2px;
+  }
+  .lang-btn {
+    border: 0;
+    background: transparent;
+    color: rgba(240, 246, 255, 0.75);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .lang-btn.active {
+    background: var(--breeze-bright);
+    color: #04152f;
+  }
+
+  .hero-intro {
+    padding-top: 18px;
+  }
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mint);
+    margin-bottom: 8px;
+  }
+  h1 {
+    margin: 0 0 12px;
+    font-size: clamp(26px, 4vw, 38px);
+    line-height: 1.2;
+    color: #fff;
+  }
+  .hero-lead {
+    margin: 0;
+    max-width: 680px;
+    color: rgba(240, 246, 255, 0.82);
+    font-size: 16.5px;
+  }
+
+  main {
+    padding: 40px 0 64px;
+  }
+
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--breeze);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    font-size: 14.5px;
+  }
+  .callout.warn {
+    background: var(--warn-bg);
+    border-color: var(--warn-line);
+    border-left-color: #d97706;
+  }
+
+  .step-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 6px 20px rgba(11, 27, 51, 0.04);
+  }
+
+  .step-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: var(--breeze);
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  .step-head h2 {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.3;
+  }
+
+  .step-body {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 22px;
+    align-items: center;
+  }
+  @media (max-width: 780px) {
+    .step-body {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .step-text ul {
+    margin: 8px 0 0;
+    padding-left: 20px;
+  }
+  .step-text li {
+    margin-bottom: 6px;
+  }
+  code {
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1px 6px;
+    font-size: 13px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  .diagram {
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .diagram svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 28px 0 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+  .footer-links {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero-band">
+  <div class="wrap">
+    <header>
+      <a class="brand" href="index.html">
+        <img src="brisasync.png" alt="BrisaSync">
+        <span>BrisaSync</span>
+      </a>
+      <nav aria-label="Navegação">
+        <a href="index.html" data-i18n="nav_home">Início</a>
+        <a href="index.html#baixar" data-i18n="nav_download">Baixar</a>
+        <a href="privacidade.html" data-i18n="nav_privacy">Privacidade</a>
+        <a href="https://github.com/fabio-agreles/BrisaSync">GitHub</a>
+        <div class="lang-switch" role="group" aria-label="Idioma">
+          <button type="button" class="lang-btn active" data-set-lang="pt">PT-BR</button>
+          <button type="button" class="lang-btn" data-set-lang="en">EN</button>
+        </div>
+      </nav>
+    </header>
+
+    <div class="hero-intro">
+      <span class="eyebrow" data-i18n="eyebrow">Guia ilustrado · Google Drive</span>
+      <h1 data-i18n="title">Como criar seu próprio projeto OAuth no Google Cloud</h1>
+      <p class="hero-lead" data-i18n="lead">
+        O BrisaSync já vem com um projeto OAuth próprio, mas você pode criar o seu gratuitamente no Google Cloud para ter uma cota exclusiva de requisições por minuto.
+      </p>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="callout" data-i18n="intro_note">
+    <strong>Quando vale a pena?</strong> Se você sincroniza dezenas de milhares de arquivos ou usa várias contas ao mesmo tempo, ter seu próprio <code>client_id</code> e <code>client_secret</code> evita limites compartilhados e mantém a velocidade máxima.
+  </div>
+
+  <!-- Passo 1 -->
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">1</span>
+      <h2 data-i18n="s1_title">Criar um projeto no Google Cloud Console</h2>
+    </div>
+    <div class="step-body">
+      <div class="step-text">
+        <p data-i18n="s1_p">Acesse <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">console.cloud.google.com</a> com sua conta Google.</p>
+        <ul>
+          <li data-i18n="s1_l1">Clique no seletor de projetos no topo da página e depois em <strong>Novo projeto</strong> (<em>New Project</em>).</li>
+          <li data-i18n="s1_l2">Dê um nome fácil de lembrar, como <code>BrisaSync Pessoal</code>, e clique em <strong>Criar</strong>.</li>
+          <li data-i18n="s1_l3">Aguarde alguns segundos e selecione o projeto recém-criado no topo.</li>
+        </ul>
+      </div>
+      <div class="diagram" aria-hidden="true">
+        <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="360" height="200" rx="10" fill="#ffffff" stroke="#d6e2ef"/>
+          <rect width="360" height="34" rx="10" fill="#0b1b33"/>
+          <circle cx="18" cy="17" r="5" fill="#2ce6c1"/>
+          <text x="32" y="21" fill="#ffffff" font-size="11" font-family="sans-serif" font-weight="600">Google Cloud Console</text>
+          <rect x="165" y="7" width="120" height="20" rx="5" fill="#1e3a5f" stroke="#00a8e8"/>
+          <text x="175" y="21" fill="#e0f2fe" font-size="10" font-family="sans-serif">BrisaSync Pessoal ▾</text>
+          <rect x="24" y="52" width="312" height="128" rx="8" fill="#f6f9fc" stroke="#d6e2ef"/>
+          <text x="40" y="76" fill="#0b1b33" font-size="12" font-family="sans-serif" font-weight="700">New Project</text>
+          <text x="40" y="98" fill="#4b627d" font-size="10" font-family="sans-serif">Project name</text>
+          <rect x="40" y="104" width="220" height="26" rx="5" fill="#ffffff" stroke="#0077cc"/>
+          <text x="48" y="121" fill="#0b1b33" font-size="11" font-family="monospace">BrisaSync Pessoal</text>
+          <rect x="40" y="142" width="76" height="24" rx="5" fill="#0077cc"/>
+          <text x="62" y="158" fill="#ffffff" font-size="11" font-family="sans-serif" font-weight="600">Create</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Passo 2 -->
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">2</span>
+      <h2 data-i18n="s2_title">Ativar a Google Drive API</h2>
+    </div>
+    <div class="step-body">
+      <div class="step-text">
+        <p data-i18n="s2_p">Com o projeto selecionado, habilite o acesso ao Google Drive:</p>
+        <ul>
+          <li data-i18n="s2_l1">No menu lateral, abra <strong>APIs e serviços → Biblioteca</strong> (<em>APIs &amp; Services → Library</em>).</li>
+          <li data-i18n="s2_l2">Busque por <code>Google Drive API</code> e clique no resultado oficial.</li>
+          <li data-i18n="s2_l3">Clique no botão azul <strong>Ativar</strong> (<em>Enable</em>).</li>
+        </ul>
+      </div>
+      <div class="diagram" aria-hidden="true">
+        <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="360" height="200" rx="10" fill="#ffffff" stroke="#d6e2ef"/>
+          <rect x="16" y="16" width="328" height="28" rx="6" fill="#edf3fa" stroke="#d6e2ef"/>
+          <text x="28" y="34" fill="#4b627d" font-size="11" font-family="sans-serif">🔍  Google Drive API</text>
+          <rect x="16" y="58" width="328" height="124" rx="8" fill="#f6f9fc" stroke="#d6e2ef"/>
+          <rect x="32" y="74" width="36" height="36" rx="8" fill="#e0f2fe"/>
+          <polygon points="50,82 60,100 40,100" fill="#0077cc"/>
+          <text x="80" y="90" fill="#0b1b33" font-size="13" font-family="sans-serif" font-weight="700">Google Drive API</text>
+          <text x="80" y="106" fill="#4b627d" font-size="10" font-family="sans-serif">Google Enterprise API</text>
+          <rect x="80" y="124" width="92" height="28" rx="6" fill="#0077cc"/>
+          <text x="106" y="142" fill="#ffffff" font-size="11" font-family="sans-serif" font-weight="600">ENABLE</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Passo 3 -->
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">3</span>
+      <h2 data-i18n="s3_title">Configurar a tela de consentimento OAuth</h2>
+    </div>
+    <div class="step-body">
+      <div class="step-text">
+        <p data-i18n="s3_p">Antes de gerar as chaves, o Google pede os dados básicos do aplicativo:</p>
+        <ul>
+          <li data-i18n="s3_l1">Vá em <strong>APIs e serviços → Tela de permissão OAuth</strong> (<em>OAuth consent screen</em>).</li>
+          <li data-i18n="s3_l2">Escolha <strong>Externo</strong> (<em>External</em>) e clique em <strong>Criar</strong>.</li>
+          <li data-i18n="s3_l3">Preencha o nome do app (ex.: <code>BrisaSync</code>) e seu e-mail nos campos obrigatórios.</li>
+          <li data-i18n="s3_l4">Em <strong>Usuários de teste</strong> (<em>Test users</em>), adicione o seu próprio e-mail do Gmail.</li>
+        </ul>
+      </div>
+      <div class="diagram" aria-hidden="true">
+        <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="360" height="200" rx="10" fill="#ffffff" stroke="#d6e2ef"/>
+          <text x="20" y="28" fill="#0b1b33" font-size="12" font-family="sans-serif" font-weight="700">OAuth consent screen</text>
+          <rect x="20" y="42" width="150" height="54" rx="8" fill="#edf3fa" stroke="#0077cc" stroke-width="1.5"/>
+          <circle cx="36" cy="60" r="5" fill="#0077cc"/>
+          <text x="48" y="64" fill="#0b1b33" font-size="11" font-family="sans-serif" font-weight="600">External</text>
+          <text x="32" y="82" fill="#4b627d" font-size="9.5" font-family="sans-serif">Qualquer conta Google</text>
+          <rect x="186" y="42" width="154" height="54" rx="8" fill="#f6f9fc" stroke="#d6e2ef"/>
+          <text x="200" y="64" fill="#4b627d" font-size="11" font-family="sans-serif">Internal</text>
+          <text x="200" y="82" fill="#4b627d" font-size="9.5" font-family="sans-serif">Apenas Workspace</text>
+          <rect x="20" y="110" width="320" height="72" rx="8" fill="#f6f9fc" stroke="#d6e2ef"/>
+          <text x="32" y="130" fill="#0b1b33" font-size="11" font-family="sans-serif" font-weight="600">Test users</text>
+          <rect x="32" y="140" width="210" height="24" rx="5" fill="#ffffff" stroke="#d6e2ef"/>
+          <text x="40" y="156" fill="#0b1b33" font-size="10.5" font-family="monospace">voce@gmail.com</text>
+          <rect x="252" y="140" width="74" height="24" rx="5" fill="#0077cc"/>
+          <text x="266" y="156" fill="#ffffff" font-size="10.5" font-family="sans-serif" font-weight="600">+ Add</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <div class="callout warn" data-i18n="testing_warn">
+    <strong>Dica importante sobre os 7 dias:</strong> Projetos no modo <em>Testing</em> expiram a autorização a cada 7 dias. Para não precisar reconectar toda semana, clique em <strong>Publicar aplicativo</strong> (<em>Publish App</em>) na tela de consentimento — para uso pessoal, não é necessário passar pela verificação do Google (basta clicar em "Avançado → Ir para BrisaSync" na primeira vez).
+  </div>
+
+  <!-- Passo 4 -->
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">4</span>
+      <h2 data-i18n="s4_title">Criar o ID do cliente OAuth (App para computador)</h2>
+    </div>
+    <div class="step-body">
+      <div class="step-text">
+        <p data-i18n="s4_p">Agora gere o par de credenciais que o BrisaSync vai usar:</p>
+        <ul>
+          <li data-i18n="s4_l1">Abra <strong>APIs e serviços → Credenciais</strong> (<em>Credentials</em>).</li>
+          <li data-i18n="s4_l2">Clique em <strong>+ Criar credenciais → ID do cliente OAuth</strong>.</li>
+          <li data-i18n="s4_l3">Em <strong>Tipo de aplicativo</strong>, selecione <strong>App para computador</strong> (<em>Desktop app</em>).</li>
+          <li data-i18n="s4_l4">Clique em <strong>Criar</strong> e copie o <code>Client ID</code> e o <code>Client Secret</code> exibidos na janela.</li>
+        </ul>
+      </div>
+      <div class="diagram" aria-hidden="true">
+        <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="360" height="200" rx="10" fill="#ffffff" stroke="#d6e2ef"/>
+          <text x="20" y="28" fill="#0b1b33" font-size="12" font-family="sans-serif" font-weight="700">Create OAuth client ID</text>
+          <text x="20" y="50" fill="#4b627d" font-size="10" font-family="sans-serif">Application type</text>
+          <rect x="20" y="56" width="320" height="28" rx="6" fill="#edf3fa" stroke="#0077cc"/>
+          <text x="30" y="74" fill="#0b1b33" font-size="11" font-family="sans-serif" font-weight="600">Desktop app  ▾</text>
+          <rect x="20" y="98" width="320" height="84" rx="8" fill="#04152f"/>
+          <text x="32" y="118" fill="#2ce6c1" font-size="10" font-family="sans-serif" font-weight="700">OAuth client created</text>
+          <text x="32" y="138" fill="#94c5ff" font-size="9.5" font-family="monospace">Client ID: 123456789-abc.apps.googleusercontent.com</text>
+          <text x="32" y="158" fill="#94c5ff" font-size="9.5" font-family="monospace">Client Secret: GOCSPX-xxxxxxxxxxxxxxxxxxxx</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Passo 5 -->
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">5</span>
+      <h2 data-i18n="s5_title">Colar as credenciais no BrisaSync</h2>
+    </div>
+    <div class="step-body">
+      <div class="step-text">
+        <p data-i18n="s5_p">Por fim, informe as chaves no aplicativo:</p>
+        <ul>
+          <li data-i18n="s5_l1">Abra o BrisaSync e vá em <strong>Ajustes → Avançado · Google Drive</strong>.</li>
+          <li data-i18n="s5_l2">Cole o <code>client_id</code> e o <code>client_secret</code> nos campos correspondentes.</li>
+          <li data-i18n="s5_l3">Clique em <strong>Salvar credenciais</strong>. O selo no topo mudará para <strong>seu projeto</strong>.</li>
+          <li data-i18n="s5_l4">Se já tinha uma conta Google Drive conectada antes, desconecte e conecte novamente para passar a usar a nova cota.</li>
+        </ul>
+      </div>
+      <div class="diagram" aria-hidden="true">
+        <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="360" height="200" rx="10" fill="#0b1b33" stroke="#1e3a5f"/>
+          <text x="20" y="28" fill="#ffffff" font-size="12" font-family="sans-serif" font-weight="700">Avançado · Google Drive</text>
+          <rect x="252" y="14" width="88" height="20" rx="999" fill="#055e4e"/>
+          <text x="266" y="28" fill="#2ce6c1" font-size="10" font-family="sans-serif" font-weight="600">seu projeto</text>
+          <text x="20" y="56" fill="#94c5ff" font-size="10" font-family="sans-serif">client_id</text>
+          <rect x="20" y="62" width="320" height="26" rx="6" fill="#04152f" stroke="#1e3a5f"/>
+          <text x="28" y="79" fill="#e0f2fe" font-size="10" font-family="monospace">123456789-abc.apps.googleusercontent.com</text>
+          <text x="20" y="108" fill="#94c5ff" font-size="10" font-family="sans-serif">client_secret</text>
+          <rect x="20" y="114" width="320" height="26" rx="6" fill="#04152f" stroke="#1e3a5f"/>
+          <text x="28" y="131" fill="#e0f2fe" font-size="10" font-family="monospace">GOCSPX-••••••••••••••••••••</text>
+          <rect x="210" y="154" width="130" height="28" rx="7" fill="#0077cc"/>
+          <text x="226" y="172" fill="#ffffff" font-size="11" font-family="sans-serif" font-weight="600">Salvar credenciais</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="wrap">
+  <footer>
+    <span data-i18n="footer_copy">BrisaSync é software livre sob licença MIT.</span>
+    <div class="footer-links">
+      <a href="index.html" data-i18n="nav_home">Início</a>
+      <a href="privacidade.html" data-i18n="nav_privacy">Privacidade</a>
+      <a href="https://github.com/fabio-agreles/BrisaSync">GitHub</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+  const I18N = {
+    pt: {
+      _lang: "pt-BR",
+      _title: "BrisaSync — Guia OAuth do Google Drive",
+      nav_home: "Início",
+      nav_download: "Baixar",
+      nav_privacy: "Privacidade",
+      eyebrow: "Guia ilustrado · Google Drive",
+      title: "Como criar seu próprio projeto OAuth no Google Cloud",
+      lead: "O BrisaSync já vem com um projeto OAuth próprio, mas você pode criar o seu gratuitamente no Google Cloud para ter uma cota exclusiva de requisições por minuto.",
+      intro_note: "<strong>Quando vale a pena?</strong> Se você sincroniza dezenas de milhares de arquivos ou usa várias contas ao mesmo tempo, ter seu próprio <code>client_id</code> e <code>client_secret</code> evita limites compartilhados e mantém a velocidade máxima.",
+      s1_title: "Criar um projeto no Google Cloud Console",
+      s1_p: 'Acesse <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">console.cloud.google.com</a> com sua conta Google.',
+      s1_l1: "Clique no seletor de projetos no topo da página e depois em <strong>Novo projeto</strong> (<em>New Project</em>).",
+      s1_l2: "Dê um nome fácil de lembrar, como <code>BrisaSync Pessoal</code>, e clique em <strong>Criar</strong>.",
+      s1_l3: "Aguarde alguns segundos e selecione o projeto recém-criado no topo.",
+      s2_title: "Ativar a Google Drive API",
+      s2_p: "Com o projeto selecionado, habilite o acesso ao Google Drive:",
+      s2_l1: "No menu lateral, abra <strong>APIs e serviços → Biblioteca</strong> (<em>APIs &amp; Services → Library</em>).",
+      s2_l2: "Busque por <code>Google Drive API</code> e clique no resultado oficial.",
+      s2_l3: "Clique no botão azul <strong>Ativar</strong> (<em>Enable</em>).",
+      s3_title: "Configurar a tela de consentimento OAuth",
+      s3_p: "Antes de gerar as chaves, o Google pede os dados básicos do aplicativo:",
+      s3_l1: "Vá em <strong>APIs e serviços → Tela de permissão OAuth</strong> (<em>OAuth consent screen</em>).",
+      s3_l2: "Escolha <strong>Externo</strong> (<em>External</em>) e clique em <strong>Criar</strong>.",
+      s3_l3: "Preencha o nome do app (ex.: <code>BrisaSync</code>) e seu e-mail nos campos obrigatórios.",
+      s3_l4: "Em <strong>Usuários de teste</strong> (<em>Test users</em>), adicione o seu próprio e-mail do Gmail.",
+      testing_warn: '<strong>Dica importante sobre os 7 dias:</strong> Projetos no modo <em>Testing</em> expiram a autorização a cada 7 dias. Para não precisar reconectar toda semana, clique em <strong>Publicar aplicativo</strong> (<em>Publish App</em>) na tela de consentimento — para uso pessoal, não é necessário passar pela verificação do Google (basta clicar em "Avançado → Ir para BrisaSync" na primeira vez).',
+      s4_title: "Criar o ID do cliente OAuth (App para computador)",
+      s4_p: "Agora gere o par de credenciais que o BrisaSync vai usar:",
+      s4_l1: "Abra <strong>APIs e serviços → Credenciais</strong> (<em>Credentials</em>).",
+      s4_l2: "Clique em <strong>+ Criar credenciais → ID do cliente OAuth</strong>.",
+      s4_l3: "Em <strong>Tipo de aplicativo</strong>, selecione <strong>App para computador</strong> (<em>Desktop app</em>).",
+      s4_l4: "Clique em <strong>Criar</strong> e copie o <code>Client ID</code> e o <code>Client Secret</code> exibidos na janela.",
+      s5_title: "Colar as credenciais no BrisaSync",
+      s5_p: "Por fim, informe as chaves no aplicativo:",
+      s5_l1: "Abra o BrisaSync e vá em <strong>Ajustes → Avançado · Google Drive</strong>.",
+      s5_l2: "Cole o <code>client_id</code> e o <code>client_secret</code> nos campos correspondentes.",
+      s5_l3: "Clique em <strong>Salvar credenciais</strong>. O selo no topo mudará para <strong>seu projeto</strong>.",
+      s5_l4: "Se já tinha uma conta Google Drive conectada antes, desconecte e conecte novamente para passar a usar a nova cota.",
+      footer_copy: "BrisaSync é software livre sob licença MIT."
+    },
+    en: {
+      _lang: "en",
+      _title: "BrisaSync — Google Drive OAuth Guide",
+      nav_home: "Home",
+      nav_download: "Download",
+      nav_privacy: "Privacy",
+      eyebrow: "Illustrated guide · Google Drive",
+      title: "How to create your own Google Cloud OAuth project",
+      lead: "BrisaSync already ships with its own OAuth project, but you can create yours for free in Google Cloud to get a dedicated requests-per-minute quota.",
+      intro_note: "<strong>When is it worth it?</strong> If you sync tens of thousands of files or multiple accounts at once, using your own <code>client_id</code> and <code>client_secret</code> avoids shared rate limits and keeps transfers at full speed.",
+      s1_title: "Create a project in Google Cloud Console",
+      s1_p: 'Open <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">console.cloud.google.com</a> with your Google account.',
+      s1_l1: "Click the project selector at the top of the page and choose <strong>New Project</strong>.",
+      s1_l2: "Give it a clear name such as <code>BrisaSync Personal</code> and click <strong>Create</strong>.",
+      s1_l3: "Wait a few seconds and select the newly created project at the top.",
+      s2_title: "Enable the Google Drive API",
+      s2_p: "With your project selected, enable Google Drive access:",
+      s2_l1: "In the left menu, open <strong>APIs &amp; Services → Library</strong>.",
+      s2_l2: "Search for <code>Google Drive API</code> and click the official result.",
+      s2_l3: "Click the blue <strong>Enable</strong> button.",
+      s3_title: "Configure the OAuth consent screen",
+      s3_p: "Before creating credentials, Google asks for basic app details:",
+      s3_l1: "Go to <strong>APIs &amp; Services → OAuth consent screen</strong>.",
+      s3_l2: "Select <strong>External</strong> and click <strong>Create</strong>.",
+      s3_l3: "Fill in the app name (e.g. <code>BrisaSync</code>) and your email in the required fields.",
+      s3_l4: "Under <strong>Test users</strong>, add your own Gmail address.",
+      testing_warn: '<strong>Important tip about the 7-day limit:</strong> Projects in <em>Testing</em> mode expire authorization every 7 days. To avoid reconnecting every week, click <strong>Publish App</strong> on the consent screen — for personal use, Google verification is not required (just click "Advanced → Go to BrisaSync" the first time).',
+      s4_title: "Create an OAuth client ID (Desktop app)",
+      s4_p: "Now generate the credential pair for BrisaSync:",
+      s4_l1: "Open <strong>APIs &amp; Services → Credentials</strong>.",
+      s4_l2: "Click <strong>+ Create Credentials → OAuth client ID</strong>.",
+      s4_l3: "Under <strong>Application type</strong>, choose <strong>Desktop app</strong>.",
+      s4_l4: "Click <strong>Create</strong> and copy the <code>Client ID</code> and <code>Client Secret</code> shown.",
+      s5_title: "Paste the credentials into BrisaSync",
+      s5_p: "Finally, enter the keys in the app:",
+      s5_l1: "Open BrisaSync and go to <strong>Settings → Advanced · Google Drive</strong>.",
+      s5_l2: "Paste the <code>client_id</code> and <code>client_secret</code> into the matching fields.",
+      s5_l3: "Click <strong>Save credentials</strong>. The badge at the top will switch to <strong>your project</strong>.",
+      s5_l4: "If you already had a Google Drive account connected, disconnect and reconnect it so it uses the new quota.",
+      footer_copy: "BrisaSync is free software under the MIT license."
+    }
+  };
+
+  function applyLang(lang) {
+    const dict = I18N[lang] || I18N.pt;
+    document.documentElement.lang = dict._lang;
+    document.title = dict._title;
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      const key = el.getAttribute("data-i18n");
+      if (dict[key]) el.innerHTML = dict[key];
+    });
+    document.querySelectorAll("[data-set-lang]").forEach((btn) => {
+      btn.classList.toggle("active", btn.getAttribute("data-set-lang") === lang);
+    });
+  }
+
+  document.querySelectorAll("[data-set-lang]").forEach((btn) => {
+    btn.addEventListener("click", () => applyLang(btn.getAttribute("data-set-lang")));
+  });
+</script>
+</body>
+</html>
