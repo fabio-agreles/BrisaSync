@@ -89,18 +89,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Flatpak and flatpak-builder
+      - name: Install Flatpak and runtimes
         run: |
           sudo apt-get update
           sudo apt-get install -y flatpak flatpak-builder
           flatpak remote-add --if-not-exists --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          flatpak install --user -y --noninteractive flathub \
+            org.gnome.Platform//50 \
+            org.gnome.Sdk//50 \
+            org.freedesktop.Sdk.Extension.rust-stable//25.08 \
+            org.freedesktop.Sdk.Extension.node22//25.08 \
+            org.freedesktop.Sdk.Extension.golang//25.08
 
       - name: Build Flatpak bundle
-        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
-        with:
-          bundle: BrisaSync-${{ github.ref_name }}-x86_64.flatpak
-          manifest-path: app/flatpak/app.brisasync.BrisaSync.json
-          repository-url: https://dl.flathub.org/repo/flathub.flatpakrepo
+        run: |
+          flatpak-builder --user --force-clean --repo=flatpak-repo builddir app/flatpak/app.brisasync.BrisaSync.json
+          flatpak build-bundle flatpak-repo "BrisaSync-${{ github.ref_name }}-x86_64.flatpak" app.brisasync.BrisaSync
 
       - name: Upload Flatpak to Release
         env:

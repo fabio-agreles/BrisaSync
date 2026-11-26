@@ -689,6 +689,8 @@ mod tests {
 
     #[test]
     fn formatacao_de_velocidade_cobre_escalas_e_idioma() {
+        let _trava = crate::idioma::TRAVA.lock().unwrap_or_else(|e| e.into_inner());
+        crate::idioma::definir("pt");
         assert_eq!(formatar_velocidade(0.0), None);
         assert_eq!(formatar_velocidade(-10.0), None);
 
@@ -711,6 +713,7 @@ mod tests {
 
     #[test]
     fn formatacao_de_status_sincronizando() {
+        let _trava = crate::idioma::TRAVA.lock().unwrap_or_else(|e| e.into_inner());
         crate::idioma::definir("pt");
 
         // Sem dados de velocidade ou progresso
