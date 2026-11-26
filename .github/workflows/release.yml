@@ -17,9 +17,9 @@ jobs:
           - platform: ubuntu-22.04
             args: ""
           - platform: windows-latest
-            args: ""
+            args: "--config src-tauri/tauri.windows.conf.json"
           - platform: macos-latest
-            args: "--target universal-apple-darwin"
+            args: "--config src-tauri/tauri.macos.conf.json --target universal-apple-darwin"
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -45,10 +45,30 @@ jobs:
         working-directory: app
         run: npm ci
 
-      - name: Fetch bundled rclone
+      - name: Fetch bundled rclone (Linux)
         working-directory: app
-        if: matrix.platform != 'windows-latest'
-        run: bash scripts/fetch-rclone.sh
+        if: matrix.platform == 'ubuntu-22.04'
+        run: bash scripts/fetch-rclone.sh 1.75.2 linux
+
+      - name: Fetch bundled rclone (macOS)
+        working-directory: app
+        if: matrix.platform == 'macos-latest'
+        run: |
+          mkdir -p src-tauri/resources
+          curl -fsSL -o /tmp/rclone.zip "https://downloads.rclone.org/v1.75.2/rclone-v1.75.2-osx-arm64.zip"
+          unzip -q /tmp/rclone.zip -d /tmp/rclone-osx
+          cp /tmp/rclone-osx/rclone-v1.75.2-osx-arm64/rclone src-tauri/resources/rclone
+          chmod +x src-tauri/resources/rclone
+
+      - name: Fetch bundled rclone (Windows)
+        working-directory: app
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path src-tauri/resources | Out-Null
+          Invoke-WebRequest -Uri "https://downloads.rclone.org/v1.75.2/rclone-v1.75.2-windows-amd64.zip" -OutFile "$env:TEMP\rclone.zip"
+          Expand-Archive -Path "$env:TEMP\rclone.zip" -DestinationPath "$env:TEMP\rclone-win" -Force
+          Copy-Item "$env:TEMP\rclone-win\rclone-v1.75.2-windows-amd64\rclone.exe" "src-tauri/resources/rclone.exe" -Force
 
       - uses: tauri-apps/tauri-action@v0
         env:
