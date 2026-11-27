@@ -841,24 +841,18 @@ export function Settings({
             <span className="muted" style={{ fontSize: 12.5 }}>
               {t("Precisa de ajuda para criar as chaves?")}
             </span>
-            <a
+            <button
+              type="button"
               className="btn sm primary"
-              href="https://brisasync.com.br/guia-oauth.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ textDecoration: "none" }}
-              onClick={(event) => {
-                if (isDesktop) {
-                  event.preventDefault();
-                  void api
-                    .openUrl("https://brisasync.com.br/guia-oauth.html")
-                    .catch((cause) => notify(errorMessage(cause), "error"));
-                }
+              onClick={() => {
+                void api
+                  .openUrl("https://brisasync.com.br/guia-oauth.html")
+                  .catch((cause) => notify(errorMessage(cause), "error"));
               }}
             >
               <Icon name="link" size={14} />
               {t("Ver guia ilustrado")} ↗
-            </a>
+            </button>
           </div>
         </div>
       </section>

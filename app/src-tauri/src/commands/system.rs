@@ -100,6 +100,8 @@ pub(crate) fn abrir_no_sistema<P: AsRef<std::path::Path>>(path: P) -> std::io::R
     #[cfg(not(windows))]
     let program = "xdg-open";
     let mut command = std::process::Command::new(program);
+    #[cfg(target_os = "linux")]
+    command.env_remove("LD_LIBRARY_PATH").env_remove("LD_PRELOAD");
     command.arg(path.as_ref()).sem_console();
     command.spawn().map(|_| ())
 }
