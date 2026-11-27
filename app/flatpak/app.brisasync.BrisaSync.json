@@ -29,8 +29,11 @@
     "/share/vala"
   ],
   "build-options": {
+    "ldflags": "-L/app/lib64",
     "env": {
-      "PKG_CONFIG_PATH": "/app/lib/pkgconfig:/app/lib64/pkgconfig:/app/lib/x86_64-linux-gnu/pkgconfig:/app/share/pkgconfig"
+      "PKG_CONFIG_PATH": "/app/lib/pkgconfig:/app/lib64/pkgconfig:/app/lib/x86_64-linux-gnu/pkgconfig:/app/share/pkgconfig",
+      "LIBRARY_PATH": "/app/lib64:/app/lib",
+      "LD_LIBRARY_PATH": "/app/lib64:/app/lib"
     }
   },
   "modules": [
