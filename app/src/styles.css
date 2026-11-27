@@ -585,26 +585,14 @@ a {
 
 .hero {
   position: relative;
-  overflow: hidden;
   padding: 24px 26px;
   border-radius: 22px;
   color: #fff;
   background:
     radial-gradient(120% 160% at 100% 0%, rgba(255, 255, 255, 0.22), transparent 55%),
+    radial-gradient(circle 180px at 92% 105%, rgba(255, 255, 255, 0.1), transparent 70%),
     linear-gradient(125deg, #4356dd 0%, #5a63f2 45%, #8b5cf6 100%);
   box-shadow: 0 20px 48px -28px rgba(70, 86, 221, 0.9);
-}
-
-.hero::after {
-  content: "";
-  position: absolute;
-  right: -70px;
-  bottom: -110px;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  filter: blur(4px);
 }
 
 .hero.idle {
