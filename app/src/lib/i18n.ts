@@ -116,6 +116,7 @@ const EN: Record<string, string> = {
   "Dispensar aviso": "Dismiss notification",
   "Algo deu errado.": "Something went wrong.",
   "Ver guia ilustrado": "View illustrated guide",
+  "Precisa de ajuda para criar as chaves?": "Need help creating the keys?",
   "Escolha a pasta para restaurar": "Choose folder to restore to",
   "Restaurado para {caminho}": "Restored to {caminho}",
   "Lixeira esvaziada.": "Trash emptied.",

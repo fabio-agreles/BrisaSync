@@ -818,24 +818,47 @@ export function Settings({
                 </div>
               </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 8, paddingTop: 12, flexWrap: "wrap" }}>
-                <button
-                  className="btn sm ghost"
-                  type="button"
-                  onClick={() => {
-                    void api
-                      .openUrl("https://brisasync.com.br/guia-oauth.html")
-                      .catch((cause) => notify(errorMessage(cause), "error"));
-                  }}
-                >
-                  <Icon name="info" size={14} />
-                  {t("Ver guia ilustrado")}
-                </button>
+              <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12 }}>
                 <button className="btn sm ghost" onClick={salvarCredenciais}>
                   {t("Salvar credenciais")}
                 </button>
               </div>
             </div>
+          </div>
+
+          <div
+            style={{
+              marginTop: 16,
+              paddingTop: 14,
+              borderTop: "1px solid var(--border)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              flexWrap: "wrap",
+            }}
+          >
+            <span className="muted" style={{ fontSize: 12.5 }}>
+              {t("Precisa de ajuda para criar as chaves?")}
+            </span>
+            <a
+              className="btn sm primary"
+              href="https://brisasync.com.br/guia-oauth.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: "none" }}
+              onClick={(event) => {
+                if (isDesktop) {
+                  event.preventDefault();
+                  void api
+                    .openUrl("https://brisasync.com.br/guia-oauth.html")
+                    .catch((cause) => notify(errorMessage(cause), "error"));
+                }
+              }}
+            >
+              <Icon name="link" size={14} />
+              {t("Ver guia ilustrado")} ↗
+            </a>
           </div>
         </div>
       </section>

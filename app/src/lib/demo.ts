@@ -499,8 +499,8 @@ class DemoBackend {
     return "/tmp/BrisaSync-demo.deb";
   }
 
-  async openUrl() {
-    await delay(40);
+  async openUrl(url: string) {
+    window.open(url, "_blank", "noopener,noreferrer");
   }
 
   async oauthInfo() {

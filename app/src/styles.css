@@ -383,6 +383,38 @@ a {
   background: rgba(255, 255, 255, 0.24);
 }
 
+.hero-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  min-width: 156px;
+  padding: 6px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 30;
+}
+
+.hero-menu-item {
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.hero-menu-item:hover {
+  background: var(--surface-2, rgba(127, 127, 127, 0.12));
+}
+
 .btn.sm {
   height: 32px;
   padding: 0 11px;

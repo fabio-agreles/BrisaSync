@@ -61,6 +61,7 @@ export function Dashboard({
   const t = useT();
   const enabled = profiles.filter((profile) => profile.enabled);
   const [removendo, setRemovendo] = useState<Account | null>(null);
+  const [pauseMenuOpen, setPauseMenuOpen] = useState(false);
   const pending = snapshot.transfers.filter((transfer) => transfer.percent < 100);
   const lastSync = profiles
     .map((profile) => profile.lastSync ?? 0)
@@ -116,30 +117,63 @@ export function Dashboard({
               {snapshot.paused ? t("Retomar") : t("Pausar tudo")}
             </button>
             {!snapshot.paused && onPauseFor ? (
-              <select
-                className="btn on-hero"
-                aria-label={t("Pausar por tempo")}
-                value=""
-                onChange={(event) => {
-                  const val = event.target.value;
-                  if (!val) return;
-                  if (val === "tomorrow") {
-                    const now = new Date();
-                    const tomorrow = new Date(now);
-                    tomorrow.setDate(now.getDate() + 1);
-                    tomorrow.setHours(8, 0, 0, 0);
-                    const mins = Math.max(1, Math.round((tomorrow.getTime() - now.getTime()) / 60_000));
-                    onPauseFor(mins);
-                  } else {
-                    onPauseFor(Number(val));
-                  }
-                }}
-              >
-                <option value="">{t("Pausar por…")}</option>
-                <option value="15">{t("15 min")}</option>
-                <option value="60">{t("1 hora")}</option>
-                <option value="tomorrow">{t("Até amanhã")}</option>
-              </select>
+              <div style={{ position: "relative" }}>
+                <button
+                  type="button"
+                  className="btn on-hero"
+                  aria-label={t("Pausar por tempo")}
+                  aria-expanded={pauseMenuOpen}
+                  onClick={() => setPauseMenuOpen((open) => !open)}
+                >
+                  {t("Pausar por…")}
+                  <span style={{ fontSize: 10, opacity: 0.85 }}>▾</span>
+                </button>
+                {pauseMenuOpen ? (
+                  <div className="hero-menu" role="menu">
+                    <button
+                      type="button"
+                      className="hero-menu-item"
+                      role="menuitem"
+                      onClick={() => {
+                        setPauseMenuOpen(false);
+                        onPauseFor(15);
+                      }}
+                    >
+                      {t("15 min")}
+                    </button>
+                    <button
+                      type="button"
+                      className="hero-menu-item"
+                      role="menuitem"
+                      onClick={() => {
+                        setPauseMenuOpen(false);
+                        onPauseFor(60);
+                      }}
+                    >
+                      {t("1 hora")}
+                    </button>
+                    <button
+                      type="button"
+                      className="hero-menu-item"
+                      role="menuitem"
+                      onClick={() => {
+                        setPauseMenuOpen(false);
+                        const now = new Date();
+                        const tomorrow = new Date(now);
+                        tomorrow.setDate(now.getDate() + 1);
+                        tomorrow.setHours(8, 0, 0, 0);
+                        const mins = Math.max(
+                          1,
+                          Math.round((tomorrow.getTime() - now.getTime()) / 60_000),
+                        );
+                        onPauseFor(mins);
+                      }}
+                    >
+                      {t("Até amanhã")}
+                    </button>
+                  </div>
+                ) : null}
+              </div>
             ) : null}
           </div>
         </div>
