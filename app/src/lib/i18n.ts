@@ -115,6 +115,7 @@ const EN: Record<string, string> = {
   "Nenhuma ação encontrada.": "No actions found.",
   "Dispensar aviso": "Dismiss notification",
   "Algo deu errado.": "Something went wrong.",
+  "Ver guia ilustrado": "View illustrated guide",
   "Escolha a pasta para restaurar": "Choose folder to restore to",
   "Restaurado para {caminho}": "Restored to {caminho}",
   "Lixeira esvaziada.": "Trash emptied.",

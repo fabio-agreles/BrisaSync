@@ -304,6 +304,33 @@ export function Settings({
               />
             </div>
           </div>
+
+          <div className="row">
+            <div className="row-text">
+              <div className="row-title">{t("Em caso de conflito")}</div>
+              <div className="row-desc">
+                {t("O que fazer quando o mesmo arquivo muda nos dois lados.")}
+              </div>
+            </div>
+            <div className="row-control">
+              {(
+                [
+                  ["ask", "Perguntar"],
+                  ["newer", "Mais recente"],
+                  ["remote", "Nuvem"],
+                  ["local", "Local"],
+                ] as const
+              ).map(([value, label]) => (
+                <button
+                  key={value}
+                  className={`chip ${(settings.conflictPolicy ?? "ask") === value ? "active" : ""}`}
+                  onClick={() => onUpdate({ conflictPolicy: value })}
+                >
+                  {t(label)}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -359,33 +386,6 @@ export function Settings({
               >
                 {t("Sistema")}
               </button>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="row-text">
-              <div className="row-title">{t("Em caso de conflito")}</div>
-              <div className="row-desc">
-                {t("O que fazer quando o mesmo arquivo muda nos dois lados.")}
-              </div>
-            </div>
-            <div className="row-control">
-              {(
-                [
-                  ["ask", "Perguntar"],
-                  ["newer", "Mais recente"],
-                  ["remote", "Nuvem"],
-                  ["local", "Local"],
-                ] as const
-              ).map(([value, label]) => (
-                <button
-                  key={value}
-                  className={`chip ${(settings.conflictPolicy ?? "ask") === value ? "active" : ""}`}
-                  onClick={() => onUpdate({ conflictPolicy: value })}
-                >
-                  {t(label)}
-                </button>
-              ))}
             </div>
           </div>
 
@@ -818,7 +818,19 @@ export function Settings({
                 </div>
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 8, paddingTop: 12, flexWrap: "wrap" }}>
+                <button
+                  className="btn sm ghost"
+                  type="button"
+                  onClick={() => {
+                    void api
+                      .openUrl("https://brisasync.com.br/guia-oauth.html")
+                      .catch((cause) => notify(errorMessage(cause), "error"));
+                  }}
+                >
+                  <Icon name="info" size={14} />
+                  {t("Ver guia ilustrado")}
+                </button>
                 <button className="btn sm ghost" onClick={salvarCredenciais}>
                   {t("Salvar credenciais")}
                 </button>
