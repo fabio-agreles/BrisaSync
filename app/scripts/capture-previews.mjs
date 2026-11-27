@@ -56,6 +56,10 @@ async function main() {
 
   const nav = async (label) => {
     await page.locator(".sidebar").getByRole("button", { name: new RegExp(`^${label}`) }).first().click();
+    await page.evaluate(() => {
+      document.querySelector(".content")?.scrollTo(0, 0);
+      window.scrollTo(0, 0);
+    });
     await page.waitForTimeout(400);
   };
 
