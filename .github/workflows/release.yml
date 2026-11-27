@@ -103,7 +103,7 @@ jobs:
 
       - name: Build Flatpak bundle
         run: |
-          flatpak-builder --user --force-clean --repo=flatpak-repo builddir app/flatpak/app.brisasync.BrisaSync.json
+          flatpak-builder --user --disable-rofiles-fuse --force-clean --repo=flatpak-repo builddir app/flatpak/app.brisasync.BrisaSync.json
           flatpak build-bundle flatpak-repo "BrisaSync-${{ github.ref_name }}-x86_64.flatpak" app.brisasync.BrisaSync
 
       - name: Upload Flatpak to Release

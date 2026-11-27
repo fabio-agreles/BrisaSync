@@ -30,7 +30,7 @@
   ],
   "build-options": {
     "env": {
-      "PKG_CONFIG_PATH": "/app/lib/pkgconfig:/app/lib/x86_64-linux-gnu/pkgconfig:/app/share/pkgconfig"
+      "PKG_CONFIG_PATH": "/app/lib/pkgconfig:/app/lib64/pkgconfig:/app/lib/x86_64-linux-gnu/pkgconfig:/app/share/pkgconfig"
     }
   },
   "modules": [
