@@ -164,6 +164,35 @@ async function main() {
   await copyFile(path.join(OUT, "preview-files.png"), path.join(DOCS_IMAGES, "arquivos.png"));
   await copyFile(path.join(OUT, "preview-settings.png"), path.join(DOCS_IMAGES, "ajustes.png"));
   await copyFile(path.join(OUT, "preview-dark.png"), path.join(DOCS_IMAGES, "tema-escuro.png"));
+
+  // Capturar também as 5 telas em inglês para docs/assets/images/en/
+  const DOCS_IMAGES_EN = path.join(DOCS_IMAGES, "en");
+  await mkdir(DOCS_IMAGES_EN, { recursive: true });
+  await nav("Ajustes");
+  const btnEn = page.getByRole("button", { name: "English" }).first();
+  if (await btnEn.count()) {
+    await btnEn.click();
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: path.join(DOCS_IMAGES_EN, "ajustes.png") });
+    await nav("Overview");
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: path.join(DOCS_IMAGES_EN, "visao-geral.png") });
+    await nav("Folders");
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: path.join(DOCS_IMAGES_EN, "pastas.png") });
+    await nav("Files");
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: path.join(DOCS_IMAGES_EN, "arquivos.png") });
+    const temaEn = page.getByRole("button", { name: /^Switch to (dark|light) theme$/ });
+    if (await temaEn.count()) {
+      await temaEn.first().click();
+      await nav("Overview");
+      await page.waitForTimeout(600);
+      await page.screenshot({ path: path.join(DOCS_IMAGES_EN, "tema-escuro.png") });
+    }
+    console.log("✔ Capturas em inglês salvas em docs/assets/images/en/");
+  }
+  await copyFile(path.join(OUT, "preview-dark.png"), path.join(DOCS_IMAGES, "tema-escuro.png"));
   console.log("✔ Imagens de docs/assets/images/ atualizadas!");
 
   await context.close();

@@ -6,7 +6,7 @@
 <link rel="icon" type="image/png" href="brisasync.png">
 <link rel="canonical" href="https://brisasync.com.br/">
 <title>BrisaSync — Two-way cloud sync for Linux and Windows</title>
-<meta name="description" content="BrisaSync 1.0.0: open-source desktop application that keeps your folders in two-way sync with Google Drive, OneDrive, Dropbox, and Nextcloud.">
+<meta name="description" content="BrisaSync 1.1.0: open-source desktop application that keeps your folders in two-way sync with Google Drive, OneDrive, Dropbox, and Nextcloud.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://brisasync.com.br/">
 <meta property="og:title" content="BrisaSync — Two-way cloud sync for Linux and Windows">
@@ -621,7 +621,7 @@
       <a class="brand" href="#">
         <img src="brisasync.png" alt="BrisaSync">
         <span>BrisaSync</span>
-        <span class="ver-pill">1.0.0</span>
+        <span class="ver-pill">1.1.0</span>
       </a>
       <nav aria-label="Main navigation">
         <a href="#novidades" data-i18n="nav_whats_new">What's new</a>
@@ -648,7 +648,7 @@
           with no intermediary server and zero telemetry.
         </p>
         <div class="actions">
-          <a class="btn btn-hero-primary" href="#baixar" data-i18n="hero_cta_dl">Download BrisaSync 1.0.0</a>
+          <a class="btn btn-hero-primary" href="#baixar" data-i18n="hero_cta_dl">Download BrisaSync 1.1.0</a>
           <a class="btn btn-hero-secondary" href="https://github.com/fabio-agreles/BrisaSync" data-i18n="hero_cta_gh">View source on GitHub</a>
         </div>
         <div class="provider-strip">
@@ -663,7 +663,7 @@
       <div class="sync-panel" aria-label="BrisaSync interface summary">
         <div class="sync-panel-bar">
           <div class="win-dots"><span></span><span></span><span></span></div>
-          <span>BrisaSync 1.0.0 · rclone bisync</span>
+          <span>BrisaSync 1.1.0 · rclone bisync</span>
         </div>
         <div class="sync-panel-body">
           <div class="sync-status-card">
@@ -705,7 +705,7 @@
 <main class="wrap">
   <section id="novidades" class="split-section">
     <div>
-      <h2 data-i18n="new_title">What's new in version 1.0.0</h2>
+      <h2 data-i18n="new_title">What's new in version 1.1.0</h2>
       <p class="section-lead" data-i18n="new_lead">
         Built in Rust and Tauri 2 with the rclone bisync engine bundled in every package.
       </p>
@@ -769,21 +769,21 @@
     <h2 data-i18n="shots_title">App screenshots</h2>
     <p class="section-lead" data-i18n="shots_lead">Adaptive interface with light and dark themes for Linux and Windows.</p>
     <div class="tabs" role="tablist" aria-label="BrisaSync screenshots">
-      <button class="tab active" type="button" data-tab="overview" data-src="assets/images/visao-geral.png" data-i18n="tab_overview">Overview</button>
-      <button class="tab" type="button" data-tab="folders" data-src="assets/images/pastas.png" data-i18n="tab_folders">Folders</button>
-      <button class="tab" type="button" data-tab="files" data-src="assets/images/arquivos.png" data-i18n="tab_files">Files</button>
-      <button class="tab" type="button" data-tab="settings" data-src="assets/images/ajustes.png" data-i18n="tab_settings">Settings</button>
-      <button class="tab" type="button" data-tab="dark" data-src="assets/images/tema-escuro.png" data-i18n="tab_dark">Dark theme</button>
+      <button class="tab active" type="button" data-tab="overview" data-src-pt="assets/images/visao-geral.png" data-src-en="assets/images/en/visao-geral.png" data-i18n="tab_overview">Overview</button>
+      <button class="tab" type="button" data-tab="folders" data-src-pt="assets/images/pastas.png" data-src-en="assets/images/en/pastas.png" data-i18n="tab_folders">Folders</button>
+      <button class="tab" type="button" data-tab="files" data-src-pt="assets/images/arquivos.png" data-src-en="assets/images/en/arquivos.png" data-i18n="tab_files">Files</button>
+      <button class="tab" type="button" data-tab="settings" data-src-pt="assets/images/ajustes.png" data-src-en="assets/images/en/ajustes.png" data-i18n="tab_settings">Settings</button>
+      <button class="tab" type="button" data-tab="dark" data-src-pt="assets/images/tema-escuro.png" data-src-en="assets/images/en/tema-escuro.png" data-i18n="tab_dark">Dark theme</button>
     </div>
     <div class="stage">
-      <img id="stage-img" src="assets/images/visao-geral.png" alt="BrisaSync screenshot">
+      <img id="stage-img" src="assets/images/en/visao-geral.png" alt="BrisaSync screenshot">
       <div id="stage-cap" class="stage-cap">Overview: folder status, transfer queue, connected accounts, and storage quota.</div>
     </div>
   </section>
 
   <section id="baixar">
     <h2 data-i18n="dl_title">Download for Linux and Windows</h2>
-    <p class="section-lead" data-i18n="dl_lead">Pick the package for your system from release v1.0.0. rclone is already bundled.</p>
+    <p class="section-lead" data-i18n="dl_lead">Pick the package for your system from release v1.1.0. rclone is already bundled.</p>
     <div class="dl-grid">
       <div class="dl-card">
         <div>
@@ -791,9 +791,19 @@
           <p data-i18n="dl_deb_p">Native <code>.deb</code> package with system tray integration.</p>
         </div>
         <div class="dl-actions">
-          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync_1.0.0_amd64.deb" data-i18n="dl_deb_btn">Download .deb</a>
+          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.1.0/BrisaSync_1.1.0_amd64.deb" data-i18n="dl_deb_btn">Download .deb</a>
         </div>
-        <code class="cmd">sudo apt install ./BrisaSync_1.0.0_amd64.deb</code>
+        <code class="cmd">sudo apt install ./BrisaSync_1.1.0_amd64.deb</code>
+      </div>
+      <div class="dl-card">
+        <div>
+          <h3>Fedora / RHEL</h3>
+          <p data-i18n="dl_rpm_p"><code>.rpm</code> package for Fedora, RHEL, and openSUSE.</p>
+        </div>
+        <div class="dl-actions">
+          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.1.0/BrisaSync-1.1.0-1.x86_64.rpm" data-i18n="dl_rpm_btn">Download .rpm</a>
+        </div>
+        <code class="cmd">sudo dnf install ./BrisaSync-1.1.0-1.x86_64.rpm</code>
       </div>
       <div class="dl-card">
         <div>
@@ -801,9 +811,9 @@
           <p data-i18n="dl_app_p">Portable <code>AppImage</code>, ready to run.</p>
         </div>
         <div class="dl-actions">
-          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync_1.0.0_amd64.AppImage" data-i18n="dl_app_btn">Download AppImage</a>
+          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.1.0/BrisaSync_1.1.0_amd64.AppImage" data-i18n="dl_app_btn">Download AppImage</a>
         </div>
-        <code class="cmd">chmod +x BrisaSync_1.0.0_amd64.AppImage &amp;&amp; ./BrisaSync_1.0.0_amd64.AppImage</code>
+        <code class="cmd">chmod +x BrisaSync_1.1.0_amd64.AppImage &amp;&amp; ./BrisaSync_1.1.0_amd64.AppImage</code>
       </div>
       <div class="dl-card">
         <div>
@@ -811,20 +821,29 @@
           <p data-i18n="dl_flat_p">Sandboxed package (<code>app.brisasync.BrisaSync</code>).</p>
         </div>
         <div class="dl-actions">
-          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync-1.0.0-x86_64.flatpak" data-i18n="dl_flat_btn">Download .flatpak</a>
+          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.1.0/BrisaSync-v1.1.0-x86_64.flatpak" data-i18n="dl_flat_btn">Download .flatpak</a>
         </div>
-        <code class="cmd">flatpak install BrisaSync-1.0.0-x86_64.flatpak</code>
+        <code class="cmd">flatpak install BrisaSync-v1.1.0-x86_64.flatpak</code>
       </div>
       <div class="dl-card">
         <div>
           <h3>Windows 10 / 11</h3>
-          <p data-i18n="dl_win_p">Windows installer (<code>-setup.exe</code>) or portable <code>.zip</code> build.</p>
+          <p data-i18n="dl_win_p">Windows installer (<code>-setup.exe</code>) with signed auto-updater.</p>
         </div>
         <div class="dl-actions">
-          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync-1.0.0-windows-x64-setup.exe" data-i18n="dl_win_btn">Download installer (.exe)</a>
-          <a class="btn btn-secondary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.0.0/BrisaSync-1.0.0-windows-x64.zip" data-i18n="dl_win_zip_btn">Portable .zip</a>
+          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.1.0/BrisaSync_1.1.0_x64-setup.exe" data-i18n="dl_win_btn">Download installer (.exe)</a>
         </div>
-        <code class="cmd">BrisaSync-1.0.0-windows-x64-setup.exe</code>
+        <code class="cmd">BrisaSync_1.1.0_x64-setup.exe</code>
+      </div>
+      <div class="dl-card">
+        <div>
+          <h3>macOS</h3>
+          <p data-i18n="dl_mac_p">Universal <code>.dmg</code> for Apple Silicon and Intel Macs.</p>
+        </div>
+        <div class="dl-actions">
+          <a class="btn btn-primary" href="https://github.com/fabio-agreles/BrisaSync/releases/download/v1.1.0/BrisaSync_1.1.0_universal.dmg" data-i18n="dl_mac_btn">Download .dmg</a>
+        </div>
+        <code class="cmd">BrisaSync_1.1.0_universal.dmg</code>
       </div>
     </div>
 
@@ -884,7 +903,7 @@
       nav_privacy: 'Privacy',
       hero_title: 'Lightweight two-way sync for your cloud folders',
       hero_lead: 'BrisaSync keeps Linux and Windows directories in continuous sync with Google Drive, OneDrive, Dropbox, and Nextcloud — directly from your computer, with no intermediary server and zero telemetry.',
-      hero_cta_dl: 'Download BrisaSync 1.0.0',
+      hero_cta_dl: 'Download BrisaSync 1.1.0',
       hero_cta_gh: 'View source on GitHub',
       hero_providers: 'Providers:',
       panel_status_title: 'All up to date',
@@ -896,7 +915,7 @@
       panel_row3_title: 'Photos',
       panel_row3_sub: 'Nextcloud · /Camera',
       panel_synced: 'Synced',
-      new_title: "What's new in version 1.0.0",
+      new_title: "What's new in version 1.1.0",
       new_lead: 'Built in Rust and Tauri 2 with the rclone bisync engine bundled in every package.',
       new_1_t: 'Four built-in providers',
       new_1_p: 'Connect Google Drive, OneDrive, Dropbox, and Nextcloud accounts in one place, with support for custom Google OAuth credentials.',
@@ -935,7 +954,11 @@
       cap_settings: 'Settings: bandwidth limits, tray behavior, language, and updates.',
       cap_dark: 'Dark theme: interface adapted for night use on Linux and Windows.',
       dl_title: 'Download for Linux and Windows',
-      dl_lead: 'Pick the package for your system from release v1.0.0. rclone is already bundled.',
+      dl_lead: 'Pick the package for your system from release v1.1.0. rclone is already bundled.',
+      dl_rpm_p: '<code>.rpm</code> package for Fedora, RHEL, and openSUSE.',
+      dl_rpm_btn: 'Download .rpm',
+      dl_mac_p: 'Universal <code>.dmg</code> for Apple Silicon and Intel Macs.',
+      dl_mac_btn: 'Download .dmg',
       dl_deb_p: 'Native <code>.deb</code> package with system tray integration.',
       dl_deb_btn: 'Download .deb',
       dl_app_t: 'Any Linux',
@@ -972,7 +995,7 @@
       nav_privacy: 'Privacidade',
       hero_title: 'Sincronização bidirecional leve para suas pastas na nuvem',
       hero_lead: 'O BrisaSync mantém diretórios do Linux e do Windows em sincronia contínua com Google Drive, OneDrive, Dropbox e Nextcloud — direto do seu computador, sem servidor intermediário e sem telemetria.',
-      hero_cta_dl: 'Baixar BrisaSync 1.0.0',
+      hero_cta_dl: 'Baixar BrisaSync 1.1.0',
       hero_cta_gh: 'Ver código no GitHub',
       hero_providers: 'Provedores:',
       panel_status_title: 'Tudo em dia',
@@ -984,7 +1007,7 @@
       panel_row3_title: 'Fotos',
       panel_row3_sub: 'Nextcloud · /Camera',
       panel_synced: 'Sincronizado',
-      new_title: 'O que há de novo na versão 1.0.0',
+      new_title: 'O que há de novo na versão 1.1.0',
       new_lead: 'Construído em Rust e Tauri 2 com o motor bisync do rclone embutido em todos os pacotes.',
       new_1_t: 'Quatro provedores integrados',
       new_1_p: 'Conecte contas do Google Drive, OneDrive, Dropbox e Nextcloud no mesmo lugar, com suporte a credenciais OAuth próprias no Google.',
@@ -1023,7 +1046,11 @@
       cap_settings: 'Ajustes: limites de banda, comportamento na bandeja, idioma e atualizações.',
       cap_dark: 'Tema escuro: interface adaptada para uso noturno no Linux e Windows.',
       dl_title: 'Baixar para Linux e Windows',
-      dl_lead: 'Escolha o pacote adequado para o seu sistema na release v1.0.0. O rclone já vai embutido.',
+      dl_lead: 'Escolha o pacote adequado para o seu sistema na release v1.1.0. O rclone já vai embutido.',
+      dl_rpm_p: 'Pacote <code>.rpm</code> para Fedora, RHEL e openSUSE.',
+      dl_rpm_btn: 'Baixar .rpm',
+      dl_mac_p: 'Imagem <code>.dmg</code> universal para Macs Apple Silicon e Intel.',
+      dl_mac_btn: 'Baixar .dmg',
       dl_deb_p: 'Pacote nativo <code>.deb</code> com integração à bandeja.',
       dl_deb_btn: 'Baixar .deb',
       dl_app_t: 'Qualquer Linux',
@@ -1052,11 +1079,24 @@
 
   let currentLang = 'en';
 
+  function updateStageImage() {
+    const activeTab = document.querySelector('.tab.active');
+    if (!activeTab) return;
+    const img = document.getElementById('stage-img');
+    const ptSrc = activeTab.dataset.srcPt;
+    const enSrc = activeTab.dataset.srcEn;
+    img.onerror = () => {
+      if (img.getAttribute('src') !== ptSrc) img.src = ptSrc;
+    };
+    img.src = currentLang === 'en' ? enSrc : ptSrc;
+  }
+
   function updateStageCaption() {
     const activeTab = document.querySelector('.tab.active');
     if (!activeTab) return;
     const capKey = 'cap_' + activeTab.dataset.tab;
     document.getElementById('stage-cap').textContent = I18N[currentLang][capKey] || '';
+    updateStageImage();
   }
 
   function applyLang(lang) {
@@ -1089,7 +1129,6 @@
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
-      document.getElementById('stage-img').src = btn.dataset.src;
       updateStageCaption();
     });
   });
