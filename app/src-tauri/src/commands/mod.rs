@@ -999,6 +999,21 @@ async fn start_profile_inner(
             filters.push(format!("- /{clean}/**"));
         }
     }
+    // O "Cofre Pessoal" / "Personal Vault" do OneDrive Pessoal é bloqueado pela
+    // API do Microsoft Graph e faz o bisync abortar com `ObjectHandle is Invalid`
+    // ao sincronizar a raiz da conta.
+    if profile.remote_path.is_empty() {
+        let is_onedrive = list_accounts_inner(state)
+            .await
+            .map(|accs| accs.iter().any(|a| a.name == profile.account && a.provider == "onedrive"))
+            .unwrap_or(false);
+        if is_onedrive {
+            filters.push("- /Cofre Pessoal/**".to_string());
+            filters.push("- /Cofre Pessoal".to_string());
+            filters.push("- /Personal Vault/**".to_string());
+            filters.push("- /Personal Vault".to_string());
+        }
+    }
 
     let (bandwidth, conflict_resolve) = {
         let settings = state.settings.lock().await;

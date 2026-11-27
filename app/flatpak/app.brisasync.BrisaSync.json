@@ -28,6 +28,11 @@
     "/share/gir-1.0",
     "/share/vala"
   ],
+  "build-options": {
+    "env": {
+      "PKG_CONFIG_PATH": "/app/lib/pkgconfig:/app/lib/x86_64-linux-gnu/pkgconfig:/app/share/pkgconfig"
+    }
+  },
   "modules": [
     "shared-modules/libayatana-appindicator/libayatana-appindicator-gtk3.json",
     {

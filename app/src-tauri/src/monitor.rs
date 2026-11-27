@@ -468,6 +468,9 @@ fn moved_anything(log: &str) -> bool {
 /// Erros que o usuário consegue resolver sozinho, explicados sem jargão.
 fn friendly_error(error: &str) -> String {
     let lower = error.to_lowercase();
+    if lower.contains("objecthandle is invalid") || lower.contains("invalidresourceid") {
+        return "o OneDrive bloqueou o acesso a uma pasta protegida (como o Cofre Pessoal / Personal Vault). Exclua essa pasta na sincronização seletiva ou sincronize uma subpasta específica.".to_string();
+    }
     if lower.contains("drive_id and drive_type") {
         return "a conta OneDrive foi conectada sem escolher o drive. O BrisaSync tenta completar isso sozinho — se a mensagem voltar, remova a conta em Visão geral → Contas e conecte de novo.".to_string();
     }
